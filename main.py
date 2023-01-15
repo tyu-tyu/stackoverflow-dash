@@ -9,9 +9,12 @@ from flask import render_template
 app = Flask(__name__)
 
 @app.route('/')
-@app.route('/<name>')
-def hello_world(name=None):
+def index(name=None):
 	return render_template('index.html', name=name)
 
-# if __name__ == '__main__':
-# 	app.run(debug=True,port=4996)
+@app.route('/dash')
+def dashboard():
+	return render_template('dash.html')
+
+if __name__ == '__main__':
+	app.run(debug=True,port=4996)
