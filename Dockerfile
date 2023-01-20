@@ -1,10 +1,11 @@
-#dockerfile, docker image, docker container
 FROM python:3.9
+WORKDIR /code
+COPY ./requirements.txt /code/requirements.txt
 
-ADD main.py .
-ADD templates /templates
-ADD static /static
+RUN pip install Flask==2.2.2 mariadb==1.0.11
 
-RUN pip install flask
+COPY ./app /code/app
+COPY ./static /code/static
+COPY run.py /code/
 
-CMD ["flask","--app","main","run","--host","0.0.0.0","-p","8080"]
+CMD ["python", "run.py"]
