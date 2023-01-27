@@ -1,0 +1,30 @@
+version: '3.9'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    platform: linux/amd64
+    restart: on-failure
+    ports:
+      - 5505:5505
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=tyudb99
+      - MYSQL_PASSWORD=tyudb99
+      - MYSQL_USER=tyu
+      - MYSQL_DATABASE=dashboard_data
+    expose:
+      - 5505
+  
+  so_data:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    ports:
+      - "4996:4996"
+    depends_on:
+      - mariadb
+
+volumes:
+  mariadb_data:
