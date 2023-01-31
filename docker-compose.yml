@@ -26,5 +26,15 @@ services:
     depends_on:
       - mariadb
 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: 'php_my_admin'
+    links:
+      - mariadb
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+    ports:
+      - '800:80'
 volumes:
   mariadb_data:
