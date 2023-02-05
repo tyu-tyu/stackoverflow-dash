@@ -1,2 +1,4 @@
 #ignore all pycache
 __pycache__/
+parser/data/
+parser/output/
