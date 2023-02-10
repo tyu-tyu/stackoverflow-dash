@@ -6,7 +6,7 @@ services:
     platform: linux/amd64
     restart: on-failure
     ports:
-      - 5505:5505
+      - 5505:3306
     volumes:
       - mariadb_data:/var/lib/mysql
     environment:
@@ -14,8 +14,6 @@ services:
       - MYSQL_PASSWORD=tyudb99
       - MYSQL_USER=tyu
       - MYSQL_DATABASE=dashboard_data
-    expose:
-      - 5505
   
   so_data:
     build:
