@@ -33,7 +33,7 @@ def sql_import(type,cur,conn):
 			cur.execute("CREATE TEMPORARY TABLE temp_tag_link (id BIGINT, post_id BIGINT, tag_name VARCHAR(256));")
 			cur.execute("LOAD DATA LOCAL INFILE '"+taglist_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_tag_link FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `post_id`, `tag_name`)")
 			cur.execute("UPDATE temp_tag_link tl INNER JOIN tag AS t ON tl.tag_name = t.tag SET tl.`tag_name` = t.`id` WHERE tl.`tag_name` = t.`tag`;")
-			cur.execute("INSERT INTO tag_link (post_id,tag_id) SELECT post_id, tag_name FROM temp_tag_link;")
+			cur.execute("INSERT INTO tag_link (post_id,tag_id) SELECT post_id, tag_name FROM temp_tag_link WHERE `tag_name` REGEXP '^[0-9]+$';")
 			cur.execute("DROP TABLE temp_tag_link;")
 			conn.commit()
 		except mariadb.Error as e:
@@ -41,7 +41,12 @@ def sql_import(type,cur,conn):
 	elif type == 'question':
 		try:
 			print("Importing questions Please be patient")
-			cur.execute("LOAD DATA LOCAL INFILE '"+question_filename.replace('\\','/')+"' REPLACE INTO TABLE question FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `creation_date`, `score`, `view_count`, `body`, `title`, `content_license`, `edit_date`, `activity_date`, `user_id`, `editor_id`, `accepted_answer_id`)")
+			cur.execute("CREATE TEMPORARY TABLE temp_question like question;")
+			cur.execute("LOAD DATA LOCAL INFILE '"+question_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_question FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `creation_date`, `score`, `view_count`, `body`, `title`, `content_license`, `edit_date`, `activity_date`, `user_id`, `editor_id`, `accepted_answer_id`)")
+			cur.execute("INSERT INTO question SELECT * FROM temp_question;")
+			cur.execute("INSERT INTO `user` (id) SELECT user_id FROM temp_question WHERE user_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
+			cur.execute("INSERT INTO `user` (id) SELECT editor_id FROM temp_question WHERE editor_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
+			cur.execute("DROP TABLE temp_question;")
 			conn.commit()
 		except mariadb.Error as e:
 			print(f"Error: {e}")
@@ -51,7 +56,9 @@ def sql_import(type,cur,conn):
 			cur.execute("CREATE TEMPORARY TABLE temp_answer LIKE answer;")
 			cur.execute("LOAD DATA LOCAL INFILE '"+answer_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_answer FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `question_id`, `creation_date`, `score`, `body`, `user_id`, `editor_id`, `edit_date`, `activity_date`, `content_license`);")
 			cur.execute("INSERT INTO answer SELECT * FROM temp_answer WHERE EXISTS (SELECT * FROM `question` where `id` = `question_id` LIMIT 1);")
-			cur.execute("DROP table temp_answer;")
+			cur.execute("INSERT INTO `user` (id) SELECT user_id FROM temp_answer WHERE user_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
+			cur.execute("INSERT INTO `user` (id) SELECT editor_id FROM temp_answer WHERE editor_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
+			cur.execute("DROP TABLE temp_answer;")
 			conn.commit()
 		except mariadb.Error as e:
 			print(f"Error: {e}")
@@ -60,7 +67,8 @@ def sql_import(type,cur,conn):
 			print("Importing Comments Please be patient")
 			cur.execute("CREATE TEMPORARY TABLE temp_comments LIKE comments;")
 			cur.execute("LOAD DATA LOCAL INFILE '"+comments_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_comments FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `post_id`, `score`, `text`, `creation_date`, `user_id`, `content_license`);")
-			cur.execute("INSERT INTO comments SELECT * FROM temp_comments WHERE EXISTS (SELECT * FROM question where `post_id` = `id` LIMIT 1) OR EXISTS (SELECT * FROM answer where `post_id` = `id` LIMIT 1);")
+			cur.execute("INSERT INTO comments SELECT * FROM temp_comments as tc WHERE EXISTS (SELECT * FROM question WHERE tc.`post_id` = question.`id` LIMIT 1) OR EXISTS (SELECT * FROM answer WHERE tc.`post_id` = answer.`id` LIMIT 1);")
+			cur.execute("INSERT INTO `user` (id) SELECT user_id FROM temp_comments WHERE user_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
 			cur.execute("DROP TABLE temp_comments;")
 			conn.commit()
 		except mariadb.Error as e:
@@ -70,19 +78,20 @@ def sql_import(type,cur,conn):
 			print("Importing users please be patient")
 			cur.execute("CREATE TEMPORARY TABLE temp_user LIKE user;")
 			cur.execute("LOAD DATA LOCAL INFILE '"+user_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_user FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `reputation`, `creation_date`, `location`, `about_me`);")
-			cur.execute("INSERT INTO user SELECT * FROM temp_user AS tu WHERE EXISTS (SELECT * FROM question WHERE `user_id` = tu.`id` OR `editor_id` = tu.`id` LIMIT 1) OR EXISTS (SELECT * FROM answer where `user_id` = tu.`id` OR `editor_id` = tu.`id` LIMIT 1) OR EXISTS (SELECT * from comments where `user_id` = tu.`id` LIMIT 1);")
+			cur.execute("UPDATE user AS u, temp_user AS tu SET u.reputation = tu.reputation, u.creation_date = tu.creation_date, u.location = tu.location, u.about_me = tu.about_me WHERE u.id = tu.id;")
 			cur.execute("DROP TABLE temp_user;")
 			conn.commit()
 		except mariadb.Error as e:
 			print(f"Error: {e}")
+			cur.execute("DROP TABLE temp_user;")
+			conn.commit()
 	elif type == 'badges':
 		try:
 			print("Importing badges please be patient")
 			cur.execute("CREATE TEMPORARY TABLE temp_badge_link (`user_id` BIGINT, `badge` VARCHAR(256), `date` DATE);")
 			cur.execute("LOAD DATA LOCAL INFILE '"+badgelist_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_badge_link FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`user_id`, `badge`, `date`);")
-			cur.execute("INSERT INTO badges (`badge_name`) SELECT DISTINCT bl.`badge` FROM temp_badge_link bl WHERE bl.`badge` NOT IN (SELECT `badge_name` FROM badges)")
-			cur.execute("UPDATE temp_badge_link bl INNER JOIN badges AS b ON bl.badge = b.badge_name SET bl.`badge` = b.`id`")
-			cur.execute("INSERT INTO badge_link (user_id, badge_id, date) SELECT * FROM temp_badge_link WHERE EXISTS (SELECT * FROM user as u WHERE `user_id` = u.`id` LIMIT 1);")
+			cur.execute("DELETE FROM temp_badge_link WHERE NOT EXISTS (SELECT * FROM user u WHERE u.id = temp_badge_link.user_id);")
+			cur.execute("INSERT INTO badge_link (user_id, badge_id, date) SELECT * FROM temp_badge_link;")
 			cur.execute("DROP TABLE temp_badge_link;")
 			conn.commit()
 		except mariadb.Error as e:
@@ -310,17 +319,17 @@ if __name__ == "__main__":
 				root = elem
 			if event == "end" and elem.tag == "row":
 				if datetime.strptime(elem.attrib['CreationDate'][0:10], '%Y-%m-%d') <= date_end:
-						if 'Location' in elem.attrib:
-							location = re.sub('(,)|(\\n)','', elem.attrib['Location'])
+						if 'Location' in elem.attrib and elem.attrib['Location'] != "":
+							location = re.sub('(,)|(\\n)|(\\\\)','', elem.attrib['Location'])
 						else:
 							location = '\\N'
-						if 'AboutMe' in elem.attrib:
-							about_me = re.sub('(,)|(\\n)','', elem.attrib['AboutMe'])
+						if 'AboutMe' in elem.attrib and elem.attrib['AboutMe'] != "":
+							about_me = re.sub('(,)|(\\n)|(\\\\)','', elem.attrib['AboutMe'])
 						else:
 							about_me = '\\N'
 						cols = [elem.attrib['Id'],elem.attrib['Reputation'],elem.attrib['CreationDate'][0:10],location,about_me]
 						u_writer.writerow(cols)
-						if os.path.getsize(user_filename) > 50000000:
+						if os.path.getsize(user_filename) > 25000000:
 							sql_import('users',cur,conn)
 							uwr.truncate(0)
 				print("Processing Users Id:",elem.attrib['Id'],"Created",elem.attrib['CreationDate'])
@@ -346,7 +355,7 @@ if __name__ == "__main__":
 				root = elem
 			if event == "end" and elem.tag == "row":
 				if (datetime.strptime(elem.attrib['Date'][0:10], '%Y-%m-%d') >= date_start) and (datetime.strptime(elem.attrib['Date'][0:10], '%Y-%m-%d') <= date_end):
-					cols= [elem.attrib['UserId'],elem.attrib['Name'],elem.attrib['Date'][0:10]]
+					cols  = [elem.attrib['UserId'],elem.attrib['Name'],elem.attrib['Date'][0:10]]
 					bl_writer.writerow(cols)
 					if os.path.getsize(badgelist_filename) > 50000000:
 						sql_import('badges',cur,conn)
@@ -358,6 +367,12 @@ if __name__ == "__main__":
 		source.close()
 		blwr.close()
 	sql_import('badges',cur,conn)
+	#Inserts final badges into DB
+	cur.execute("INSERT INTO badges (`badge_name`) SELECT DISTINCT `badge` FROM badge_link;")
+	cur.execute("ALTER TABLE `badge_link` CHANGE COLUMN `badge_id` `badge_id` VARCHAR(256) NOT NULL DEFAULT '0' AFTER `user_id`;")
+	cur.execute("UPDATE badge_link bl INNER JOIN badges AS b ON bl.badge_id = b.badge_name SET bl.`badge_id` = b.`id`;")
+	cur.execute("ALTER TABLE `badge_link` CHANGE COLUMN `badge_id` `badge_id` BIGINT NOT NULL DEFAULT 0 COLLATE 'utf8mb3_general_ci' AFTER `user_id`;")
+	cur.commit()
 	#Cleaning up import files
 	os.remove(question_filename)
 	os.remove(answer_filename)
