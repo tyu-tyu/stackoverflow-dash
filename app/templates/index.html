@@ -1,23 +1,8 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8">
-  		<meta name="description" content="Dashboards to display stack overflow metrics">
-  		<meta name="keywords" content="Dashboard, Metrics, Stack Overflow">
-  		<meta name="author" content="Tom Slater">
-  		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>Stack Overflow Data</title>
-		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
-		<script type="module" src="{{url_for('static', filename='js/chart.js')}}"></script>
-		<script defer src="{{url_for('static', filename='js/scripts.js')}}"></script>
-	</head>
-	<body>
-		{% include 'nav_menu.html' %}
-		<main>
-			<canvas id="myChart"></canvas>
-		</main>
-		{% for item in data %}
-			<li>{{item}}</li>
-		{% endfor %}
-	</body>
-</html>
+{% extends "layout.html" %}
+{% block title%}Home{% endblock %}
+{% block content %}
+	<canvas id="myChart"></canvas>
+	<pre>
+		{{ data }}
+	</pre>
+{% endblock %}
