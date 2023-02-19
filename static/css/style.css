@@ -72,14 +72,17 @@ aside nav {
 	justify-content: space-between;
 	flex-direction: column;
 	height: 50%;
-	margin: 18px 2rem;
+	width: 100%;
+	margin-top: 18px;
 	align-items: center;
 	opacity: 0;
 	transition: 0.5s;
 }
 
 nav a {
-	color: var(--text-primary-light);	
+	color: var(--text-primary-light);
+	width: 100%;
+	text-align: center;
 }
 
 .nav-btn {
@@ -100,9 +103,15 @@ nav a {
 	transition: 0.5s;
 }
 
-#nav-btn-open:hover, #nav-btn-close:hover, nav a:hover, .active {
+#nav-btn-open:hover, #nav-btn-close:hover, nav a:hover {
 	color: var(--hover-primary);
 	cursor: pointer;
+}
+
+.active {
+	box-shadow: inset 10px 0 0 0 var(--hover-primary);
+	opacity: 0;
+	transition: 0.5s;
 }
 
 /* --------------------------- Mobile Break Points -------------------------- */

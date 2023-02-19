@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		document.querySelector('body').style.marginLeft = '6rem';
 		document.querySelector('aside nav').style.opacity = 100;
 		document.getElementById('nav-btn-open').style.opacity = 0;
+		document.getElementsByClassName('active')[0].style.opacity = 100;
 	});
 	
 	document.getElementById('nav-btn-close').addEventListener('click', function() {
@@ -11,6 +12,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 		document.querySelector('body').style.marginLeft = 0;
 		document.querySelector('aside nav').style.opacity = 0;
 		document.getElementById('nav-btn-open').style.opacity = 100;
+		document.getElementsByClassName('active')[0].style.opacity = 0;
 	});
 	
 	const ctx = document.getElementById('myChart');
