@@ -1,4 +1,5 @@
 import mariadb
+
 class home_page:
 	def __init__(self, cursor):
 		self.cursor = cursor
@@ -17,14 +18,29 @@ class home_page:
 			response["success"] = False
 		return(response)
 	
-	def get_question_range(self):
+	def get_index_date_range(self):
 		response = {}
 		response["data"] = []
 		try:
-			self.cursor.callproc("get_question_date_range")
+			self.cursor.callproc("get_index_date_range")
 			result = self.cursor.fetchall()
 			for res in result:
 				response["data"].append(res[0])
+			response["status"] = True
+		except mariadb.Error as e:
+			response["data"].append(e)
+			response["success"] = False
+		return(response)
+	
+	def get_table_row_count(self):
+		response = {}
+		response["data"] = {}
+		try:
+			self.cursor.callproc("get_table_row_count")
+			result = self.cursor.fetchall()
+			for res in result:
+				response["data"][res[0]] = res[1]
+			response["data"]['posts'] = response["data"]["question"] + response["data"]["answer"]
 			response["status"] = True
 		except mariadb.Error as e:
 			response["data"].append(e)

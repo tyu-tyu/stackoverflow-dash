@@ -7,7 +7,8 @@ def index():
 	result_data = {}
 	lookups = home_page(app.config['CURSOR'])
 	result_data["content_licenses"] = lookups.get_content_license()
-	result_data["question_date_range"] = lookups.get_question_range()
+	result_data["question_date_range"] = lookups.get_index_date_range()
+	result_data["table_row_count"] = lookups.get_table_row_count()
 	return render_template('index.html', data=result_data)
 
 @app.route('/dash')

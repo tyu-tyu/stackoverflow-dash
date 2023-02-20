@@ -8,9 +8,11 @@
   		<meta name="author" content="Tom Slater">
   		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 		<title>{%block title %}{% endblock %} - Stack Overflow Data</title>
+		<link href="{{url_for('static', filename='img/favicon.ico')}}" rel="shortcut icon" type="image/x-icon" />
 		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
 		<script type="module" src="{{url_for('static', filename='js/chart.js')}}"></script>
 		<script defer src="{{url_for('static', filename='js/scripts.js')}}"></script>
+		<script>let firefox_fix;</script>
 		{% endblock %}
 	</head>
 	<body>
@@ -23,24 +25,18 @@
 		<aside id="side-nav-container">
 			<nav>
 				<button class="nav-btn" id="nav-btn-close"><svg class="icon icon-close"><use xlink:href="#icon-close"></use></svg></button>
-					{% set navigation_bar = [
-						('/','index','icon-home'),
-						('/posts','posts','icon-bubbles'),
-						('/tags','tags','icon-tag'),
-						('/users','users','icon-user-group'),
-						('/heatmap','heatmap','icon-location'),
-						('/about','about','icon-information-solid')
-					] -%}
-					{% set active_page = active_page|default('index') -%}
-					{% for href, id, icon in navigation_bar %}
-						<a {% if id == active_page %} class="active" {% endif %} href="{{ href|e}}"><svg class="icon {{ icon|e }}"><use xlink:href="#{{ icon|e }}"></use></svg></a>
-					{% endfor %}
-				<!-- <a href="/"><svg class="icon icon-home"><use xlink:href="#icon-home"></use></svg></a>
-				<a href="/dash"><svg class="icon icon-bubbles"><use xlink:href="#icon-bubbles"></use></svg></a>
-				<a href="#"><svg class="icon icon-tag"><use xlink:href="#icon-tag"></use></svg></a>
-				<a href="#"><svg class="icon icon-user-group"><use xlink:href="#icon-user-group"></use></svg></a>
-				<a href="#"><svg class="icon icon-location"><use xlink:href="#icon-location"></use></svg></a>
-				<a href="#"><svg class="icon icon-information-solid"><use xlink:href="#icon-information-solid"></use></svg></a> -->
+				{% set navigation_bar = [
+					('/','index','icon-home'),
+					('/posts','posts','icon-bubbles'),
+					('/tags','tags','icon-tag'),
+					('/users','users','icon-user-group'),
+					('/heatmap','heatmap','icon-location'),
+					('/about','about','icon-information-solid')
+				] -%}
+				{% set active_page = active_page|default('index') -%}
+				{% for href, id, icon in navigation_bar %}
+					<a {% if id == active_page %} class="active" {% endif %} href="{{ href|e}}"><svg class="icon {{ icon|e }}"><use xlink:href="#{{ icon|e }}"></use></svg></a>
+				{% endfor %}
 			</nav>
 		</aside>
 		<main class="{%block main_name%}{% endblock %}-main">
