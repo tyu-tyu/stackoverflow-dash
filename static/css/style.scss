@@ -3,14 +3,79 @@
 /* -------------------------------------------------------------------------- */
 :root{
 	font-size: 100%;
+	font-family: 'Inter', sans-serif;
+	font-family: 'Signika Negative', sans-serif;
+	--default-spacing: 2rem;
 	--hover-primary: #f311f3;
 	--text-primary: #5F295F;
 	--text-primary-dark: #5C105C;
 	--text-primary-light: #EAE0EC;
 	--bg-dark: #0F0F0F;
-	--bg-light: #FCFCFD; 
-	font-family: 'Zen Kaku Gothic New', sans-serif;
-	--default-spacing: 2rem;
+	--bg-light: #FCFCFD;
+	--info-panel: #66adf2;
+	--info-panel-dark: #072d52;
+	--ehu-colors-heritage-purple: #5f295f;
+	--ehu-colors-heritage-yellow: #fedd00;
+	--ehu-colors-heritage-black: #2d2926;
+	--ehu-colors-heritage-green: #007749;
+	--ehu-colors-heritage-blue: #041e42;
+	--ehu-colors-neutral-white: #fcfcfd;
+	--ehu-colors-neutral-black: #1d1d1d;
+	--ehu-colors-neutral-lightest: #f8f8f8;
+	--ehu-colors-neutral-lighter: #f5f5f5;
+	--ehu-colors-neutral-light: #f2f2f2;
+	--ehu-colors-neutral: #efefef;
+	--ehu-colors-neutral-dark: #ebebeb;
+	--ehu-colors-neutral-darker: #e8e8e8;
+	--ehu-colors-neutral-darkest: #e5e5e5;
+	--ehu-colors-neutral-tabs: #f2f4f5;
+	--ehu-colors-primary-lightest: #af94af;
+	--ehu-colors-primary-lighter: #9b799b;
+	--ehu-colors-primary-light: #875f87;
+	--ehu-colors-primary-dark: #471f47;
+	--ehu-colors-primary-darker: #3b1a3b;
+	--ehu-colors-primary-darkest: #301530;
+	--ehu-colors-primary-cover: #884a93;
+	--ehu-colors-primary-accent: #5f2944;
+	--ehu-colors-secondary-yellow-lightest: #feea60;
+	--ehu-colors-secondary-yellow-lighter: #fee540;
+	--ehu-colors-secondary-yellow-light: #fee120;
+	--ehu-colors-secondary-yellow-dark: #dec100;
+	--ehu-colors-secondary-yellow-darker: #bfa600;
+	--ehu-colors-secondary-yellow-darkest: #9f8a00;
+	--ehu-colors-secondary-green-lightest: #60aa8d;
+	--ehu-colors-secondary-green-lighter: #409977;
+	--ehu-colors-secondary-green-light: #208860;
+	--ehu-colors-secondary-green-dark: #006840;
+	--ehu-colors-secondary-green-darker: #005937;
+	--ehu-colors-secondary-green-darkest: #004a2e;
+	--ehu-colors-secondary-red-light: #f2aab1;
+	--ehu-colors-secondary-red: #eb5160;
+	--ehu-colors-secondary-purple: #f2d5f8;
+	--ehu-colors-notice-error-lightest: #f2b1b7;
+	--ehu-colors-notice-error-lighter: #e15c6e;
+	--ehu-colors-notice-error-light: #dc4155;
+	--ehu-colors-notice-error: #d7263d;
+	--ehu-colors-notice-error-dark: #bc2135;
+	--ehu-colors-notice-error-darker: #a11d2e;
+	--ehu-colors-notice-error-darkest: #912739;
+	--ehu-colors-notice-warning-lightest: #e9c76e;
+	--ehu-colors-notice-warning-lighter: #e4bc51;
+	--ehu-colors-notice-warning-light: #e0b134;
+	--ehu-colors-notice-warning: #dba617;
+	--ehu-colors-notice-warning-dark: #c09114;
+	--ehu-colors-notice-warning-darker: #a47d11;
+	--ehu-colors-notice-warning-darkest: #89680e;
+	--ehu-colors-notice-success-lightest: #9ed48f;
+	--ehu-colors-notice-success-lighter: #8bcb79;
+	--ehu-colors-notice-success-light: #77c362;
+	--ehu-colors-notice-success: #64ba4c;
+	--ehu-colors-notice-success-dark: #4b8b39;
+	--ehu-colors-notice-success-darker: #325d26;
+	--ehu-colors-notice-success-darkest: #005232;
+}
+h1, h2, h3, h4, h5 {
+	font-family: 'Bitter', serif;
 }
 
 html, body {
@@ -26,18 +91,40 @@ body {
 
 .icon {
 	display: inline-block;
-	width: var(--default-spacing);
-	height: var(--default-spacing);
-	font-size: var(--default-spacing);
+	width: 1rem;
+	height: 1rem;
+	font-size: 1rem;
 	stroke-width: 0;
 	stroke: currentColor;
 	fill: currentColor;
 }
 
+@mixin btn-color($color, $bg) {
+	color: $color;
+	background-color: $bg;
+}
+.btn-light {
+	@include btn-color(var(--bg-dark), var(--bg-light))
+}
+
+.btn-dark {
+	@include btn-color(var(--bg-light), var(--bg-dark))
+}
+
+.btn-green {
+	@include btn-color(var(--bg-dark), var(--ehu-colors-secondary-green-lightest))
+}
+
+$colors: 'green', 'red';
+@each $color in $colors {
+	.text-#{$color} {
+		color: #{$color};
+	} 
+}
 /* --------------------------------- Header --------------------------------- */
 
 header {
-	height: 3rem;
+	height: 4rem;
 	position: -webkit-sticky;
 	position: sticky;
 	z-index: 1;
@@ -56,6 +143,12 @@ header {
 	}
 }
 
+header .icon, aside .icon {
+	font-size: var(--default-spacing);
+	width: var(--default-spacing);
+	height: var(--default-spacing);
+}
+
 #side-nav-container {
 	position: fixed;
 	top: 0;
@@ -72,7 +165,7 @@ aside nav {
 	justify-content: space-between;
 	flex-direction: column;
 	height: 50%;
-	margin-top: 0.5rem;
+	margin-top: 1rem;
 	opacity: 0;
 	transition: 0.2s;
 }
@@ -82,28 +175,21 @@ nav a {
 	text-align: center;
 }
 
-.nav-btn {
+button {
 	border: none;
-	transition: 0.2s;
-}
-
-#nav-btn-open {
-	color: var(--bg-dark);
-	background-color: var(--bg-light);
-}
-
-#nav-btn-close {
-	color: var(--bg-light);
-	background-color: var(--bg-dark);
-}
-
-#nav-btn-open:hover, #nav-btn-close:hover, nav a:hover {
-	color: var(--hover-primary);
 	cursor: pointer;
 }
 
+.nav-btn {
+	transition: 0.2s;
+}
+
+.nav-btn:hover, nav a:hover {
+	color: var(--hover-primary);
+}
+
 .active {
-	box-shadow: inset 10px 0 0 0 var(--hover-primary);
+	color: var(--hover-primary);
 	opacity: 0;
 	transition: 0.5s;
 }
@@ -116,7 +202,7 @@ nav a {
 	#side-nav-container {
 		width: 100%;
 		height: 100%;
-		height: 3rem;
+		height: 4rem;
 		left: 0;
 		bottom: 0;
 		top: unset;
@@ -124,6 +210,9 @@ nav a {
 	}
 
 	aside nav {
+		height: 100%;
+		align-items: center;
+		margin-top: 0px;
 		flex-direction: row;
 		opacity: 100;
 		padding: 0 1rem;
@@ -132,23 +221,15 @@ nav a {
 	#nav-btn-open,#nav-btn-close {
 		display: none;
 	}
-
-	.active {
-		opacity: 100;
-		color: var(--hover-primary);
-		box-shadow: unset;
-	}
 }
 /* ---------------------------------- Grid ---------------------------------- */
+
 main {
-	margin: 0 var(--default-spacing) var(--default-spacing);
+	margin: var(--default-spacing);
 	display: grid;
-	grid-auto-rows: 1fr;
 	grid-template-columns: repeat(12, 1fr);
-	grid-template-rows: 1fr;
 	column-gap: var(--default-spacing);
 	row-gap: var(--default-spacing);
-	height: calc(100vh - 5rem);
 }
 
 .canvas-wrapper {
@@ -158,13 +239,12 @@ main {
 .grid-panel {
 	display: grid;
 	grid-template-columns: subgrid;
-	border: solid 1px black;
 	border-radius: 5px;
 }
 
 /* -------------------------- Grid Utility Classes -------------------------- */
 
-$sizes: 12, 10, 8, 6, 4, 2, 1;
+$sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 @each $size in $sizes {
 	.grid-w-#{$size} {
 		grid-column: span $size;
@@ -190,7 +270,7 @@ $sizes: 12, 10, 8, 6, 4, 2, 1;
 	main {
 		column-gap: 0;
 		height: fit-content;
-		margin: 0 1rem 4rem;
+		margin: 0 1rem 5rem;
 	}
 
 	@each $size in $sizes {
@@ -202,3 +282,20 @@ $sizes: 12, 10, 8, 6, 4, 2, 1;
 		}
 	}
 }
+
+/* ------------------------------ Page stylings ----------------------------- */
+
+.info-panel {
+	background-color: var(--info-panel);
+	color: var(--info-panel-dark);
+	font-size: 1rem;
+	align-items: center;
+	p {
+		margin: 0 1rem;
+	}
+}
+
+/* ---------------------------------- Index --------------------------------- */
+
+
+/* -------------------------------- Trending -------------------------------- */

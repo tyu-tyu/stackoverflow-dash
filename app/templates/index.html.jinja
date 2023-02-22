@@ -1,46 +1,76 @@
 {% extends "layout.html.jinja" %}
-{% set active_page = index %}
+{% set active_page = "index" %}
 {% block title %}Home{% endblock %}
-{% block header %}Home{% endblock %}
+{% block header %}Stack Overflow Data Dashboards{% endblock %}
 {% block main_name %}index{% endblock %}
 {% block content %}
-	<section id="stats-box" class="grid-panel grid-w-4 grid-mw-6 grid-sw-12">
+	<section id="stats-box" class="grid-panel grid-w-6 grid-sw-12">
 		<div class="grid-w-12">
-			<h5>Welcome to the Stack Overflow Datadashbaords</h5>
 			<p>
 				This dashbord system currently contains data between <br>
 				{{ data['question_date_range']['data'][0] }} and {{ data['question_date_range']['data'][1] }}<br>
 				The total dataset for this system is:
-					<dl>
-						<dt>{{ data['table_row_count']['data']['posts'] }} Posts</dt>
-						<dd>{{ data['table_row_count']['data']['question'] }} questions</dd>
-						<dd>{{ data['table_row_count']['data']['answer'] }} answers</dd>
-						<dd>{{ data['table_row_count']['data']['comments'] }} comments</dd>
-						<dt>{{ data['table_row_count']['data']['user'] }} users</dt>
-						<dd>given {{ data['table_row_count']['data']['badge_link'] }} badges</dd>
-					</dl>
+				<dl>
+					<dt>{{ data['table_row_count']['data']['posts'] }} Posts</dt>
+					<dd>{{ data['table_row_count']['data']['question'] }} questions</dd>
+					<dd>{{ data['table_row_count']['data']['answer'] }} answers</dd>
+					<dd>{{ data['table_row_count']['data']['comments'] }} comments</dd>
+					<dt>{{ data['table_row_count']['data']['user'] }} users given</dt>
+					<dd>{{ data['table_row_count']['data']['badge_link'] }} badges</dd>
+				</dl>
 			</p>
 		</div>
 	</section>
-	<section id="tags-box" class="grid-panel grid-w-4 grid-mw-6 grid-sw-12">
-		<h1 class="grid-w-4 grid-mw-6 grid-sw-12">Most popular tags</h1>
-		<div class="grid-w-4 grid-mw-6 grid-sw-12 canvas-wrapper">
+	<section id="tags-box" class="grid-panel grid-w-6 grid-mw-6 grid-sw-12">
+		<h1 class="grid-w-12">Most popular tags</h1>
+		<div class="grid-w-12 canvas-wrapper">
 			<canvas id="myChart"></canvas>
 		</div>
 	</section>
-	<section id="api-box" class="grid-panel grid-w-4 grid-mw-12 grid-sw-12 grid-h-2">
-		{{data | pprint }}
+	<section id="api-box" class="grid-panel grid-w-12">
+		<div class="grid-w-12">
+			<table>
+				<thead>
+					<th>title</th>
+					<th>tags</th>
+					<th>score</th>
+					<th>view count</th>
+					<th>link</th>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
 	</section>
-	<section id="post-box" class="grid-panel grid-w-8 grid-mw-12 grid-sw-12 grid-h-2">
+	<section id="post-box" class="grid-panel grid-w-9 grid-mw-12 grid-sw-12 grid-h-2">
 		<p>POST stuff</p>
 	</section>
-	<section id="user-box" class="grid-panel grid-w-4 grid-mw-12 grid-sw-12">
-		<p> hi</p>
+	<section id="user-box" class="grid-panel grid-w-3 grid-mw-12 grid-sw-12">
+		<p> {{data | pprint }}</p>
 	</section>
 {% endblock %}
 {% block scripts %}
 	<script>
 		const ctx = document.getElementById('myChart');
 		createChart(ctx,'bar','posts with this tag',{{ data['top_10_tags']['data']['tags'] | tojson }},{{ data['top_10_tags']['data']['count'] | tojson }},'');
+		makeHttpRequest('https://api.stackexchange.com/2.3/questions?order=desc&sort=week&site=stackoverflow','GET','JSON','',function(response){
+			if(response) {
+				headings = ['title', 'tags', 'score', 'view count', 'link'];
+				response.items.forEach(element =>
+					document.querySelector('#api-box table tbody').innerHTML += `
+					<tr>
+						<td>`+element['title']+`</td>
+						<td>`+element['tags'].toString()+`</td>
+						<td>`+element['score']+`</td>
+						<td>`+element['view_count']+`</td>
+						<td><a href="`+element['link']+`">Link</a></td>
+					</tr>`
+				);
+				//response.items.forEach(element => table_data.push(element['title'], element['tags'].toString() ,element['score'], element['view_count'], `<a href="element['link']">Link</a>`)); #}
+				new window.simpleDatatables.DataTable('#api-box table');
+			} else {
+				document.getElementById('api-box').innerHTML = "Stack Overflow is not available at the moment, please try again later";
+			}
+		});
 	</script>
 {% endblock %}

@@ -9,6 +9,11 @@
   		<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
 		<title>{%block title %}{% endblock %} - Stack Overflow Data</title>
 		<link href="{{url_for('static', filename='img/favicon.ico')}}" rel="shortcut icon" type="image/x-icon" />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@300;400&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@300;400&family=Inter:wght@200;400&family=Signika+Negative:wght@300&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@300;400&family=Inter:wght@200;400&display=swap" rel="stylesheet">
 		<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/style.css')}}">
 		<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 		<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
@@ -19,21 +24,21 @@
 	</head>
 	<body>
 		<header>	
-			<button class="nav-btn" id="nav-btn-open">
+			<button class="nav-btn btn-light" id="nav-btn-open">
 				<svg class="icon icon-view-list"><use xlink:href="#icon-view-list"></use></svg>
 			</button>
 			<h1>{%block header %}{% endblock %}</h1>
 		</header>
 		<aside id="side-nav-container">
 			<nav>
-				<button class="nav-btn" id="nav-btn-close"><svg class="icon icon-close"><use xlink:href="#icon-close"></use></svg></button>
+				<button class="nav-btn btn-dark" id="nav-btn-close"><svg class="icon icon-close"><use xlink:href="#icon-close"></use></svg></button>
 				{% set navigation_bar = [
 					('/','index','icon-home'),
 					('/posts','posts','icon-bubbles'),
+					('/trending','trending','icon-toolscopy'),
 					('/tags','tags','icon-tag'),
 					('/users','users','icon-user-group'),
-					('/heatmap','heatmap','icon-location'),
-					('/about','about','icon-information-solid')
+					('/heatmap','heatmap','icon-location')
 				] -%}
 				{% set active_page = active_page|default('index') -%}
 				{% for href, id, icon in navigation_bar %}
@@ -80,6 +85,15 @@
 			</symbol>
 			<symbol id="icon-information-solid" viewBox="0 0 20 20">
 				<path d="M2.93 17.070c-1.884-1.821-3.053-4.37-3.053-7.193 0-5.523 4.477-10 10-10 2.823 0 5.372 1.169 7.19 3.050l0.003 0.003c1.737 1.796 2.807 4.247 2.807 6.947 0 5.523-4.477 10-10 10-2.7 0-5.151-1.070-6.95-2.81l0.003 0.003zM9 11v4h2v-6h-2v2zM9 5v2h2v-2h-2z"></path>
+			</symbol>
+			<symbol id="icon-toolscopy" viewBox="0 0 20 20">
+				<path d="M10 0s8 7.58 8 12c0 4.418-3.582 8-8 8s-8-3.582-8-8v0c0-1.5 0.91-3.35 2.12-5.15 0.376 1.258 1.522 2.16 2.88 2.16 1.657 0 3-1.343 3-3 0-0.004 0-0.007-0-0.011v0.001-6zM8 0c-1.657 0-3 1.343-3 3s1.343 3 3 3v0-6z"></path>
+			</symbol>
+			<symbol id="icon-checkmark" viewBox="0 0 20 20">
+				<path d="M0 11l2-2 5 5 11-11 2 2-13 13z"></path>
+			</symbol>
+			<symbol id="icon-link" viewBox="0 0 20 20">
+				<path d="M9.26 13c-0.167-0.286-0.266-0.63-0.266-0.996 0-0.374 0.103-0.724 0.281-1.023l-0.005 0.009c1.549-0.13 2.757-1.419 2.757-2.99 0-1.657-1.343-3-3-3-0.009 0-0.019 0-0.028 0l0.001-0h-4c-1.657 0-3 1.343-3 3s1.343 3 3 3v0h0.080c-0.053 0.301-0.083 0.647-0.083 1s0.030 0.699 0.088 1.036l-0.005-0.036h-0.080c-2.761 0-5-2.239-5-5s2.239-5 5-5v0h4c0.039-0.001 0.084-0.002 0.13-0.002 2.762 0 5.002 2.239 5.002 5.002 0 2.717-2.166 4.927-4.865 5l-0.007 0zM10.74 7c0.167 0.286 0.266 0.63 0.266 0.996 0 0.374-0.103 0.724-0.281 1.023l0.005-0.009c-1.549 0.13-2.757 1.419-2.757 2.99 0 1.657 1.343 3 3 3 0.009 0 0.019-0 0.028-0l-0.001 0h4c1.657 0 3-1.343 3-3s-1.343-3-3-3v0h-0.080c0.053-0.301 0.083-0.647 0.083-1s-0.030-0.699-0.088-1.036l0.005 0.036h0.080c2.761 0 5 2.239 5 5s-2.239 5-5 5v0h-4c-0.039 0.001-0.084 0.002-0.13 0.002-2.762 0-5.002-2.239-5.002-5.002 0-2.717 2.166-4.927 4.865-5l0.007-0z"></path>
 			</symbol>
 		</defs>
 	</svg>

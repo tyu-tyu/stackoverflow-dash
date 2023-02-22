@@ -12,6 +12,6 @@ def index():
 	result_data["top_10_tags"] = lookups.get_top_10_tags()
 	return render_template('index.html.jinja', data=result_data)
 
-@app.route('/dash')
-def dashboard():
-	return render_template('dash.html.jinja')
+@app.route('/trending')
+def trending():
+	return render_template('trending.html.jinja')
