@@ -9,8 +9,9 @@ def index():
 	result_data["content_licenses"] = lookups.get_content_license()
 	result_data["question_date_range"] = lookups.get_index_date_range()
 	result_data["table_row_count"] = lookups.get_table_row_count()
-	return render_template('index.html', data=result_data)
+	result_data["top_10_tags"] = lookups.get_top_10_tags()
+	return render_template('index.html.jinja', data=result_data)
 
 @app.route('/dash')
 def dashboard():
-	return render_template('dash.html')
+	return render_template('dash.html.jinja')

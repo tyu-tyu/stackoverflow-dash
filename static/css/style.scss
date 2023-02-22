@@ -1,0 +1,204 @@
+/* -------------------------------------------------------------------------- */
+/*                                   Layout                                   */
+/* -------------------------------------------------------------------------- */
+:root{
+	font-size: 100%;
+	--hover-primary: #f311f3;
+	--text-primary: #5F295F;
+	--text-primary-dark: #5C105C;
+	--text-primary-light: #EAE0EC;
+	--bg-dark: #0F0F0F;
+	--bg-light: #FCFCFD; 
+	font-family: 'Zen Kaku Gothic New', sans-serif;
+	--default-spacing: 2rem;
+}
+
+html, body {
+	margin: 0;
+	padding: 0;
+	height: 100%;
+}
+
+body {
+	background-color: var(--bg-light);
+	transition: 0.5s;
+}
+
+.icon {
+	display: inline-block;
+	width: var(--default-spacing);
+	height: var(--default-spacing);
+	font-size: var(--default-spacing);
+	stroke-width: 0;
+	stroke: currentColor;
+	fill: currentColor;
+}
+
+/* --------------------------------- Header --------------------------------- */
+
+header {
+	height: 3rem;
+	position: -webkit-sticky;
+	position: sticky;
+	z-index: 1;
+	top: 0;
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	background-color: var(--bg-light);
+	padding: 0 var(--default-spacing);
+
+	h1 {
+		justify-self: center;
+		margin-left: auto;
+		margin-right: auto;
+		font-size: 2em;
+	}
+}
+
+#side-nav-container {
+	position: fixed;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 0;
+	z-index: 1;
+	transition: 0.5s;
+	background-color: var(--bg-dark);
+}
+
+aside nav {
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
+	height: 50%;
+	margin-top: 0.5rem;
+	opacity: 0;
+	transition: 0.2s;
+}
+
+nav a {
+	color: var(--text-primary-light);
+	text-align: center;
+}
+
+.nav-btn {
+	border: none;
+	transition: 0.2s;
+}
+
+#nav-btn-open {
+	color: var(--bg-dark);
+	background-color: var(--bg-light);
+}
+
+#nav-btn-close {
+	color: var(--bg-light);
+	background-color: var(--bg-dark);
+}
+
+#nav-btn-open:hover, #nav-btn-close:hover, nav a:hover {
+	color: var(--hover-primary);
+	cursor: pointer;
+}
+
+.active {
+	box-shadow: inset 10px 0 0 0 var(--hover-primary);
+	opacity: 0;
+	transition: 0.5s;
+}
+
+@media only screen and (max-width: 600px) {
+	header {
+		position: unset;
+	}
+
+	#side-nav-container {
+		width: 100%;
+		height: 100%;
+		height: 3rem;
+		left: 0;
+		bottom: 0;
+		top: unset;
+		align-items: center;
+	}
+
+	aside nav {
+		flex-direction: row;
+		opacity: 100;
+		padding: 0 1rem;
+	}
+
+	#nav-btn-open,#nav-btn-close {
+		display: none;
+	}
+
+	.active {
+		opacity: 100;
+		color: var(--hover-primary);
+		box-shadow: unset;
+	}
+}
+/* ---------------------------------- Grid ---------------------------------- */
+main {
+	margin: 0 var(--default-spacing) var(--default-spacing);
+	display: grid;
+	grid-auto-rows: 1fr;
+	grid-template-columns: repeat(12, 1fr);
+	grid-template-rows: 1fr;
+	column-gap: var(--default-spacing);
+	row-gap: var(--default-spacing);
+	height: calc(100vh - 5rem);
+}
+
+.canvas-wrapper {
+	position: relative;
+}
+
+.grid-panel {
+	display: grid;
+	grid-template-columns: subgrid;
+	border: solid 1px black;
+	border-radius: 5px;
+}
+
+/* -------------------------- Grid Utility Classes -------------------------- */
+
+$sizes: 12, 10, 8, 6, 4, 2, 1;
+@each $size in $sizes {
+	.grid-w-#{$size} {
+		grid-column: span $size;
+	}
+
+	.grid-h-#{$size}{
+		grid-row: span $size;
+	}
+}
+
+@media only screen and (min-width: 600px) and (max-width: 992px) {
+	@each $size in $sizes {
+		.grid-mw-#{$size} {
+			grid-column: span $size !important;
+		}
+		.grid-mh-#{$size} {
+			grid-row: span $size !important;
+		}
+	}
+}
+
+@media only screen and (max-width: 600px) {
+	main {
+		column-gap: 0;
+		height: fit-content;
+		margin: 0 1rem 4rem;
+	}
+
+	@each $size in $sizes {
+		.grid-sw-#{$size} {
+			grid-column: span $size !important;
+		}
+		.grid-sh-#{$size} {
+			grid-row: span $size !important;
+		}
+	}
+}

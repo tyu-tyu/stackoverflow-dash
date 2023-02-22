@@ -368,7 +368,7 @@ if __name__ == "__main__":
 		blwr.close()
 	sql_import('badges',cur,conn)
 	#Inserts final badges into DB
-	cur.execute("INSERT INTO badges (`badge_name`) SELECT DISTINCT `badge` FROM badge_link;")
+	cur.execute("INSERT INTO badges (`badge_name`) SELECT DISTINCT `badge_id` FROM badge_link;")
 	cur.execute("ALTER TABLE `badge_link` CHANGE COLUMN `badge_id` `badge_id` VARCHAR(256) NOT NULL DEFAULT '0' AFTER `user_id`;")
 	cur.execute("UPDATE badge_link bl INNER JOIN badges AS b ON bl.badge_id = b.badge_name SET bl.`badge_id` = b.`id`;")
 	cur.execute("ALTER TABLE `badge_link` CHANGE COLUMN `badge_id` `badge_id` BIGINT NOT NULL DEFAULT 0 COLLATE 'utf8mb3_general_ci' AFTER `user_id`;")

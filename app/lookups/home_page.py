@@ -1,5 +1,4 @@
 import mariadb
-
 class home_page:
 	def __init__(self, cursor):
 		self.cursor = cursor
@@ -41,6 +40,23 @@ class home_page:
 			for res in result:
 				response["data"][res[0]] = res[1]
 			response["data"]['posts'] = response["data"]["question"] + response["data"]["answer"]
+			response["status"] = True
+		except mariadb.Error as e:
+			response["data"].append(e)
+			response["success"] = False
+		return(response)
+	
+	def get_top_10_tags(self):
+		response = {}
+		response["data"] = {}
+		response["data"]["tags"] = []
+		response["data"]["count"] = []
+		try:
+			self.cursor.callproc("get_top_tags",[10,])
+			result = self.cursor.fetchall()
+			for res in result:
+				response["data"]["tags"].append(res[0])
+				response["data"]["count"].append(res[1])
 			response["status"] = True
 		except mariadb.Error as e:
 			response["data"].append(e)
