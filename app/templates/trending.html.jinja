@@ -4,16 +4,14 @@
 {% block header %}Trending{% endblock %}
 {% block main_name %}trending{% endblock %}
 {% block content %}
-	<div class="grid-panel info-panel grid-w-10 grid-h-2">
-		<p class="grid-w-10 grid-h-2">
-			<svg class="icon icon-information-solid">
-				<use xlink:href="#icon-information-solid"></use>
-			</svg>
-		This page shows the 30 most popular questions live this month, press Load more for an additional 30 posts from the data set
+	<div class="grid-panel info-panel grid-w-10 grid-sw-12 grid-h-2">
+		<p class="grid-w-10 grid-sw-12 grid-h-2">
+			<i class="fa-solid fa-circle-info"></i>
+			This page shows the 30 most popular questions live this month, press Load more for an additional 30 posts from the data set
 		</p>
 	</div>
-	<div class="grid-panel grid-w-2 grid-h-2">
-		<button class="grid-w-2 grid-h-2 btn-green" id="load-api-posts">Load more posts</button>
+	<div class="grid-panel grid-w-2 grid-sw-12 grid-h-2">
+		<button class="grid-w-2 grid-sw-12 grid-h-2 btn-green" id="load-api-posts">Load more posts <i class="fa-solid fa-plus"></i></button>
 	</div>
 	<section id="api-box" class="grid-panel grid-w-12">
 		<div class="grid-w-12">
@@ -34,56 +32,12 @@
 {% endblock %}
 {% block scripts %}
 	<script>
-		let page_no = 7;
+		let page_no = 1;
 		let datatable;
-		makeHttpRequest('https://api.stackexchange.com/2.3/questions?order=desc&sort=month&site=stackoverflow','GET','JSON','',function(response){
-			try {
-				response.items.forEach(element =>
-					document.querySelector('#api-box table tbody').innerHTML += `<tr>
-						<td>`+element['title']+`</td>
-						<td>`+element['tags'].toString()+`</td>
-						<td>`+element['score']+`</td>
-						<td>`+element['view_count']+`</td>
-						<td>`+(element['is_answered'] ? '<svg class="icon text-green icon-checkmark"><use xlink:href="#icon-checkmark"></use></svg>' : '<svg class="icon text-red icon-close"><use xlink:href="#icon-close"></use></svg>')+`</td>
-						<td><a href="`+element['link']+`"><svg class="icon icon-link text-blue"><use xlink:href="#icon-link"></use></svg></a></p></td>
-					</tr>`
-				);
-				datatable = new simpleDatatables.DataTable('#api-box table',{
-					perPage: 15,
-					scrollY: '100%',
-					columns: [{
-						select: 5,
-						sortable: false
-					},{
-						select: [4,5],
-						type: 'number'
-					}]
-				});
-			} catch {
-				document.getElementById('api-box').innerHTML = '<p class="text-red grid-w-12">Stack Overflow is not available at the moment, please try again later</p>';
-			}
-		});
-
+		load_trending_table(page_no);
 		document.getElementById('load-api-posts').addEventListener('click', function() {
 			page_no++;
-			makeHttpRequest('https://api.stackexchange.com/2.3/questions?page='+page_no+'&order=desc&sort=month&site=stackoverflow','GET','JSON','',function(response) {
-				try {
-					for (let i = 0; i < response.items.length; i++){
-						let is_answered = (response.items[i]['is_answered'] ? '<svg class="icon text-green icon-checkmark"><use xlink:href="#icon-checkmark"></use></svg>' : '<svg class="icon text-red icon-close"><use xlink:href="#icon-close"></use></svg>')
-						let newrow = [{
-							'Title':response.items[i]['title'],
-							'Tags':response.items[i]['tags'].toString(),
-							'Score':response.items[i]['score'],
-							'View count':response.items[i]['view_count'],
-							'Answered':is_answered,
-							'Link':'<a href="'+response.items[i]['link']+'"><svg class="icon icon-link text-blue"><use xlink:href="#icon-link"></use></svg></a>'
-						}];
-						datatable.insert(newrow);
-					}
-				} catch {
-					document.getElementById('api-box').innerHTML = '<p class="text-red grid-w-12">Stack Overflow is not available at the moment, please try again later</p>';
-				}
-			});
+			load_trending_table(page_no);
 		});
 	</script>
 {% endblock %}

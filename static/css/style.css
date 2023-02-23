@@ -12,6 +12,7 @@
   --text-primary-light: #EAE0EC;
   --bg-dark: #0F0F0F;
   --bg-light: #FCFCFD;
+  --bg-grey: #383734;
   --info-panel: #66adf2;
   --info-panel-dark: #072d52;
   --ehu-colors-heritage-purple: #5f295f;
@@ -159,8 +160,7 @@ header .icon, aside .icon {
   transition: 0.5s;
   background-color: var(--bg-dark);
 }
-
-aside nav {
+#side-nav-container nav {
   display: flex;
   justify-content: space-between;
   flex-direction: column;
@@ -169,10 +169,16 @@ aside nav {
   opacity: 0;
   transition: 0.2s;
 }
-
-nav a {
+#side-nav-container a {
   color: var(--text-primary-light);
   text-align: center;
+}
+#side-nav-container a:hover {
+  color: var(--hover-primary);
+}
+#side-nav-container .active {
+  color: var(--hover-primary);
+  transition: 0.5s;
 }
 
 button {
@@ -184,14 +190,8 @@ button {
   transition: 0.2s;
 }
 
-.nav-btn:hover, nav a:hover {
+.nav-btn:hover {
   color: var(--hover-primary);
-}
-
-.active {
-  color: var(--hover-primary);
-  opacity: 0;
-  transition: 0.5s;
 }
 
 @media only screen and (max-width: 600px) {
@@ -207,9 +207,10 @@ button {
     top: unset;
     align-items: center;
   }
-  aside nav {
+  #side-nav-container nav {
     height: 100%;
     align-items: center;
+    flex-direction: row;
     margin-top: 0px;
     flex-direction: row;
     opacity: 100;
@@ -235,6 +236,7 @@ main {
 .grid-panel {
   display: grid;
   grid-template-columns: subgrid;
+  border: solid 1px var(--bg-grey);
   border-radius: 5px;
 }
 
@@ -413,7 +415,7 @@ main {
   main {
     column-gap: 0;
     height: fit-content;
-    margin: 0 1rem 5rem;
+    margin: 1rem 1rem 5rem;
   }
   .grid-sw-12 {
     grid-column: span 12 !important;
@@ -499,7 +501,14 @@ main {
   margin: 0 1rem;
 }
 
+.text-center {
+  text-align: center;
+}
+
 /* ---------------------------------- Index --------------------------------- */
 /* -------------------------------- Trending -------------------------------- */
+#load-api-posts {
+  font-size: 1rem;
+}
 
 /*# sourceMappingURL=style.css.map */

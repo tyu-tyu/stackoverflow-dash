@@ -18,6 +18,7 @@
 		<link href="https://cdn.jsdelivr.net/npm/simple-datatables@latest/dist/style.css" rel="stylesheet" type="text/css">
 		<script src="https://cdn.jsdelivr.net/npm/simple-datatables@latest" type="text/javascript"></script>
 		<script src="https://cdn.jsdelivr.net/npm/chart.js" type="text/javascript"></script>
+		<script src="https://kit.fontawesome.com/e6ab67135e.js" crossorigin="anonymous"></script>
 		<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
 		<script>let firefox_fix;</script>
 		{% endblock %}
@@ -42,7 +43,7 @@
 				] -%}
 				{% set active_page = active_page|default('index') -%}
 				{% for href, id, icon in navigation_bar %}
-					<a {% if id == active_page %} class="active" {% endif %} href="{{ href|e }}"><svg class="icon {{ icon|e }}"><use xlink:href="#{{ icon|e }}"></use></svg></a>
+					<a {% if id == active_page %} class="active" {% endif %} href="{{ href|e }}"><svg class="icon {{ icon|e }}"><use href="#{{ icon|e }}"></use></svg></a>
 				{% endfor %}
 			</nav>
 		</aside>

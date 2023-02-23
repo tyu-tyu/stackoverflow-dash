@@ -21,29 +21,19 @@
 			</p>
 		</div>
 	</section>
-	<section id="tags-box" class="grid-panel grid-w-6 grid-mw-6 grid-sw-12">
+	<section id="tags-box" class="grid-panel grid-w-6 grid-sw-12">
 		<h1 class="grid-w-12">Most popular tags</h1>
 		<div class="grid-w-12 canvas-wrapper">
 			<canvas id="myChart"></canvas>
 		</div>
 	</section>
-	<section id="api-box" class="grid-panel grid-w-12">
-		<div class="grid-w-12">
-			<table>
-				<thead>
-					<th>title</th>
-					<th>tags</th>
-					<th>score</th>
-					<th>view count</th>
-					<th>link</th>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
-		</div>
-	</section>
-	<section id="post-box" class="grid-panel grid-w-9 grid-mw-12 grid-sw-12 grid-h-2">
+	<section id="post-box" class="grid-panel grid-w-12 grid-mw-12 grid-sw-12">
 		<p>POST stuff</p>
+	</section>
+	<section id="api-box" class="grid-panel grid-w-9 grid-mw-12 grid-sw-12">
+		<div class="grid-w-12">
+			Pull a record from the api in here 
+		</div>
 	</section>
 	<section id="user-box" class="grid-panel grid-w-3 grid-mw-12 grid-sw-12">
 		<p> {{data | pprint }}</p>
@@ -52,25 +42,6 @@
 {% block scripts %}
 	<script>
 		const ctx = document.getElementById('myChart');
-		createChart(ctx,'bar','posts with this tag',{{ data['top_10_tags']['data']['tags'] | tojson }},{{ data['top_10_tags']['data']['count'] | tojson }},'');
-		makeHttpRequest('https://api.stackexchange.com/2.3/questions?order=desc&sort=week&site=stackoverflow','GET','JSON','',function(response){
-			if(response) {
-				headings = ['title', 'tags', 'score', 'view count', 'link'];
-				response.items.forEach(element =>
-					document.querySelector('#api-box table tbody').innerHTML += `
-					<tr>
-						<td>`+element['title']+`</td>
-						<td>`+element['tags'].toString()+`</td>
-						<td>`+element['score']+`</td>
-						<td>`+element['view_count']+`</td>
-						<td><a href="`+element['link']+`">Link</a></td>
-					</tr>`
-				);
-				//response.items.forEach(element => table_data.push(element['title'], element['tags'].toString() ,element['score'], element['view_count'], `<a href="element['link']">Link</a>`)); #}
-				new window.simpleDatatables.DataTable('#api-box table');
-			} else {
-				document.getElementById('api-box').innerHTML = "Stack Overflow is not available at the moment, please try again later";
-			}
-		});
+		createChart(ctx,'bar','posts with this tag',{{ data['top_10_tags']['data']['tags'] | tojson }},{{ data['top_10_tags']['data']['count'] | tojson }},'');		
 	</script>
 {% endblock %}

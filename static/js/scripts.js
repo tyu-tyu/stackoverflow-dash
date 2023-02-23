@@ -105,3 +105,46 @@ document.addEventListener("DOMContentLoaded", function(e) {
 		}
 	});
 });
+
+
+/* -------------------------------- Trending -------------------------------- */
+function load_trending_table(page_no) {
+	let api_url;
+	if (page_no == 1) {
+		api_url = 'https://api.stackexchange.com/2.3/questions?order=desc&sort=month&site=stackoverflow';
+	} else {
+		api_url = 'https://api.stackexchange.com/2.3/questions?page='+page_no+'&order=desc&sort=month&site=stackoverflow';
+	}
+	makeHttpRequest(api_url,'GET','JSON','',function(response){
+		try {
+			if(page_no == 1) {
+				datatable = new simpleDatatables.DataTable('#api-box table',{
+					perPage: 15,
+					scrollY: '100%',
+					columns: [{
+						select: [4,5],
+						sortable: false
+					},{
+						select: [2,3],
+						type: 'number'
+					}]
+				});
+			}
+			for (let i = 0; i < response.items.length; i++){
+				let is_answered = (response.items[i]['is_answered'] ? `<i class="text-green fa-solid fa-check"></i>` : `<i class="text-red fa-solid fa-xmark"></i>`);
+				let newrow = [{
+					'Title':response.items[i]['title'],
+					'Tags':response.items[i]['tags'].join(', '),
+					'Score':response.items[i]['score'],
+					'View count':response.items[i]['view_count'],
+					'Answered':is_answered,
+					'Link':'<a href="'+response.items[i]['link']+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
+				}];
+				datatable.insert(newrow);
+			}
+		} catch {
+			console.log(response);
+			document.getElementById('api-box').innerHTML = '<p class="text-red grid-w-12"><i class="fa-solid fa-triangle-exclamation"></i> Stack Overflow is not available at the moment, please try again later</p>';
+		}
+	});
+}
