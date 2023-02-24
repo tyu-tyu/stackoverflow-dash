@@ -1,5 +1,5 @@
 
-ehu_colour_list = ['#5f295f','#fedd00','#2d2926','#007749','#041e42','#1d1d1d','#e5e5e5','#af94af','#9b799b','#875f87','#471f47','#3b1a3b','#301530','#884a93','#5f2944','#9f8a00','#60aa8d','#409977','#208860','#006840','#005937','#004a2e','#f2aab1','#eb5160','#f2d5f8','#f2b1b7','#e15c6e','#dc4155','#d7263d','#bc2135','#a11d2e','#912739','#e9c76e','#e4bc51','#e0b134','#dba617','#c09114','#a47d11','#89680e','#9ed48f','#8bcb79','#77c362','#64ba4c','#4b8b39','#325d26','#005232'];
+graph_colour_list = ['#5F295F','#0074D9','#FF4136','#2ECC40','#FF851B','#7FDBFF','#B10DC9','#FFDC00','#001f3f','#39CCCC','#01FF70','#85144b','#F012BE','#3D9970','#111111','#AAAAAA'];
 
 // HTTP request function for GET and POST methods
 function makeHttpRequest(url, request_type, data_response_type, data, callback) {
@@ -46,7 +46,7 @@ function makeHttpRequest(url, request_type, data_response_type, data, callback) 
 
 //Creates a chart and places it in supplied canvas
 function createChart(ctx,type,top_label,labels,data,options) {
-	new Chart(ctx, {
+	const chart = new Chart(ctx, {
 		type: type,
 		responsive: true,
 		maintainAspectRatio: false,
@@ -55,7 +55,7 @@ function createChart(ctx,type,top_label,labels,data,options) {
 			datasets: [{
 				label: top_label,
 				data: data,
-				backgroundColor: ehu_colour_list.sort( () => .5 - Math.random() ),
+				backgroundColor: graph_colour_list.sort( () => .5 - Math.random() ),
 				borderWidth: 1
 			}]
 		},
@@ -63,6 +63,7 @@ function createChart(ctx,type,top_label,labels,data,options) {
 			options
 		}
 	});
+	return chart;
 };
 
 // Nav menu Called on resize and closing
@@ -106,6 +107,29 @@ document.addEventListener("DOMContentLoaded", function(e) {
 	});
 });
 
+/* ---------------------------------- Index --------------------------------- */
+function update_index_tag_chart(chart, tag_count) {
+	if (tag_count < chart.data.labels.length) {
+		chart.data.labels.splice(-5, 5); // remove the label first
+		chart.data.datasets.forEach(dataset => {
+			dataset.data.pop();
+		});
+		chart.update();
+	} else {
+		makeHttpRequest('/ajax/update_index_tag_chart?count='+tag_count,'GET','JSON','',function(response) {
+			if (response.status) {
+				for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
+					chart.data.labels.push(response.data.tags[index]);
+					chart.data.datasets[0].data[index] = response.data.count[index];
+				}
+				chart.update();
+			} else {
+				document.querySelector('#tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+			}
+		});
+	}	
+}
+
 
 /* -------------------------------- Trending -------------------------------- */
 function load_trending_table(page_no) {
@@ -115,17 +139,16 @@ function load_trending_table(page_no) {
 	} else {
 		api_url = 'https://api.stackexchange.com/2.3/questions?page='+page_no+'&order=desc&sort=month&site=stackoverflow';
 	}
-	makeHttpRequest(api_url,'GET','JSON','',function(response){
+	makeHttpRequest(api_url,'GET','JSON','',function(response) {
 		try {
 			if(page_no == 1) {
 				datatable = new simpleDatatables.DataTable('#api-box table',{
 					perPage: 15,
-					scrollY: '100%',
 					columns: [{
-						select: [4,5],
+						select: [5,6],
 						sortable: false
 					},{
-						select: [2,3],
+						select: [3,4],
 						type: 'number'
 					}]
 				});
@@ -134,9 +157,10 @@ function load_trending_table(page_no) {
 				let is_answered = (response.items[i]['is_answered'] ? `<i class="text-green fa-solid fa-check"></i>` : `<i class="text-red fa-solid fa-xmark"></i>`);
 				let newrow = [{
 					'Title':response.items[i]['title'],
+					'User':'<a href="'+response.items[i]['owner']['link']+'"target="_blank" rel="noopener noreferrer">'+response.items[i]['owner']['display_name']+'</a>',
 					'Tags':response.items[i]['tags'].join(', '),
 					'Score':response.items[i]['score'],
-					'View count':response.items[i]['view_count'],
+					'Views':response.items[i]['view_count'],
 					'Answered':is_answered,
 					'Link':'<a href="'+response.items[i]['link']+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
 				}];

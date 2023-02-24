@@ -5,7 +5,8 @@
 	font-size: 100%;
 	font-family: 'Inter', sans-serif;
 	font-family: 'Signika Negative', sans-serif;
-	--default-spacing: 2rem;
+	--default-spacing: 1rem;
+	--default-text: 1.1rem;
 	--hover-primary: #f311f3;
 	--text-primary: #5F295F;
 	--text-primary-dark: #5C105C;
@@ -77,6 +78,7 @@
 }
 h1, h2, h3, h4, h5 {
 	font-family: 'Bitter', serif;
+	margin: 0;
 }
 
 html, body {
@@ -104,6 +106,7 @@ body {
 	color: $color;
 	background-color: $bg;
 }
+
 .btn-light {
 	@include btn-color(var(--bg-dark), var(--bg-light))
 }
@@ -115,8 +118,11 @@ body {
 .btn-green {
 	@include btn-color(var(--bg-dark), var(--ehu-colors-secondary-green-lightest))
 }
+.btn-yellow {
+	@include btn-color(var(--bg-dark), var(--ehu-colors-heritage-yellow))
+}
 
-$colors: 'green', 'red';
+$colors: 'green', 'red', 'blue';
 @each $color in $colors {
 	.text-#{$color} {
 		color: #{$color};
@@ -134,7 +140,7 @@ header {
 	flex-direction: row;
 	align-items: center;
 	background-color: var(--bg-light);
-	padding: 0 var(--default-spacing);
+	padding: 0 2rem;
 
 	h1 {
 		justify-self: center;
@@ -145,9 +151,9 @@ header {
 }
 
 header .icon, aside .icon {
-	font-size: var(--default-spacing);
-	width: var(--default-spacing);
-	height: var(--default-spacing);
+	font-size: 2rem;
+	width: 2rem;
+	height: 2rem;
 }
 
 #side-nav-container {
@@ -186,12 +192,21 @@ header .icon, aside .icon {
 }
 
 button {
-	border: none;
 	cursor: pointer;
+	border: solid 1px black;
+	border-radius: 5px;
+	height: 2rem;
+}
+
+button:disabled {
+	color: var(--bg-light);
+	background-color: var(--bg-grey);
+	cursor: not-allowed;
 }
 
 .nav-btn {
 	transition: 0.2s;
+	border: none;
 }
 
 .nav-btn:hover {
@@ -246,6 +261,12 @@ main {
 	grid-template-columns: subgrid;
 	border: solid 1px var(--bg-grey);
 	border-radius: 5px;
+	padding: var(--default-spacing);
+}
+
+.btn-panel {
+	padding: 0;
+	height: 100%;
 }
 
 /* -------------------------- Grid Utility Classes -------------------------- */
@@ -264,10 +285,10 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 @media only screen and (min-width: 600px) and (max-width: 992px) {
 	@each $size in $sizes {
 		.grid-mw-#{$size} {
-			grid-column: span $size !important;
+			grid-column: span $size;
 		}
 		.grid-mh-#{$size} {
-			grid-row: span $size !important;
+			grid-row: span $size;
 		}
 	}
 }
@@ -281,10 +302,10 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 
 	@each $size in $sizes {
 		.grid-sw-#{$size} {
-			grid-column: span $size !important;
+			grid-column: span $size;
 		}
 		.grid-sh-#{$size} {
-			grid-row: span $size !important;
+			grid-row: span $size;
 		}
 	}
 }
@@ -294,23 +315,52 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 .info-panel {
 	background-color: var(--info-panel);
 	color: var(--info-panel-dark);
-	font-size: 1rem;
+	font-size: var(--default-text);
 	align-items: center;
 	p {
 		margin: 0 1rem;
 	}
 }
 
-.text-center {
-	text-align: center;
+$text_aligns: 'left','center','right';
+@each $text_align in $text_aligns {
+	.text-#{$text_align} {
+		text-align: #{$text_align};
+	}
+}
+.panel-scroll {
+	overflow-x: auto;
 }
 
+.button-wrapper {
+	display: flex;
+	justify-content: space-around;
+}
 /* ---------------------------------- Index --------------------------------- */
-
-
+.index-main {
+	#tags-box {
+		grid-template-rows: 5vh 5vh 40vh;
+		button {
+			width: 25%;
+			font-size: var(--default-text);
+		}
+	}
+	
+	@media only screen and (min-width: 600px) and (max-width: 992px) {
+		#api-box {
+			grid-row: 1;
+			grid-column: 7/13;
+		}
+	}
+	
+	@media only screen and (max-width: 600px) {
+		#tags-box {
+			grid-template-rows: 5vh 5vh 20vh;
+		}
+	}
+}
 /* -------------------------------- Trending -------------------------------- */
 
-
 #load-api-posts {
-	font-size: 1rem;
+	font-size: var(--default-text);
 }

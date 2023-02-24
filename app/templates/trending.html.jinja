@@ -7,20 +7,20 @@
 	<div class="grid-panel info-panel grid-w-10 grid-sw-12 grid-h-2">
 		<p class="grid-w-10 grid-sw-12 grid-h-2">
 			<i class="fa-solid fa-circle-info"></i>
-			This page shows the 30 most popular questions live this month, press Load more for an additional 30 posts from the data set
+			This page shows the 30 most popular questions live this month, press Load more for an additional 30 posts from this month<br>
+			All data comes from the Stack Exchange API, the agreement license can be found here: <a href="https://stackoverflow.com/legal/api-terms-of-use" target="_blank" rel="noopener noreferrer">Stack Exchange, Inc. API Terms of Use</a>
 		</p>
 	</div>
-	<div class="grid-panel grid-w-2 grid-sw-12 grid-h-2">
-		<button class="grid-w-2 grid-sw-12 grid-h-2 btn-green" id="load-api-posts">Load more posts <i class="fa-solid fa-plus"></i></button>
-	</div>
+	<button class="btn-panel grid-w-2 grid-sw-12 grid-h-2 btn-green" id="load-api-posts">Load more posts <i class="fa-solid fa-plus"></i></button>
 	<section id="api-box" class="grid-panel grid-w-12">
-		<div class="grid-w-12">
+		<div class="grid-w-12 panel-scroll">
 			<table>
 				<thead>
 					<th>Title</th>
+					<th>User</th>
 					<th>Tags</th>
 					<th>Score</th>
-					<th>View count</th>
+					<th>Views</th>
 					<th>Answered</th>
 					<th>Link</th>
 				</thead>

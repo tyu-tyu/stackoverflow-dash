@@ -46,13 +46,13 @@ class home_page:
 			response["success"] = False
 		return(response)
 	
-	def get_top_10_tags(self):
+	def get_top_tags(self,limit):
 		response = {}
 		response["data"] = {}
 		response["data"]["tags"] = []
 		response["data"]["count"] = []
 		try:
-			self.cursor.callproc("get_top_tags",[10,])
+			self.cursor.callproc("get_top_tags",[limit,])
 			result = self.cursor.fetchall()
 			for res in result:
 				response["data"]["tags"].append(res[0])
