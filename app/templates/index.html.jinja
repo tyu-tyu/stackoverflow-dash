@@ -58,12 +58,12 @@
 		const index_tag_chart = createChart(ctx,'bar','posts with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
 
 		document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
-			document.getElementById('more-tags').disabled = true;
-			document.getElementById('less-tags').disabled = true;
-			tag_count = (e.target && e.target.id == 'more-tags' ? tag_count + 5  :  tag_count - 5);
-			update_index_tag_chart(index_tag_chart, tag_count);
-			document.getElementById('more-tags').disabled = false;
-			document.getElementById('less-tags').disabled = false;
+			document.getElementById('more-tags').setAttribute('disabled', 'disabled');
+			document.getElementById('less-tags').setAttribute('disabled', 'disabled');
+			tag_count = (e.target && e.target.id == 'more-tags' ? tag_count + 5 : (e.target && e.target.id == 'less-tags' ? tag_count - 5 : false));
+			if(tag_count) {
+				result = index_tag_asyncCall();
+			}
 		}));
 	</script>
 {% endblock %}

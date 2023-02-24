@@ -109,28 +109,37 @@ document.addEventListener("DOMContentLoaded", function(e) {
 
 /* ---------------------------------- Index --------------------------------- */
 function update_index_tag_chart(chart, tag_count) {
-	if (tag_count < chart.data.labels.length) {
-		chart.data.labels.splice(-5, 5); // remove the label first
-		chart.data.datasets.forEach(dataset => {
-			dataset.data.pop();
-		});
-		chart.update();
-	} else {
-		makeHttpRequest('/ajax/update_index_tag_chart?count='+tag_count,'GET','JSON','',function(response) {
-			if (response.status) {
-				for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
-					chart.data.labels.push(response.data.tags[index]);
-					chart.data.datasets[0].data[index] = response.data.count[index];
-				}
-				chart.update();
-			} else {
-				document.querySelector('#tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
-			}
-		});
-	}	
+	return new Promise((resolve, reject) => {
+		if (tag_count < chart.data.labels.length) {
+			chart.data.labels.splice(-5, 5); // remove the label first
+			chart.data.datasets.forEach(dataset => {
+				dataset.data.pop();
+			});
+			chart.update();
+			resolve(true);
+		} else {
+			makeHttpRequest('/ajax/update_index_tag_chart?count='+tag_count,'GET','JSON','',function(response) {
+				if (response.status) {
+					for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
+						chart.data.labels.push(response.data.tags[index]);
+						chart.data.datasets[0].data[index] = response.data.count[index];
+					}
+					chart.update();
+					resolve(true);
+				} else {
+					document.querySelector('#tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+					reject(false);
+				}		
+			});
+		}
+	});
 }
 
-
+async function index_tag_asyncCall() {
+	result = await update_index_tag_chart(index_tag_chart, tag_count);
+	document.getElementById('more-tags').removeAttribute('disabled');
+	document.getElementById('less-tags').removeAttribute('disabled');
+};
 /* -------------------------------- Trending -------------------------------- */
 function load_trending_table(page_no) {
 	let api_url;
