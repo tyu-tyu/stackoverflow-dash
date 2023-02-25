@@ -6,37 +6,22 @@
 {% block content %}
 	<section id="stats-box" class="grid-panel grid-w-3 grid-mw-6 grid-sw-12">
 		<div class="grid-w-12">
-			<h1 class="text-center">Welcome!</h1>
+			<h2 class="text-center">Welcome!</h2>
 			<p>
-				This dashbord system currently contains data between <br>
-				{{ data['question_date_range']['data'][0] }} and {{ data['question_date_range']['data'][1] }}<br>
+				This dashbord system currently contains data from:<br>
+				<span class="stats-figure text-purple-dark text-center"><i class="fa-solid fa-calendar-days"></i> {{ data['question_date_range']['data'][0] }} - {{ data['question_date_range']['data'][1] }}</span><br>
 				The total dataset for this system is:
 				<dl>
-					<dt>{{ data['table_row_count']['data']['posts'] }} Posts</dt>
-					<dd>{{ data['table_row_count']['data']['question'] }} questions</dd>
-					<dd>{{ data['table_row_count']['data']['answer'] }} answers</dd>
+					<dt class="text-purple-light">{{ data['table_row_count']['data']['question'] }} questions</dt>
+					<dd>{{ data['table_row_count']['data']['tag_link']}} tags</dd>
+					<dd class="text-purple-light">{{ data['table_row_count']['data']['answer'] }} answers</dd>
 					<dd>{{ data['table_row_count']['data']['comments'] }} comments</dd>
-					<dt>{{ data['table_row_count']['data']['user'] }} users given</dt>
+					<dt class="text-purple-light">{{ data['table_row_count']['data']['user'] }} users</dt>
 					<dd>{{ data['table_row_count']['data']['badge_link'] }} badges</dd>
 				</dl>
-				All content from the included dataset is publicly available here: <a href="https://archive.org/details/stackexchange" target="_blank" rel="noopener noreferrer">Stack Exchange Data Dump - Archive.org</a><br>
-				The content license for the dataset is available here: 
-				<ul>
-					<li><a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a></li>
-					<li><a href="htpps://creativecommons.org/licenses/by-sa/3.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 3.0</a></li>
-					<li><a href="htpps://creativecommons.org/licenses/by-sa/2.5/" target="_blank" rel="noopener noreferrer">CC BY-SA 2.5</a></li>
-				</ul>
 			</p>
-		</div>
-	</section>
-	<section id="tags-box" class="grid-panel grid-w-6 grid-mw-12 grid-sw-12">
-		<h1 class="grid-w-12 text-center">Most popular tags</h1>
-		<div class="grid-w-12 button-wrapper">
-			<button class="btn-green index-tag" id="more-tags">More <i class="fa-solid fa-plus"></i></button>
-			<button class="btn-yellow index-tag" id="less-tags">Less <i class="fa-solid fa-minus"></i></button>
-		</div>
-		<div class="grid-w-12 canvas-wrapper panel-scroll">
-			<canvas id="tagChart"></canvas>
+			<h2 class="text-center">What's here?</h2>
+			<p>This site aims to display data on trending technologies from the popular programming Q&A site Stack Overflow so you can be ahead of the curve and jump start your Computer Science career.</p>
 		</div>
 	</section>
 	<section id="api-box" class="grid-panel grid-w-3 grid-mw-6 grid-sw-12">
@@ -44,10 +29,21 @@
 			Pull a record from the api in here 
 		</div>
 	</section>
+	<section id="tags-box" class="grid-panel grid-w-6 grid-mw-12 grid-sw-12">
+		<h1 class="grid-w-12 text-center">Most common question tags <i class="text-blue fa-solid fa-circle-info"></i></h1>
+		{# A tag is a word or phrase that describes the topic of the question. #}
+		<div class="grid-w-12 button-wrapper">
+			<button class="btn-green index-tag" id="more-tags">More <i class="fa-solid fa-plus"></i></button>
+			<button class="btn-red index-tag" id="less-tags">Less <i class="fa-solid fa-minus"></i></button>
+		</div>
+		<div class="grid-w-12 canvas-wrapper panel-scroll">
+			<canvas id="tagChart"></canvas>
+		</div>
+	</section>
 	<section id="post-box" class="grid-panel grid-w-12 grid-mw-12 grid-sw-12">
 		<p>POST stuff</p>
 	</section>
-	<section id="user-box" class="grid-panel grid-w-3 grid-mw-12 grid-sw-12">
+	<section id="user-box" class="grid-panel grid-w-6 grid-mw-12 grid-sw-12">
 		<p> {{data | pprint }}</p>
 	</section>
 {% endblock %}
@@ -58,11 +54,11 @@
 		const index_tag_chart = createChart(ctx,'bar','posts with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
 
 		document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
-			document.getElementById('more-tags').setAttribute('disabled', 'disabled');
-			document.getElementById('less-tags').setAttribute('disabled', 'disabled');
-			tag_count = (e.target && e.target.id == 'more-tags' ? tag_count + 5 : (e.target && e.target.id == 'less-tags' ? tag_count - 5 : false));
+			tag_count = (e.target && (e.target.id || e.target.parentNode.id) == 'more-tags' ? tag_count + 5 : (e.target && (e.target.id || e.target.parentNode.id) == 'less-tags' ? tag_count - 5 : false));
 			if(tag_count) {
 				result = index_tag_asyncCall();
+			} else {
+				document.getElementById('tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
 			}
 		}));
 	</script>

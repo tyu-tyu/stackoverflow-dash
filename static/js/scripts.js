@@ -1,6 +1,3 @@
-
-graph_colour_list = ['#5F295F','#0074D9','#FF4136','#2ECC40','#FF851B','#7FDBFF','#B10DC9','#FFDC00','#001f3f','#39CCCC','#01FF70','#85144b','#F012BE','#3D9970','#111111','#AAAAAA'];
-
 // HTTP request function for GET and POST methods
 function makeHttpRequest(url, request_type, data_response_type, data, callback) {
 	let settings = {};
@@ -44,12 +41,13 @@ function makeHttpRequest(url, request_type, data_response_type, data, callback) 
 	}).then(data => callback(data)).catch(error => console.log(error));
 };
 
+graph_colour_list = ['#5F295F','#0074D9','#FF4136','#2ECC40','#FF851B','#7FDBFF','#B10DC9','#FFDC00','#001f3f','#39CCCC','#01FF70','#85144b','#F012BE','#3D9970','#111111','#AAAAAA'];
 //Creates a chart and places it in supplied canvas
 function createChart(ctx,type,top_label,labels,data,options) {
 	const chart = new Chart(ctx, {
 		type: type,
 		responsive: true,
-		maintainAspectRatio: false,
+		maintainAspectRatio: true,
 		data: {
 			labels: labels,
 			datasets: [{
@@ -66,48 +64,9 @@ function createChart(ctx,type,top_label,labels,data,options) {
 	return chart;
 };
 
-// Nav menu Called on resize and closing
-function reset_nav_menu() {
-	document.getElementById('side-nav-container').style.width = 0;
-	document.querySelector('body').style.marginLeft = 0;
-	document.querySelector('aside nav').style.opacity = 0;
-	document.getElementById('nav-btn-open').style.opacity = 100;
-	document.getElementsByClassName('active')[0].style.opacity = 0;
-}
-
-document.addEventListener("DOMContentLoaded", function(e) {
-	// Header animation handling
-	document.getElementById('nav-btn-open').addEventListener('click', function() {
-		document.getElementById('side-nav-container').style.width = '6rem';
-		document.querySelector('body').style.marginLeft = '6rem';
-		document.querySelector('aside nav').style.opacity = 100;
-		document.getElementById('nav-btn-open').style.opacity = 0;
-		document.getElementsByClassName('active')[0].style.opacity = 100;
-	});
-	
-	document.getElementById('nav-btn-close').addEventListener('click', function() {
-		reset_nav_menu();
-	});
-	// Dynamic resizing for window changes
-	window.addEventListener('resize', function(event){
-		if (this.window.innerWidth < 600){
-			document.getElementById('nav-btn-close').style.display = 'none';
-			document.getElementById('nav-btn-open').style.display = 'none';
-			document.getElementById('side-nav-container').style.width = '100%';
-			document.getElementById('side-nav-container').style.height = '4rem';
-			document.querySelector('body').style.marginLeft = 0;
-			document.querySelector('aside nav').style.opacity = 100;
-			document.getElementsByClassName('active')[0].style.opacity = 100;
-		} else {
-			document.getElementById('nav-btn-close').style.display = 'block';
-			document.getElementById('nav-btn-open').style.display = 'block';
-			document.getElementById('side-nav-container').style.height = '100%';
-			reset_nav_menu();
-		}
-	});
-});
-
-/* ---------------------------------- Index --------------------------------- */
+/* -------------------------------------------------------------------------- */
+/*                                    Index                                   */
+/* -------------------------------------------------------------------------- */
 function update_index_tag_chart(chart, tag_count) {
 	return new Promise((resolve, reject) => {
 		if (tag_count < chart.data.labels.length) {
@@ -127,7 +86,7 @@ function update_index_tag_chart(chart, tag_count) {
 					chart.update();
 					resolve(true);
 				} else {
-					document.querySelector('#tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+					document.getElementById('tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
 					reject(false);
 				}		
 			});
@@ -135,12 +94,18 @@ function update_index_tag_chart(chart, tag_count) {
 	});
 }
 
+//asnyc function to reduce spam
 async function index_tag_asyncCall() {
+	document.getElementById('more-tags').disabled = true;
+	document.getElementById('less-tags').disabled = true;
 	result = await update_index_tag_chart(index_tag_chart, tag_count);
-	document.getElementById('more-tags').removeAttribute('disabled');
-	document.getElementById('less-tags').removeAttribute('disabled');
+	document.getElementById('more-tags').disabled = false;
+	document.getElementById('less-tags').disabled = false;
 };
-/* -------------------------------- Trending -------------------------------- */
+
+/* -------------------------------------------------------------------------- */
+/*                                  Trending                                  */
+/* -------------------------------------------------------------------------- */
 function load_trending_table(page_no) {
 	let api_url;
 	if (page_no == 1) {
@@ -181,3 +146,57 @@ function load_trending_table(page_no) {
 		}
 	});
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                 Navigation                                 */
+/* -------------------------------------------------------------------------- */
+// Nav menu Called on resize and closing
+function reset_nav_menu() {
+	document.getElementById('side-nav-container').style.width = 0;
+	document.querySelector('body').style.marginLeft = 0;
+	document.querySelector('aside nav').style.opacity = 0;
+	document.getElementById('nav-btn-open').style.opacity = 100;
+	document.getElementsByClassName('active')[0].style.opacity = 0;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+	// Header animation handling
+	document.getElementById('nav-btn-open').addEventListener('click', () => {
+		document.getElementById('side-nav-container').style.width = '6rem';
+		document.querySelector('body').style.marginLeft = '6rem';
+		document.querySelector('aside nav').style.opacity = 100;
+		document.getElementById('nav-btn-open').style.opacity = 0;
+		document.getElementsByClassName('active')[0].style.opacity = 100;
+	});
+	
+	document.getElementById('nav-btn-close').addEventListener('click', () => {
+		reset_nav_menu();
+	});
+	// Dynamic resizing for window changes
+	window.addEventListener('resize', () => {
+		if (this.window.innerWidth < 600){
+			document.getElementById('nav-btn-close').style.display = 'none';
+			document.getElementById('nav-btn-open').style.display = 'none';
+			document.getElementById('side-nav-container').style.width = '100%';
+			document.getElementById('side-nav-container').style.height = '4rem';
+			document.querySelector('body').style.marginLeft = 0;
+			document.querySelector('aside nav').style.opacity = 100;
+			document.getElementsByClassName('active')[0].style.opacity = 100;
+		} else {
+			document.getElementById('nav-btn-close').style.display = 'block';
+			document.getElementById('nav-btn-open').style.display = 'block';
+			document.getElementById('side-nav-container').style.height = '100%';
+			reset_nav_menu();
+		}
+	});
+
+	document.getElementById('info-modal-open').addEventListener('click', () => {
+		document.querySelector('main').style.filter = 'blur(2px)';
+		document.getElementById('info-modal').showModal();
+	});
+
+	document.getElementById('info-modal-close').addEventListener('click', () => {
+		document.querySelector('main').style.filter = 'none';
+		document.getElementById('info-modal').close();
+	})
+});
