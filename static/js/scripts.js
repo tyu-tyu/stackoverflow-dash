@@ -100,7 +100,9 @@ async function index_tag_asyncCall() {
 	document.getElementById('less-tags').disabled = true;
 	result = await update_index_tag_chart(index_tag_chart, tag_count);
 	document.getElementById('more-tags').disabled = false;
-	document.getElementById('less-tags').disabled = false;
+	if(tag_count > 5) {
+		document.getElementById('less-tags').disabled = false;
+	}
 };
 
 /* -------------------------------------------------------------------------- */
