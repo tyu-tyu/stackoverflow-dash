@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 :root {
   color: var(--ehu-colors-neutral-black);
-  background-color: var(--bg-light);
+  background-color: var(--off-white);
   font-size: 100%;
   font-family: "Signika Negative", sans-serif;
   --default-spacing: 1rem;
@@ -14,6 +14,7 @@
   --text-primary: #5F295F;
   --text-primary-dark: #5C105C;
   --text-primary-light: #EAE0EC;
+  --off-white: #F3F3F9;
   --bg-dark: #0F0F0F;
   --bg-light: #FCFCFD;
   --bg-grey: #383734;
@@ -66,7 +67,8 @@ a:hover {
   align-items: center;
   overflow: auto;
   background-color: var(--bg-light);
-  border: solid 2px var(--bg-dark);
+  border: solid 1px var(--bg-dark);
+  border-radius: 10px;
   color: var(--bg-dark);
 }
 
@@ -91,6 +93,15 @@ a:hover {
   color: #f311f3;
 }
 
+.bg-purple-light {
+  background-color: #f311f3;
+}
+
+.border-purple-light {
+  border: solid 1px #f311f3;
+  border-radius: 5px;
+}
+
 .btn-purple-light {
   color: #f311f3;
   border: solid 2px #f311f3;
@@ -103,6 +114,15 @@ a:hover {
 
 .text-purple-dark {
   color: #5f295f;
+}
+
+.bg-purple-dark {
+  background-color: #5f295f;
+}
+
+.border-purple-dark {
+  border: solid 1px #5f295f;
+  border-radius: 5px;
 }
 
 .btn-purple-dark {
@@ -119,6 +139,15 @@ a:hover {
   color: #32db18;
 }
 
+.bg-green {
+  background-color: #32db18;
+}
+
+.border-green {
+  border: solid 1px #32db18;
+  border-radius: 5px;
+}
+
 .btn-green {
   color: #32db18;
   border: solid 2px #32db18;
@@ -131,6 +160,15 @@ a:hover {
 
 .text-red {
   color: #db1828;
+}
+
+.bg-red {
+  background-color: #db1828;
+}
+
+.border-red {
+  border: solid 1px #db1828;
+  border-radius: 5px;
 }
 
 .btn-red {
@@ -147,6 +185,15 @@ a:hover {
   color: #18a4db;
 }
 
+.bg-blue {
+  background-color: #18a4db;
+}
+
+.border-blue {
+  border: solid 1px #18a4db;
+  border-radius: 5px;
+}
+
 .btn-blue {
   color: #18a4db;
   border: solid 2px #18a4db;
@@ -159,6 +206,15 @@ a:hover {
 
 .text-yellow {
   color: #fde000;
+}
+
+.bg-yellow {
+  background-color: #fde000;
+}
+
+.border-yellow {
+  border: solid 1px #fde000;
+  border-radius: 5px;
 }
 
 .btn-yellow {
@@ -175,6 +231,15 @@ a:hover {
   color: #0F0F0F;
 }
 
+.bg-dark {
+  background-color: #0F0F0F;
+}
+
+.border-dark {
+  border: solid 1px #0F0F0F;
+  border-radius: 5px;
+}
+
 .btn-dark {
   color: #0F0F0F;
   border: solid 2px #0F0F0F;
@@ -189,6 +254,15 @@ a:hover {
   color: #FCFCFD;
 }
 
+.bg-light {
+  background-color: #FCFCFD;
+}
+
+.border-light {
+  border: solid 1px #FCFCFD;
+  border-radius: 5px;
+}
+
 .btn-light {
   color: #FCFCFD;
   border: solid 2px #FCFCFD;
@@ -201,6 +275,15 @@ a:hover {
 
 .text-grey {
   color: #383734;
+}
+
+.bg-grey {
+  background-color: #383734;
+}
+
+.border-grey {
+  border: solid 1px #383734;
+  border-radius: 5px;
 }
 
 .btn-grey {
@@ -342,6 +425,8 @@ main {
 .grid-panel {
   display: grid;
   grid-template-columns: subgrid;
+  padding: 0 1rem;
+  border-radius: 10px;
 }
 
 .btn-panel {
@@ -602,7 +687,9 @@ main {
 /* ------------------------------ Page stylings ----------------------------- */
 .canvas-wrapper {
   position: relative;
+  height: 30vh;
   display: flex;
+  width: 100%;
   justify-content: center;
 }
 
@@ -616,6 +703,8 @@ main {
 }
 
 .info-panel {
+  background-color: var(--bg-light);
+  border: solid 2px var(--general-blue);
   color: var(--general-blue);
   border-radius: 5px;
   align-items: center;
@@ -640,15 +729,26 @@ main {
 }
 
 /* ---------------------------------- Index --------------------------------- */
-.index-main #stats-box .stats-figure {
-  font-size: var(--large-text);
-  display: inline-block;
-  width: 100%;
-  margin: 15px 0;
+.index-main #stats-box {
+  padding: 0;
 }
-.index-main #tags-box button {
-  width: 25%;
-  font-size: var(--default-text);
+.index-main #stats-box div {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  font-size: var(--large-text);
+  border-radius: 10px;
+}
+.index-main #post-box .button-wrapper {
+  align-items: center;
+}
+.index-main #post-box .button-wrapper button {
+  width: 100%;
+}
+@media only screen and (min-width: 600px) {
+  .index-main #question-wrapper {
+    grid-area: 4/1/4/4;
+  }
 }
 
 /* -------------------------------- Trending -------------------------------- */

@@ -4,54 +4,53 @@
 {% block header %}Stack Overflow Data Dashboards{% endblock %}
 {% block main_name %}index{% endblock %}
 {% block content %}
-	<section id="stats-box" class="grid-panel grid-w-3 grid-mw-6 grid-sw-12">
-		<div class="grid-w-12">
-			<h2 class="text-center">Welcome!</h2>
-			<p>
-				This dashbord system currently contains data from:<br>
-				<span class="stats-figure text-purple-dark text-center"><i class="fa-solid fa-calendar-days"></i> {{ data['question_date_range']['data'][0] }} - {{ data['question_date_range']['data'][1] }}</span><br>
-				The total dataset for this system is:
-				<dl>
-					<dt class="text-purple-light">{{ data['table_row_count']['data']['question'] }} questions</dt>
-					<dd>{{ data['table_row_count']['data']['tag_link']}} tags</dd>
-					<dd class="text-purple-light">{{ data['table_row_count']['data']['answer'] }} answers</dd>
-					<dd>{{ data['table_row_count']['data']['comments'] }} comments</dd>
-					<dt class="text-purple-light">{{ data['table_row_count']['data']['user'] }} users</dt>
-					<dd>{{ data['table_row_count']['data']['badge_link'] }} badges</dd>
-				</dl>
+	<section id="stats-box" class="grid-panel grid-w-12">
+		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
+			<p class="text-center">Data taken between <i class="fa-solid fa-calendar"></i><br>
+				<span class="stats-figure"><span class="text-purple-light">{{ data['question_date_range']['data'][0] }}</span> - <span class="text-purple-light">{{ data['question_date_range']['data'][1] }}</span>
 			</p>
-			<h2 class="text-center">What's here?</h2>
-			<p>This site aims to display data on trending technologies from the popular programming Q&A site Stack Overflow so you can be ahead of the curve and jump start your Computer Science career.</p>
+		</div>
+		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
+			<p><span class="text-purple-light">{{ data['table_row_count']['data']['question'] }}</span> Questions</p>
+			<p><span class="text-purple-light">{{ data['table_row_count']['data']['answer'] }}</span> Answers</p>
+			
+		</div>
+		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
+			<p><span class="text-purple-light">{{ data['table_row_count']['data']['comments'] }}</span> Comments</p>
+			<p><span class="text-purple-light">{{ data['table_row_count']['data']['tag_link']}}</span> Tags</p>
+		</div>
+		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
+			<p><span class="text-purple-light">{{ data['table_row_count']['data']['user'] }}</span> Users</p>
+			<p><span class="text-purple-light">{{ data['table_row_count']['data']['badge_link'] }}</span> Badges</p>
 		</div>
 	</section>
-	<section id="api-box" class="grid-panel grid-w-3 grid-mw-6 grid-sw-12">
-		<div class="grid-w-12">
-			Pull a record from the api in here 
+	<section id="post-box" class="grid-panel bg-light grid-w-6 grid-sw-12">
+		<h1 class="grid-w-5 grid-sw-10 text-left">Question tags</h1>
+		<div class="grid-w-1 grid-sw-2 button-wrapper">
+			<button class="btn-green index-tag" id="more-tags"><i class="fa-solid fa-plus"></i></button>
+			<button class="btn-red index-tag" id="less-tags"><i class="fa-solid fa-minus"></i></button>
+		</div>
+		<div class="grid-w-6 grid-sw-12 canvas-wrapper">
+			<canvas id="tagChart" aria-label="Tags chart" role="img"></canvas>
+		</div>
+		<h1 class="grid-w-3 grid-sw-12 text-center">Unanswered questions</h1>
+		<div class="grid-w-3 grid-sw-12 canvas-wrapper" id="question-wrapper">
+			<canvas id="questionChart" aria-label="Unanswered questions" role="img"></canvas>
+		</div>
+		<h1 class="grid-w-3 grid-sw-12 text-center" id="answer-header">Answer Acceptance Rate</h1>
+		<div class="grid-w-3 grid-sw-12 canvas-wrapper">
+			<canvas id="acceptedquestionChart" aria-label="Answer acceptance rate" role="img"></canvas>
 		</div>
 	</section>
-	<section id="tags-box" class="grid-panel grid-w-6 grid-mw-12 grid-sw-12">
-		<h1 class="grid-w-12 text-center">Most common question tags <i class="text-blue fa-solid fa-circle-info"></i></h1>
-		{# A tag is a word or phrase that describes the topic of the question. #}
-		<div class="grid-w-12 button-wrapper">
-			<button class="btn-green index-tag" id="more-tags">More <i class="fa-solid fa-plus"></i></button>
-			<button class="btn-red index-tag" id="less-tags">Less <i class="fa-solid fa-minus"></i></button>
-		</div>
-		<div class="grid-w-12 canvas-wrapper panel-scroll">
-			<canvas id="tagChart"></canvas>
-		</div>
-	</section>
-	<section id="post-box" class="grid-panel grid-w-12 grid-mw-12 grid-sw-12">
-		<p>POST stuff</p>
-	</section>
-	<section id="user-box" class="grid-panel grid-w-6 grid-mw-12 grid-sw-12">
-		<p> {{data | pprint }}</p>
+	<section id="user-box" class="grid-panel grid-w-6 grid-sw-12 bg-light">
+		<p class="grid-w-12"> {{data | pprint }}</p>
 	</section>
 {% endblock %}
 {% block scripts %}
 	<script>
 		let tag_count = {{ data['top_tags']['data']['tags'] | length }};
 		const ctx = document.getElementById('tagChart');
-		const index_tag_chart = createChart(ctx,'bar','posts with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
+		const index_tag_chart = createChart(ctx,'bar','questions with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
 
 		document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
 			tag_count = (e.target && (e.target.id || e.target.parentNode.id) == 'more-tags' ? tag_count + 5 : (e.target && (e.target.id || e.target.parentNode.id) == 'less-tags' ? tag_count - 5 : false));

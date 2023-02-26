@@ -47,7 +47,7 @@ function createChart(ctx,type,top_label,labels,data,options) {
 	const chart = new Chart(ctx, {
 		type: type,
 		responsive: true,
-		maintainAspectRatio: true,
+		maintainAspectRatio: false,
 		data: {
 			labels: labels,
 			datasets: [{

@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 :root{
 	color: var(--ehu-colors-neutral-black);
-	background-color: var(--bg-light);
+	background-color: var(--off-white);
 	font-size: 100%;
 	font-family: 'Signika Negative', sans-serif;
 	// font-family: 'Inter', sans-serif;
@@ -16,6 +16,7 @@
 	--text-primary: #5F295F;
 	--text-primary-dark: #5C105C;
 	--text-primary-light: #EAE0EC;
+	--off-white: #F3F3F9;
 	--bg-dark: #0F0F0F;
 	--bg-light: #FCFCFD;
 	--bg-grey: #383734;
@@ -71,7 +72,8 @@ a:hover {
 	align-items: center;
 	overflow: auto;
 	background-color: var(--bg-light);
-	border: solid 2px var(--bg-dark);
+	border: solid 1px var(--bg-dark);
+	border-radius: 10px;
 	color: var(--bg-dark);
 }
 
@@ -97,6 +99,15 @@ $colors: ('purple-light': #f311f3, 'purple-dark': #5f295f, 'green': #32db18, 're
 @each $name, $hex in $colors {
 	.text-#{$name} {
 		color: $hex;
+	}
+
+	.bg-#{$name} {
+		background-color: $hex;
+	}
+
+	.border-#{$name} {
+		border: solid 1px $hex;
+		border-radius: 5px;
 	}
 
 	.btn-#{$name} {
@@ -247,6 +258,8 @@ main {
 .grid-panel {
 	display: grid;
 	grid-template-columns: subgrid;
+	padding: 0 1rem;
+	border-radius: 10px;
 }
 
 .btn-panel {
@@ -299,7 +312,9 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 
 .canvas-wrapper {
 	position: relative;
+	height: 30vh;
 	display: flex;
+	width: 100%;
 	justify-content: center;
 }
 
@@ -313,6 +328,8 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 }
 
 .info-panel {
+	background-color: var(--bg-light);
+	border: solid 2px var(--general-blue);
 	color: var(--general-blue);
 	border-radius: 5px;
 	align-items: center;
@@ -334,19 +351,30 @@ $text_aligns: 'left','center','right';
 
 /* ---------------------------------- Index --------------------------------- */
 .index-main {
+
 	#stats-box {
-		.stats-figure {
+		padding: 0;
+		div {
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
 			font-size: var(--large-text);
-			display: inline-block;
-			width: 100%;
-			margin: 15px 0;
+			border-radius: 10px;
 		}
 	}
 
-	#tags-box {
-		button {
-			width: 25%;
-			font-size: var(--default-text);
+	#post-box {
+		.button-wrapper {
+			align-items: center;
+			button {
+				width: 100%;
+			}
+		}
+	}
+
+	@media only screen and (min-width: 600px) {
+		#question-wrapper {
+			grid-area: 4/1 / 4/4;
 		}
 	}
 }
