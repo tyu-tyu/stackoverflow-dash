@@ -6,16 +6,12 @@
 {% block content %}
 	<section id="stats-box" class="grid-panel grid-w-12">
 		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
-			<p class="text-center">Data taken between <i class="fa-solid fa-calendar"></i><br>
-				<span class="stats-figure"><span class="text-purple-light">{{ data['question_date_range']['data'][0] }}</span> - <span class="text-purple-light">{{ data['question_date_range']['data'][1] }}</span>
-			</p>
+			<p class="text-center">Data taken between <i class="fa-solid fa-calendar"></i></p>
+			<p><span class="stats-figure"><span class="text-purple-light">{{ data['question_date_range']['data'][0] }} {{ data['question_date_range']['data'][1] }}</span></p>
 		</div>
-		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
+		<div class="grid-w-6 grid-sw-12 bg-light text-dark">
 			<p><span class="text-purple-light">{{ data['table_row_count']['data']['question'] }}</span> Questions</p>
 			<p><span class="text-purple-light">{{ data['table_row_count']['data']['answer'] }}</span> Answers</p>
-			
-		</div>
-		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
 			<p><span class="text-purple-light">{{ data['table_row_count']['data']['comments'] }}</span> Comments</p>
 			<p><span class="text-purple-light">{{ data['table_row_count']['data']['tag_link']}}</span> Tags</p>
 		</div>

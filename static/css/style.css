@@ -688,8 +688,8 @@ main {
 .canvas-wrapper {
   position: relative;
   height: 30vh;
-  display: flex;
   width: 100%;
+  display: flex;
   justify-content: center;
 }
 
@@ -734,10 +734,12 @@ main {
 }
 .index-main #stats-box div {
   display: flex;
+  flex-direction: column;
   justify-content: space-around;
   align-items: center;
   font-size: var(--large-text);
   border-radius: 10px;
+  margin: 10px 0;
 }
 .index-main #post-box .button-wrapper {
   align-items: center;
@@ -746,6 +748,9 @@ main {
   width: 100%;
 }
 @media only screen and (min-width: 600px) {
+  .index-main #stats-box div:not(:first-child) {
+    flex-direction: row;
+  }
   .index-main #question-wrapper {
     grid-area: 4/1/4/4;
   }
