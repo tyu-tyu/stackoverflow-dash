@@ -35,7 +35,7 @@
 		</div>
 		<h1 class="grid-w-3 grid-sw-12 text-center" id="answer-header">Answer Acceptance Rate</h1>
 		<div class="grid-w-3 grid-sw-12 canvas-wrapper">
-			<canvas id="acceptedquestionChart" aria-label="Answer acceptance rate" role="img"></canvas>
+			<canvas id="acceptanceChart" aria-label="Answer acceptance rate" role="img"></canvas>
 		</div>
 	</section>
 	<section id="user-box" class="grid-panel grid-w-6 grid-sw-12 bg-light">
@@ -45,9 +45,15 @@
 {% block scripts %}
 	<script>
 		let tag_count = {{ data['top_tags']['data']['tags'] | length }};
-		const ctx = document.getElementById('tagChart');
-		const index_tag_chart = createChart(ctx,'bar','questions with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
-
+		let acceptance = [
+			{{ data['question_details']['data'][0] }},
+			{{ data['question_details']['data'][1] }},
+			{{ data['table_row_count']['data']['question'] }} - {{ data['question_details']['data'][0] }} - {{ data['question_details']['data'][1] }}
+		];
+		const tag_ctx = document.getElementById('tagChart');
+		const accept_ctx = document.getElementById('acceptanceChart');
+		const index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
+		const accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
 		document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
 			tag_count = (e.target && (e.target.id || e.target.parentNode.id) == 'more-tags' ? tag_count + 5 : (e.target && (e.target.id || e.target.parentNode.id) == 'less-tags' ? tag_count - 5 : false));
 			if(tag_count) {
