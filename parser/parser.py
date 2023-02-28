@@ -6,6 +6,7 @@ import os
 import mariadb
 import sys
 import csv
+from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 
 #Pathing Variables 
 question_filename = os.path.join(os.path.dirname(__file__), 'output/question_import.csv')
@@ -42,7 +43,7 @@ def sql_import(type,cur,conn):
 		try:
 			print("Importing questions Please be patient")
 			cur.execute("CREATE TEMPORARY TABLE temp_question like question;")
-			cur.execute("LOAD DATA LOCAL INFILE '"+question_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_question FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `creation_date`, `score`, `view_count`, `body`, `title`, `content_license`, `edit_date`, `activity_date`, `user_id`, `editor_id`, `accepted_answer_id`)")
+			cur.execute("LOAD DATA LOCAL INFILE '"+question_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_question FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `creation_date`, `score`, `view_count`, `body`, `title`, `sentiment`,`content_license`, `edit_date`, `activity_date`, `user_id`, `editor_id`, `accepted_answer_id`)")
 			cur.execute("INSERT INTO question SELECT * FROM temp_question;")
 			cur.execute("INSERT INTO `user` (id) SELECT user_id FROM temp_question WHERE user_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
 			cur.execute("INSERT INTO `user` (id) SELECT editor_id FROM temp_question WHERE editor_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
@@ -54,7 +55,7 @@ def sql_import(type,cur,conn):
 		try:
 			print("Importing answers Please be patient")
 			cur.execute("CREATE TEMPORARY TABLE temp_answer LIKE answer;")
-			cur.execute("LOAD DATA LOCAL INFILE '"+answer_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_answer FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `question_id`, `creation_date`, `score`, `body`, `user_id`, `editor_id`, `edit_date`, `activity_date`, `content_license`);")
+			cur.execute("LOAD DATA LOCAL INFILE '"+answer_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_answer FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `question_id`, `creation_date`, `score`, `body`, `sentiment`,`user_id`, `editor_id`, `edit_date`, `activity_date`, `content_license`);")
 			cur.execute("INSERT INTO answer SELECT * FROM temp_answer WHERE EXISTS (SELECT * FROM `question` where `id` = `question_id` LIMIT 1);")
 			cur.execute("INSERT INTO `user` (id) SELECT user_id FROM temp_answer WHERE user_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
 			cur.execute("INSERT INTO `user` (id) SELECT editor_id FROM temp_answer WHERE editor_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
@@ -66,7 +67,7 @@ def sql_import(type,cur,conn):
 		try:
 			print("Importing Comments Please be patient")
 			cur.execute("CREATE TEMPORARY TABLE temp_comments LIKE comments;")
-			cur.execute("LOAD DATA LOCAL INFILE '"+comments_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_comments FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `post_id`, `score`, `text`, `creation_date`, `user_id`, `content_license`);")
+			cur.execute("LOAD DATA LOCAL INFILE '"+comments_filename.replace('\\','/')+"' REPLACE INTO TABLE temp_comments FIELDS TERMINATED BY ',' LINES TERMINATED BY '\\r\\n' (`id`, `post_id`, `score`, `text`, `sentiment`,`creation_date`, `user_id`, `content_license`);")
 			cur.execute("INSERT INTO comments SELECT * FROM temp_comments as tc WHERE EXISTS (SELECT * FROM question WHERE tc.`post_id` = question.`id` LIMIT 1) OR EXISTS (SELECT * FROM answer WHERE tc.`post_id` = answer.`id` LIMIT 1);")
 			cur.execute("INSERT INTO `user` (id) SELECT user_id FROM temp_comments WHERE user_id <> 'NULL' ON DUPLICATE KEY UPDATE user.id=user.id;")
 			cur.execute("DROP TABLE temp_comments;")
@@ -96,6 +97,13 @@ def sql_import(type,cur,conn):
 			conn.commit()
 		except mariadb.Error as e:
 			print(f"Error: {e}")
+
+#Works out sentiment score
+def sentiment_scores(text):
+	sid_obj = SentimentIntensityAnalyzer()
+	sentiment = sid_obj.polarity_scores(text)
+	sentiment_score = sentiment['compound']*100
+	return sentiment_score
 
 if __name__ == "__main__":
 	# Connect to MariaDB Platform
@@ -137,6 +145,8 @@ if __name__ == "__main__":
 					else:
 						use_row_limit = False
 					valid = True
+
+	#counter variable
 	row_count = 0
 
 	# ---------------------------------------------------------------------------- #
@@ -182,8 +192,10 @@ if __name__ == "__main__":
 						#checking optional xml columns and processing
 						if 'Body' in elem.attrib and elem.attrib['Body'] != "":
 							body = re.sub('(,)|(\\n)|(\\\\)','', elem.attrib['Body'])
+							sent_score = sentiment_scores(body)
 						else:
 							body = '\\N'
+							sent_score = '\\N'
 						if elem.attrib["ContentLicense"] == 'CC BY-SA 2.5':
 							content_license = 1
 						elif elem.attrib["ContentLicense"] == 'CC BY-SA 3.0':
@@ -219,7 +231,21 @@ if __name__ == "__main__":
 									sql_import('taglink',cur,conn)
 									tlwr.truncate(0)
 						#defines question columns and adds to csv
-						cols = [elem.attrib['Id'],elem.attrib['CreationDate'][0:10],elem.attrib['Score'],elem.attrib['ViewCount'],body,re.sub('(,)|(\\n)|(\\\\)', '', elem.attrib['Title']),content_license,edit_date,activity_date,user_id,editor_id,accepted_reply_id]
+						cols = [
+							elem.attrib['Id'],
+							elem.attrib['CreationDate'][0:10],
+							elem.attrib['Score'],
+							elem.attrib['ViewCount'],
+							body,
+							re.sub('(,)|(\\n)|(\\\\)', '', elem.attrib['Title']),
+							sent_score,
+							content_license,
+							edit_date,
+							activity_date,
+							user_id,
+							editor_id,
+							accepted_reply_id
+						]
 						q_writer.writerow(cols)
 						if os.path.getsize(question_filename) > 50000000:
 							sql_import('question',cur,conn)
@@ -246,7 +272,19 @@ if __name__ == "__main__":
 						else:
 							editor_id = '\\N'
 						#defines columns to add to the answer
-						cols = [elem.attrib['Id'],elem.attrib['ParentId'],elem.attrib['CreationDate'][0:10],elem.attrib['Score'],re.sub('(,)|(\\n)','', elem.attrib['Body']),user_id,editor_id,edit_date,activity_date,content_license]
+						cols = [
+							elem.attrib['Id'],
+							elem.attrib['ParentId'],
+							elem.attrib['CreationDate'][0:10],
+							elem.attrib['Score'],
+							re.sub('(,)|(\\n)','', elem.attrib['Body']),
+							sentiment_scores(elem.attrib['Body']),
+							user_id,
+							editor_id,
+							edit_date,
+							activity_date,
+							content_license
+						]
 						a_writer.writerow(cols)
 						if os.path.getsize(answer_filename) > 50000000:
 							sql_import('answer',cur,conn)
@@ -290,7 +328,15 @@ if __name__ == "__main__":
 						user_id = elem.attrib['UserId']
 					else:
 						user_id = '\\N'		
-					cols = [elem.attrib['Id'],elem.attrib['PostId'],elem.attrib['Score'],re.sub('(,)|(\\n)|(\\\\)','', elem.attrib['Text']),elem.attrib['CreationDate'][0:10],user_id,content_license]
+					cols = [
+						elem.attrib['Id'],
+						elem.attrib['PostId'],
+						elem.attrib['Score'],
+						re.sub('(,)|(\\n)|(\\\\)','', elem.attrib['Text']),
+						sentiment_scores(elem.attrib['Text']),
+						elem.attrib['CreationDate'][0:10],
+						user_id,
+						content_license]
 					c_writer.writerow(cols)
 					if os.path.getsize(comments_filename) > 50000000:
 						sql_import('comments',cur,conn)
@@ -372,7 +418,7 @@ if __name__ == "__main__":
 	cur.execute("ALTER TABLE `badge_link` CHANGE COLUMN `badge_id` `badge_id` VARCHAR(256) NOT NULL DEFAULT '0' AFTER `user_id`;")
 	cur.execute("UPDATE badge_link bl INNER JOIN badges AS b ON bl.badge_id = b.badge_name SET bl.`badge_id` = b.`id`;")
 	cur.execute("ALTER TABLE `badge_link` CHANGE COLUMN `badge_id` `badge_id` BIGINT NOT NULL DEFAULT 0 COLLATE 'utf8mb3_general_ci' AFTER `user_id`;")
-	cur.commit()
+	conn.commit()
 	#Cleaning up import files
 	os.remove(question_filename)
 	os.remove(answer_filename)
