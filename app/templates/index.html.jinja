@@ -58,7 +58,13 @@
 		<i class="grid-w-12 text-grey">For more details on a tag and more questions: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
 	</section>
 	<section id="user-box" class="grid-panel grid-w-6 grid-sw-12 bg-light">
-		<p class="grid-w-12"> {{data | pprint }}</p>
+		<h1 class="grid-w-12 text-left">Users by year created</h1>
+		<p class="grid-w-12 text-center" id="year_list">
+			{% for item in data['user_years']['data'] %}
+				<span class="grid-sw-6 text-purple-light">{{ item.0 }}</span>
+				<span class="grid-sw-6">{{ item.1 }}</span>
+			{% endfor %}
+		</p>
 		<h1 class="grid-w-4 grid-sw-8 text-left">User badges</h1>
 		<div class="grid-w-2 grid-sw-4 button-wrapper">
 			<button class="btn-green index-tag" id="more-badges"><i class="fa-solid fa-plus"></i></button>

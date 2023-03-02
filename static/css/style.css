@@ -425,6 +425,7 @@ main {
 .grid-panel {
   display: grid;
   grid-template-columns: subgrid;
+  align-items: center;
   padding: 0 1rem;
   border-radius: 10px;
 }
@@ -756,12 +757,17 @@ main {
 .index-main .button-wrapper button {
   width: 100%;
 }
+.index-main #year_list {
+  display: grid;
+  grid-template-columns: subgrid;
+  font-size: var(--large-text);
+}
 @media only screen and (min-width: 600px) {
   .index-main #stats-box div:not(:first-child) {
     flex-direction: row;
   }
-  .index-main #question-wrapper {
-    grid-area: 4/1/4/4;
+  .index-main #year_list {
+    max-height: 25vh;
   }
 }
 

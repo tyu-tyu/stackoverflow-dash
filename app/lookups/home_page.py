@@ -93,3 +93,17 @@ class home_page:
 			response['data'].append(e)
 			response['success'] = False
 		return(response)
+	
+	def get_user_years(self):
+		response = {}
+		response['data'] = []
+		try:
+			self.cursor.callproc('get_users_age_year')
+			result = self.cursor.fetchall()
+			for res in result:
+				response['data'].append([res[0],res[1]])
+			response['status'] = True
+		except mariadb.Error as e:
+			response['data'].append(e)
+			response['success'] = False
+		return(response)

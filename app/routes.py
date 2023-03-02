@@ -12,6 +12,7 @@ def index():
 	result_data['top_tags'] = lookups.get_top_tags(10)
 	result_data['top_badges'] = lookups.get_top_badges(10)
 	result_data['question_details'] = lookups.get_index_question_details()
+	result_data['user_years'] = lookups.get_user_years()
 	return render_template('index.html.jinja', data=result_data)
 
 @app.route('/ajax/update_index_bar_chart')
