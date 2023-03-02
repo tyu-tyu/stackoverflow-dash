@@ -196,7 +196,7 @@ button:disabled { //Saves a lot of JS so using important
 	color: var(--bg-light) !important; 
 	background-color: var(--bg-grey) !important;
 	border: solid 1px black !important;
-	cursor: wait !important;
+	cursor: wait;
 }
 
 .nav-btn {
@@ -312,10 +312,13 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 
 .canvas-wrapper {
 	position: relative;
-	height: 30vh;
 	width: 100%;
 	display: flex;
 	justify-content: center;
+	canvas {
+		max-width: 100%;
+		max-height: 100%;
+	}
 }
 
 .button-wrapper {
@@ -352,6 +355,14 @@ $text_aligns: 'left','center','right';
 /* ---------------------------------- Index --------------------------------- */
 .index-main {
 
+	#question-wrapper {
+		height: 25vh;
+	}
+
+	#tags-wrapper, #badge-wrapper {
+		height: 35vh;
+	}
+
 	#stats-box {
 		padding: 0;
 		div {
@@ -365,12 +376,10 @@ $text_aligns: 'left','center','right';
 		}
 	}
 
-	#post-box {
-		.button-wrapper {
-			align-items: center;
-			button {
-				width: 100%;
-			}
+	.button-wrapper {
+		align-items: center;
+		button {
+			width: 100%;
 		}
 	}
 

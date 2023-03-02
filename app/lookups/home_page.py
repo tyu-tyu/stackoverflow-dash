@@ -62,6 +62,23 @@ class home_page:
 			response['data'].append(e)
 			response['success'] = False
 		return(response)
+	
+	def get_top_badges(self,limit):
+		response = {}
+		response['data'] = {}
+		response['data']['badges'] = []
+		response['data']['count'] = []
+		try:
+			self.cursor.callproc('get_top_badges',[limit,])
+			result = self.cursor.fetchall()
+			for res in result:
+				response['data']['badges'].append(res[0])
+				response['data']['count'].append(res[1])
+			response['status'] = True
+		except mariadb.Error as e:
+			response['data'].append(e)
+			response['success'] = False
+		return(response)
 
 	def get_index_question_details(self):
 		response = {}

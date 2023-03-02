@@ -366,7 +366,7 @@ button:disabled {
   color: var(--bg-light) !important;
   background-color: var(--bg-grey) !important;
   border: solid 1px black !important;
-  cursor: wait !important;
+  cursor: wait;
 }
 
 .nav-btn {
@@ -687,10 +687,13 @@ main {
 /* ------------------------------ Page stylings ----------------------------- */
 .canvas-wrapper {
   position: relative;
-  height: 30vh;
   width: 100%;
   display: flex;
   justify-content: center;
+}
+.canvas-wrapper canvas {
+  max-width: 100%;
+  max-height: 100%;
 }
 
 .button-wrapper {
@@ -729,6 +732,12 @@ main {
 }
 
 /* ---------------------------------- Index --------------------------------- */
+.index-main #question-wrapper {
+  height: 25vh;
+}
+.index-main #tags-wrapper, .index-main #badge-wrapper {
+  height: 35vh;
+}
 .index-main #stats-box {
   padding: 0;
 }
@@ -741,10 +750,10 @@ main {
   border-radius: 10px;
   margin: 10px 0;
 }
-.index-main #post-box .button-wrapper {
+.index-main .button-wrapper {
   align-items: center;
 }
-.index-main #post-box .button-wrapper button {
+.index-main .button-wrapper button {
   width: 100%;
 }
 @media only screen and (min-width: 600px) {

@@ -21,30 +21,46 @@
 		</div>
 	</section>
 	<section id="post-box" class="grid-panel bg-light grid-w-6 grid-sw-12">
-		<h1 class="grid-w-5 grid-sw-10 text-left">Question tags</h1>
-		<div class="grid-w-1 grid-sw-2 button-wrapper">
+		<div class="grid-w-3 grid-sw-12">
+			<h1 class="text-center">Welcome</h1>
+			<p>
+				Welcome to our university website, where we provide insights and metrics based on data from Stack Overflow. 
+				Our platform offers a unique opportunity to explore trends in programming languages, technologies, and practices through analysis of the Stack Overflow community. 
+				Here you can gain valuable insights to inform your teaching, research, and industry partnerships.
+				Join us in exploring the latest developments in the world of technology and programming.
+			</p>
+		</div>
+		<div class="grid-w-3 grid-sw-12">
+			<h1 class="grid-w-3 grid-sw-12 text-center" id="answer-header">Question responses</h1>
+			<div class="grid-w-3 grid-sw-12 canvas-wrapper" id="question-wrapper">
+				<canvas id="acceptanceChart" aria-label="Question responses" role="img"></canvas>
+			</div>
+		</div>
+		<h1 class="grid-w-4 grid-sw-8 text-left">Question tags</h1>
+		<div class="grid-w-2 grid-sw-4 button-wrapper">
 			<button class="btn-green index-tag" id="more-tags"><i class="fa-solid fa-plus"></i></button>
 			<button class="btn-red index-tag" id="less-tags"><i class="fa-solid fa-minus"></i></button>
 		</div>
-		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="tags-box">
+		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="tags-wrapper">
 			<canvas id="tagChart" aria-label="Tags chart" role="img"></canvas>
-		</div>
-		<h1 class="grid-w-3 grid-sw-12 text-center">Unanswered questions</h1>
-		<div class="grid-w-3 grid-sw-12 canvas-wrapper" id="question-wrapper">
-			<canvas id="questionChart" aria-label="Unanswered questions" role="img"></canvas>
-		</div>
-		<h1 class="grid-w-3 grid-sw-12 text-center" id="answer-header">Answer Acceptance Rate</h1>
-		<div class="grid-w-3 grid-sw-12 canvas-wrapper">
-			<canvas id="acceptanceChart" aria-label="Answer acceptance rate" role="img"></canvas>
 		</div>
 	</section>
 	<section id="user-box" class="grid-panel grid-w-6 grid-sw-12 bg-light">
 		<p class="grid-w-12"> {{data | pprint }}</p>
+		<h1 class="grid-w-4 grid-sw-8 text-left">User badges</h1>
+		<div class="grid-w-2 grid-sw-4 button-wrapper">
+			<button class="btn-green index-tag" id="more-badges"><i class="fa-solid fa-plus"></i></button>
+			<button class="btn-red index-tag" id="less-badges"><i class="fa-solid fa-minus"></i></button>
+		</div>
+		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="badge-wrapper">
+			<canvas id="badgeChart" aria-label="Badge chart" role="img"></canvas>
+		</div>
 	</section>
 {% endblock %}
 {% block scripts %}
 	<script>
 		let tag_count = {{ data['top_tags']['data']['tags'] | length }};
+		let badge_count = {{ data['top_badges']['data']['badges'] | length }};
 		let acceptance = [
 			{{ data['question_details']['data'][0] }},
 			{{ data['question_details']['data'][1] }},
@@ -52,14 +68,23 @@
 		];
 		const tag_ctx = document.getElementById('tagChart');
 		const accept_ctx = document.getElementById('acceptanceChart');
+		const badge_ctx = document.getElementById('badgeChart');
 		const index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
+		const index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',{{ data['top_badges']['data']['badges'] | tojson }},{{ data['top_badges']['data']['count'] | tojson }},'');
 		const accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
 		document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
-			tag_count = (e.target && (e.target.id || e.target.parentNode.id) == 'more-tags' ? tag_count + 5 : (e.target && (e.target.id || e.target.parentNode.id) == 'less-tags' ? tag_count - 5 : false));
-			if(tag_count) {
+			if(e.target && ((e.target.id || e.target.parentNode.id) == 'more-tags')) {
+				tag_count = tag_count + 5;
 				result = index_tag_asyncCall();
-			} else {
-				document.getElementById('tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+			} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-tags') {
+				tag_count = tag_count - 5;
+				result = index_tag_asyncCall();
+			} else if(e.target && (e.target.id || e.target.parentNode.id) == 'more-badges') {
+				badge_count = badge_count + 5;
+				result = index_badge_asyncCall();
+			} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-badges') {
+				badge_count = badge_count - 5;
+				result = index_badge_asyncCall();
 			}
 		}));
 	</script>

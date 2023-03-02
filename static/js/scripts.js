@@ -86,13 +86,41 @@ function update_index_tag_chart(chart, tag_count) {
 					chart.update();
 					resolve(true);
 				} else {
-					document.getElementById('tags-box').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+					document.getElementById('tags-wrapper').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
 					reject(false);
 				}		
 			});
 		}
 	});
 }
+
+function update_index_badge_chart(chart, badge_count) {
+	return new Promise((resolve, reject) => {
+		if (badge_count < chart.data.labels.length) {
+			chart.data.labels.splice(-5, 5); // remove the label first
+			chart.data.datasets.forEach(dataset => {
+				dataset.data.pop();
+			});
+			chart.update();
+			resolve(true);
+		} else {
+			makeHttpRequest('/ajax/update_index_badge_chart?count='+badge_count,'GET','JSON','',function(response) {
+				if (response.status) {
+					for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
+						chart.data.labels.push(response.data.badges[index]);
+						chart.data.datasets[0].data[index] = response.data.count[index];
+					}
+					chart.update();
+					resolve(true);
+				} else {
+					document.getElementById('badges-wrapper').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+					reject(false);
+				}		
+			});
+		}
+	});
+}
+
 
 //asnyc function to reduce spam
 async function index_tag_asyncCall() {
@@ -102,9 +130,24 @@ async function index_tag_asyncCall() {
 	document.getElementById('more-tags').disabled = false;
 	if(tag_count > 5) {
 		document.getElementById('less-tags').disabled = false;
+		document.getElementById('less-tags').style.cursor = 'pointer';
+	} else {
+		document.getElementById('less-tags').style.cursor = 'not-allowed';
 	}
 };
 
+async function index_badge_asyncCall() {
+	document.getElementById('more-badges').disabled = true;
+	document.getElementById('less-badges').disabled = true;
+	result = await update_index_badge_chart(index_badge_chart, badge_count);
+	document.getElementById('more-badges').disabled = false;
+	if(badge_count > 5) {
+		document.getElementById('less-badges').disabled = false;
+		document.getElementById('less-badges').style.cursor = 'pointer';
+	} else {
+		document.getElementById('less-badges').style.cursor = 'not-allowed';
+	}
+}
 /* -------------------------------------------------------------------------- */
 /*                                  Trending                                  */
 /* -------------------------------------------------------------------------- */
@@ -192,6 +235,7 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 	});
 
+	// Info panel handling
 	document.getElementById('info-modal-open').addEventListener('click', () => {
 		document.querySelector('main').style.filter = 'blur(2px)';
 		document.getElementById('info-modal').showModal();
