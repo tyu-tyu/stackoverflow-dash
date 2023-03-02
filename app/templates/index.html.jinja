@@ -33,7 +33,13 @@
 		<div class="grid-w-3 grid-sw-12">
 			<h1 class="grid-w-3 grid-sw-12 text-center" id="answer-header">Question responses</h1>
 			<div class="grid-w-3 grid-sw-12 canvas-wrapper" id="question-wrapper">
-				<canvas id="acceptanceChart" aria-label="Question responses" role="img"></canvas>
+				<canvas id="acceptanceChart" aria-label="Question responses" role="img">
+					<p>
+						Unanswered:{{ data['question_details']['data'][0] }},
+						Not accepted:{{ data['question_details']['data'][1] }},
+						Accepted answers:{{ data['table_row_count']['data']['question'] }} - {{ data['question_details']['data'][0] }} - {{ data['question_details']['data'][1] }}
+					</p>
+				</canvas>
 			</div>
 		</div>
 		<h1 class="grid-w-4 grid-sw-8 text-left">Question tags</h1>
@@ -42,8 +48,14 @@
 			<button class="btn-red index-tag" id="less-tags"><i class="fa-solid fa-minus"></i></button>
 		</div>
 		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="tags-wrapper">
-			<canvas id="tagChart" aria-label="Tags chart" role="img"></canvas>
+			<canvas id="tagChart" aria-label="Tags chart" role="img">
+				<p>
+					Most popular tags:{{ data['top_tags']['data']['names']}},
+					Counts of those tags:{{ data['top_tags']['data']['count']}}
+				</p>
+			</canvas>
 		</div>
+		<i class="grid-w-12 text-grey">For more details on a tag and more questions: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
 	</section>
 	<section id="user-box" class="grid-panel grid-w-6 grid-sw-12 bg-light">
 		<p class="grid-w-12"> {{data | pprint }}</p>
@@ -53,14 +65,20 @@
 			<button class="btn-red index-tag" id="less-badges"><i class="fa-solid fa-minus"></i></button>
 		</div>
 		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="badge-wrapper">
-			<canvas id="badgeChart" aria-label="Badge chart" role="img"></canvas>
+			<canvas id="badgeChart" aria-label="Badge chart" role="img">
+				<p>
+					Most popular badges:{{ data['top_badges']['data']['names'] | tojson }},
+					Counts of those badges:{{ data['top_badges']['data']['count'] | tojson }}
+				</p>
+			</canvas>
 		</div>
+		<i class="grid-w-12 text-grey">For more details on user badges: <a href="https://stackoverflow.com/badges" target="_blank" rel="noopener noreferrer">Click here</a></i>
 	</section>
 {% endblock %}
 {% block scripts %}
 	<script>
-		let tag_count = {{ data['top_tags']['data']['tags'] | length }};
-		let badge_count = {{ data['top_badges']['data']['badges'] | length }};
+		let tag_count = {{ data['top_tags']['data']['count'] | length }};
+		let badge_count = {{ data['top_badges']['data']['count'] | length }};
 		let acceptance = [
 			{{ data['question_details']['data'][0] }},
 			{{ data['question_details']['data'][1] }},
@@ -69,23 +87,8 @@
 		const tag_ctx = document.getElementById('tagChart');
 		const accept_ctx = document.getElementById('acceptanceChart');
 		const badge_ctx = document.getElementById('badgeChart');
-		const index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['tags'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
-		const index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',{{ data['top_badges']['data']['badges'] | tojson }},{{ data['top_badges']['data']['count'] | tojson }},'');
+		const index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['names'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
+		const index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',{{ data['top_badges']['data']['names'] | tojson }},{{ data['top_badges']['data']['count'] | tojson }},'');
 		const accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
-		document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
-			if(e.target && ((e.target.id || e.target.parentNode.id) == 'more-tags')) {
-				tag_count = tag_count + 5;
-				result = index_tag_asyncCall();
-			} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-tags') {
-				tag_count = tag_count - 5;
-				result = index_tag_asyncCall();
-			} else if(e.target && (e.target.id || e.target.parentNode.id) == 'more-badges') {
-				badge_count = badge_count + 5;
-				result = index_badge_asyncCall();
-			} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-badges') {
-				badge_count = badge_count - 5;
-				result = index_badge_asyncCall();
-			}
-		}));
 	</script>
 {% endblock %}

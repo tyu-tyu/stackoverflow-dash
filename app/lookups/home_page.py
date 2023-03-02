@@ -49,13 +49,13 @@ class home_page:
 	def get_top_tags(self,limit):
 		response = {}
 		response['data'] = {}
-		response['data']['tags'] = []
+		response['data']['names'] = []
 		response['data']['count'] = []
 		try:
 			self.cursor.callproc('get_top_tags',[limit,])
 			result = self.cursor.fetchall()
 			for res in result:
-				response['data']['tags'].append(res[0])
+				response['data']['names'].append(res[0])
 				response['data']['count'].append(res[1])
 			response['status'] = True
 		except mariadb.Error as e:
@@ -66,13 +66,13 @@ class home_page:
 	def get_top_badges(self,limit):
 		response = {}
 		response['data'] = {}
-		response['data']['badges'] = []
+		response['data']['names'] = []
 		response['data']['count'] = []
 		try:
 			self.cursor.callproc('get_top_badges',[limit,])
 			result = self.cursor.fetchall()
 			for res in result:
-				response['data']['badges'].append(res[0])
+				response['data']['names'].append(res[0])
 				response['data']['count'].append(res[1])
 			response['status'] = True
 		except mariadb.Error as e:

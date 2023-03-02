@@ -67,87 +67,48 @@ function createChart(ctx,type,top_label,labels,data,options) {
 /* -------------------------------------------------------------------------- */
 /*                                    Index                                   */
 /* -------------------------------------------------------------------------- */
-function update_index_tag_chart(chart, tag_count) {
-	return new Promise((resolve, reject) => {
-		if (tag_count < chart.data.labels.length) {
-			chart.data.labels.splice(-5, 5); // remove the label first
-			chart.data.datasets.forEach(dataset => {
-				dataset.data.pop();
-			});
-			chart.update();
-			resolve(true);
-		} else {
-			makeHttpRequest('/ajax/update_index_tag_chart?count='+tag_count,'GET','JSON','',function(response) {
-				if (response.status) {
-					for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
-						chart.data.labels.push(response.data.tags[index]);
-						chart.data.datasets[0].data[index] = response.data.count[index];
-					}
-					chart.update();
-					resolve(true);
-				} else {
-					document.getElementById('tags-wrapper').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
-					reject(false);
-				}		
-			});
-		}
-	});
-}
-
-function update_index_badge_chart(chart, badge_count) {
-	return new Promise((resolve, reject) => {
-		if (badge_count < chart.data.labels.length) {
-			chart.data.labels.splice(-5, 5); // remove the label first
-			chart.data.datasets.forEach(dataset => {
-				dataset.data.pop();
-			});
-			chart.update();
-			resolve(true);
-		} else {
-			makeHttpRequest('/ajax/update_index_badge_chart?count='+badge_count,'GET','JSON','',function(response) {
-				if (response.status) {
-					for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
-						chart.data.labels.push(response.data.badges[index]);
-						chart.data.datasets[0].data[index] = response.data.count[index];
-					}
-					chart.update();
-					resolve(true);
-				} else {
-					document.getElementById('badges-wrapper').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
-					reject(false);
-				}		
-			});
-		}
-	});
-}
-
-
 //asnyc function to reduce spam
-async function index_tag_asyncCall() {
-	document.getElementById('more-tags').disabled = true;
-	document.getElementById('less-tags').disabled = true;
-	result = await update_index_tag_chart(index_tag_chart, tag_count);
-	document.getElementById('more-tags').disabled = false;
-	if(tag_count > 5) {
-		document.getElementById('less-tags').disabled = false;
-		document.getElementById('less-tags').style.cursor = 'pointer';
+async function index_bar_asyncCall(type,count) {
+	document.getElementById('more-'+type).disabled = true;
+	document.getElementById('less-'+type).disabled = true;
+	result = await update_index_bar_chart(type, count);
+	document.getElementById('more-'+type).disabled = false;
+	if(count > 5) {
+		document.getElementById('less-'+type).disabled = false;
+		document.getElementById('less-'+type).style.cursor = 'pointer';
 	} else {
-		document.getElementById('less-tags').style.cursor = 'not-allowed';
+		document.getElementById('less-'+type).style.cursor = 'not-allowed';
 	}
 };
 
-async function index_badge_asyncCall() {
-	document.getElementById('more-badges').disabled = true;
-	document.getElementById('less-badges').disabled = true;
-	result = await update_index_badge_chart(index_badge_chart, badge_count);
-	document.getElementById('more-badges').disabled = false;
-	if(badge_count > 5) {
-		document.getElementById('less-badges').disabled = false;
-		document.getElementById('less-badges').style.cursor = 'pointer';
-	} else {
-		document.getElementById('less-badges').style.cursor = 'not-allowed';
-	}
+function update_index_bar_chart(type, count) {
+	chart = (type == 'tags' ? index_tag_chart : index_badge_chart);
+	return new Promise((resolve, reject) => {
+		if (count < chart.data.labels.length) {
+			chart.data.labels.splice(-5, 5); // remove the label first
+			chart.data.datasets.forEach(dataset => {
+				dataset.data.pop();
+			});
+			chart.update();
+			resolve(true);
+		} else {
+			makeHttpRequest('/ajax/update_index_bar_chart?count='+count+'&type='+type,'GET','JSON','',function(response) {
+				if (response.status) {
+					for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
+						chart.data.labels.push(response.data.names[index]);
+						chart.data.datasets[0].data[index] = response.data.count[index];
+					}
+					chart.update();
+					resolve(true);
+				} else {
+					document.getElementById(type+'-wrapper').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+					reject(false);
+				}		
+			});
+		}
+	});
 }
+
 /* -------------------------------------------------------------------------- */
 /*                                  Trending                                  */
 /* -------------------------------------------------------------------------- */
@@ -192,9 +153,6 @@ function load_trending_table(page_no) {
 	});
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                 Navigation                                 */
-/* -------------------------------------------------------------------------- */
 // Nav menu Called on resize and closing
 function reset_nav_menu() {
 	document.getElementById('side-nav-container').style.width = 0;
@@ -217,7 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById('nav-btn-close').addEventListener('click', () => {
 		reset_nav_menu();
 	});
-	// Dynamic resizing for window changes
+	
 	window.addEventListener('resize', () => {
 		if (this.window.innerWidth < 600){
 			document.getElementById('nav-btn-close').style.display = 'none';
@@ -244,5 +202,23 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById('info-modal-close').addEventListener('click', () => {
 		document.querySelector('main').style.filter = 'none';
 		document.getElementById('info-modal').close();
-	})
+	});
+
+	/* ---------------------------------- index --------------------------------- */
+	document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
+		if(e.target && ((e.target.id || e.target.parentNode.id) == 'more-tags')) {
+			count = tag_count = tag_count + 5;
+			type = 'tags';
+		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-tags') {
+			count = tag_count = tag_count - 5;
+			type = 'tags';
+		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'more-badges') {
+			count = badge_count = badge_count + 5;
+			type = 'badges';
+		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-badges') {
+			count = badge_count = badge_count - 5;
+			type = 'badges';
+		}
+		index_bar_asyncCall(type, count);
+	}));
 });
