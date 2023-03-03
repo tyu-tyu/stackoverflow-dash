@@ -4,9 +4,9 @@
 {% block header %}Stack Overflow Data Dashboards{% endblock %}
 {% block main_name %}index{% endblock %}
 {% block content %}
-	<section id="stats-box" class="grid-panel grid-w-12">
+	<section id="stats-box" class="grid-panel grid-w-12 text-center">
 		<div class="grid-w-3 grid-sw-12 bg-light text-dark">
-			<p class="text-center">Data taken between <i class="fa-solid fa-calendar"></i></p>
+			<p>Data taken between <i class="fa-solid fa-calendar"></i></p>
 			<p><span class="stats-figure"><span class="text-purple-light">{{ data['question_date_range']['data'][0] }} {{ data['question_date_range']['data'][1] }}</span></p>
 		</div>
 		<div class="grid-w-6 grid-sw-12 bg-light text-dark">
@@ -21,7 +21,7 @@
 		</div>
 	</section>
 	<section id="post-box" class="grid-panel bg-light grid-w-6 grid-sw-12">
-		<div class="grid-w-3 grid-sw-12">
+		<div class="grid-w-3 grid-mw-12 grid-sw-12">
 			<h1 class="text-center">Welcome</h1>
 			<p>
 				Welcome to our university website, where we provide insights and metrics based on data from Stack Overflow. 
@@ -30,7 +30,7 @@
 				Join us in exploring the latest developments in the world of technology and programming.
 			</p>
 		</div>
-		<div class="grid-w-3 grid-sw-12">
+		<div class="grid-w-3 grid-mw-12 grid-sw-12">
 			<h1 class="grid-w-3 grid-sw-12 text-center" id="answer-header">Question responses</h1>
 			<div class="grid-w-3 grid-sw-12 canvas-wrapper" id="question-wrapper">
 				<canvas id="acceptanceChart" aria-label="Question responses" role="img">
@@ -58,13 +58,15 @@
 		<i class="grid-w-12 text-grey">For more details on a tag and more questions: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
 	</section>
 	<section id="user-box" class="grid-panel grid-w-6 grid-sw-12 bg-light">
-		<h1 class="grid-w-12 text-left">Users by year created</h1>
-		<p class="grid-w-12 text-center" id="year_list">
-			{% for item in data['user_years']['data'] %}
-				<span class="grid-sw-6 text-purple-light">{{ item.0 }}</span>
-				<span class="grid-sw-6">{{ item.1 }}</span>
-			{% endfor %}
-		</p>
+		<div class="grid-w-6 grid-sw-12 text-center">
+			<h1 class="grid-w-12">Users by year created</h1>
+			<p class="grid-w-12" id="year_list">
+				{% for item in data['user_years']['data'] %}
+					<span class="grid-sw-2 text-purple-light">{{ item.0 }}</span>
+					<span class="grid-sw-2">{{ item.1 }}</span>
+				{% endfor %}
+			</p>
+		</div>
 		<h1 class="grid-w-4 grid-sw-8 text-left">User badges</h1>
 		<div class="grid-w-2 grid-sw-4 button-wrapper">
 			<button class="btn-green index-tag" id="more-badges"><i class="fa-solid fa-plus"></i></button>
@@ -93,7 +95,7 @@
 		const tag_ctx = document.getElementById('tagChart');
 		const accept_ctx = document.getElementById('acceptanceChart');
 		const badge_ctx = document.getElementById('badgeChart');
-		const index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['names'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
+		const tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['names'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
 		const index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',{{ data['top_badges']['data']['names'] | tojson }},{{ data['top_badges']['data']['count'] | tojson }},'');
 		const accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
 	</script>

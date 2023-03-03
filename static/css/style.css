@@ -435,6 +435,13 @@ main {
   height: 100%;
 }
 
+.button-wrapper {
+  align-items: center;
+}
+.button-wrapper button {
+  width: 100%;
+}
+
 /* -------------------------- Grid Utility Classes -------------------------- */
 .grid-w-12 {
   grid-column: span 12;
@@ -688,13 +695,8 @@ main {
 /* ------------------------------ Page stylings ----------------------------- */
 .canvas-wrapper {
   position: relative;
-  width: 100%;
   display: flex;
   justify-content: center;
-}
-.canvas-wrapper canvas {
-  max-width: 100%;
-  max-height: 100%;
 }
 
 .button-wrapper {
@@ -750,16 +752,11 @@ main {
   font-size: var(--large-text);
   border-radius: 10px;
   margin: 10px 0;
-}
-.index-main .button-wrapper {
-  align-items: center;
-}
-.index-main .button-wrapper button {
-  width: 100%;
+  height: calc(100% - 20px);
 }
 .index-main #year_list {
   display: grid;
-  grid-template-columns: subgrid;
+  grid-template-columns: repeat(4, 25%);
   font-size: var(--large-text);
 }
 @media only screen and (min-width: 600px) {
@@ -767,10 +764,13 @@ main {
     flex-direction: row;
   }
   .index-main #year_list {
-    max-height: 25vh;
+    height: 25vh;
   }
 }
 
-/* -------------------------------- Trending -------------------------------- */
+/* ---------------------------------- tags ---------------------------------- */
+.tags-main #tags-wrapper {
+  height: 80vh;
+}
 
 /*# sourceMappingURL=style.css.map */

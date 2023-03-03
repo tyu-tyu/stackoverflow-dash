@@ -1,5 +1,5 @@
 import mariadb
-class home_page:
+class lookup:
 	def __init__(self, cursor):
 		self.cursor = cursor
 

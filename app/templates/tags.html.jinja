@@ -1,0 +1,32 @@
+{% extends "layout.html.jinja" %}
+{% set active_page = "tags" %}
+{% block title %}Tags{% endblock %}
+{% block header %}Tags{% endblock %}
+{% block main_name %}tags{% endblock %}
+{% block content %}
+	<article class="grid-panel bg-light grid-w-12">
+		<h1 class="grid-w-10 grid-sw-8 text-left">Question tags</h1>
+		<div class="grid-w-12 panel-scroll">
+			<table>
+				<thead>
+					<th>Tag</th>
+					<th>Count</th>
+					<th>Total Score</th>
+					<th>Answers in this tag</th>
+					<th>Comments in this tag</th>
+					<th>Total Views</th>
+					<th>Definition</th>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+		</div>
+		<i class="grid-w-12 text-grey">For more details on a tag and more questions: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
+	</article>
+{% endblock %}
+{% block scripts %}
+	<script>
+		let datatable;
+		load_tags_table({{data | tojson}});
+	</script>
+{% endblock %}

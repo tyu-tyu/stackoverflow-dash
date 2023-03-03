@@ -44,6 +44,11 @@ function makeHttpRequest(url, request_type, data_response_type, data, callback) 
 graph_colour_list = ['#5F295F','#0074D9','#FF4136','#2ECC40','#FF851B','#7FDBFF','#B10DC9','#FFDC00','#001f3f','#39CCCC','#01FF70','#85144b','#F012BE','#3D9970','#111111','#AAAAAA'];
 //Creates a chart and places it in supplied canvas
 function createChart(ctx,type,top_label,labels,data,options) {
+	if (options == 'horizontal') {
+		axis = 'y';
+	} else {
+		axis = '';
+	}
 	const chart = new Chart(ctx, {
 		type: type,
 		responsive: true,
@@ -58,7 +63,7 @@ function createChart(ctx,type,top_label,labels,data,options) {
 			}]
 		},
 		options: {
-			options
+			indexAxis: axis		
 		}
 	});
 	return chart;
@@ -153,6 +158,30 @@ function load_trending_table(page_no) {
 	});
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                    Tags                                    */
+/* -------------------------------------------------------------------------- */
+
+function load_tags_table(data) {
+	datatable = new simpleDatatables.DataTable('.tags-main table',{
+		perPage: 25,
+		columns: [{
+			select: 6,
+			sortable: false
+		},{
+			select: [1,2,3,4,5],
+			type: 'number'
+		}]
+	});
+	console.log(data);
+	for (let i = 0; i < data.length; i++) {
+	}
+}
+
+
+/* -------------------------------------------------------------------------- */
+/*                                     NAV                                    */
+/* -------------------------------------------------------------------------- */
 // Nav menu Called on resize and closing
 function reset_nav_menu() {
 	document.getElementById('side-nav-container').style.width = 0;

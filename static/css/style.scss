@@ -268,6 +268,13 @@ main {
 	height: 100%;
 }
 
+.button-wrapper {
+	align-items: center;
+	button {
+		width: 100%;
+	}
+}
+
 /* -------------------------- Grid Utility Classes -------------------------- */
 
 $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
@@ -313,13 +320,8 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 
 .canvas-wrapper {
 	position: relative;
-	width: 100%;
 	display: flex;
 	justify-content: center;
-	canvas {
-		max-width: 100%;
-		max-height: 100%;
-	}
 }
 
 .button-wrapper {
@@ -374,19 +376,13 @@ $text_aligns: 'left','center','right';
 			font-size: var(--large-text);
 			border-radius: 10px;
 			margin: 10px 0;
-		}
-	}
-
-	.button-wrapper {
-		align-items: center;
-		button {
-			width: 100%;
+			height: calc(100% - 20px);
 		}
 	}
 
 	#year_list {
 		display: grid;
-		grid-template-columns: subgrid;
+		grid-template-columns: repeat(4, 25%);
 		font-size: var(--large-text);
 	}
 
@@ -395,8 +391,8 @@ $text_aligns: 'left','center','right';
 			flex-direction: row;
 		}
 		#year_list {
-			max-height: 25vh;
+			height: 25vh;
 		}
 	}
 }
-/* -------------------------------- Trending -------------------------------- */
+/* ---------------------------------- tags ---------------------------------- */
