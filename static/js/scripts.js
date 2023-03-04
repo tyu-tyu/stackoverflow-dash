@@ -164,7 +164,7 @@ function load_trending_table(page_no) {
 
 function load_tags_table(response) {
 		datatable = new simpleDatatables.DataTable('.tags-main table',{
-			perPage: 25,
+			perPage: 15,
 			columns: [{
 				select: 7,
 				sortable: false
@@ -174,7 +174,6 @@ function load_tags_table(response) {
 			}]
 		});
 		let rows = response.top_tags.data;
-		console.log(rows);
 		for (let i = 0; i < rows.tag_name.length; i++) {
 			let newrow = [{
 				'Tag':rows.tag_name[i],

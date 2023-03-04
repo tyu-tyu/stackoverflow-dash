@@ -5,7 +5,7 @@ from flask import render_template, request
 def index():
 	from app.classes.lookup import lookup
 	result_data = {}
-	lookups = lookup(app.config['CURSOR'])
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
 	result_data['question_date_range'] = lookups.get_index_date_range()
 	result_data['table_row_count'] = lookups.get_table_row_count()
 	result_data['top_tags'] = lookups.get_top_tags(10)
@@ -17,7 +17,7 @@ def index():
 @app.route('/ajax/update_index_bar_chart')
 def update_index_bar_chart():
 	from app.classes.lookup import lookup
-	lookups = lookup(app.config['CURSOR'])
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
 	if request.args.get('type') == 'tags':
 		result_data = lookups.get_top_tags(request.args.get('count'))
 	else:
@@ -32,6 +32,6 @@ def trending():
 def tags():
 	from app.classes.lookup import lookup
 	result_data = {}
-	lookups = lookup(app.config['CURSOR'])
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
 	result_data['top_tags'] = lookups.get_top_tags_complete()
 	return render_template('tags.html.jinja', data=result_data)

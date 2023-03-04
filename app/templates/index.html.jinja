@@ -95,7 +95,7 @@
 		const tag_ctx = document.getElementById('tagChart');
 		const accept_ctx = document.getElementById('acceptanceChart');
 		const badge_ctx = document.getElementById('badgeChart');
-		const tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['names'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
+		const index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['names'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
 		const index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',{{ data['top_badges']['data']['names'] | tojson }},{{ data['top_badges']['data']['count'] | tojson }},'');
 		const accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
 	</script>

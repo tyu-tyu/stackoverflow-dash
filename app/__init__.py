@@ -1,7 +1,7 @@
 #dependencies for init
 import mimetypes
 import mariadb
-from app.db_config import db_config
+from app.db_config import db_config, redis_config
 from flask import Flask
 from redis import Redis
 
@@ -17,4 +17,4 @@ from app import routes
 #app database connections
 app.config['DATABASE'] = mariadb.connect(**db_config())
 app.config['CURSOR'] = app.config['DATABASE'].cursor()
-app.config['REDIS'] = Redis(host='redis', port=6379)
+app.config['REDIS'] = Redis(**redis_config())
