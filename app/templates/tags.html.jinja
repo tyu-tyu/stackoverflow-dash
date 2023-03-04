@@ -4,24 +4,32 @@
 {% block header %}Tags{% endblock %}
 {% block main_name %}tags{% endblock %}
 {% block content %}
+	<aside class="grid-panel info-panel grid-w-12 grid-sw-12">
+		<p class="grid-w-12">
+			<i class="fa-solid fa-circle-info"></i>
+			Sentiment score is a numerical score assigned to a piece of text based on its emotional tone.
+			A higher score typically means more positive reaction and discussion, a lower score typically means more negative reactions and discussions.
+		</p>
+	</aside>
 	<article class="grid-panel bg-light grid-w-12">
 		<h1 class="grid-w-10 grid-sw-8 text-left">Question tags</h1>
 		<div class="grid-w-12 panel-scroll">
 			<table>
 				<thead>
 					<th>Tag</th>
-					<th>Count</th>
+					<th>Question Count</th>
+					<th>Answers Count</th>
+					<th>Comments Count</th>
 					<th>Total Score</th>
-					<th>Answers in this tag</th>
-					<th>Comments in this tag</th>
 					<th>Total Views</th>
-					<th>Definition</th>
+					<th>Sentiment Score</th>
+					<th>About</th>
 				</thead>
-				<tbody>
+				<tbody class="table-striped">
 				</tbody>
 			</table>
 		</div>
-		<i class="grid-w-12 text-grey">For more details on a tag and more questions: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
+		<i class="grid-w-12 text-grey">For more details on a tag and more tags: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
 	</article>
 {% endblock %}
 {% block scripts %}

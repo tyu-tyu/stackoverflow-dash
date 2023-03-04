@@ -14,7 +14,13 @@ services:
       - MYSQL_PASSWORD=tyudb99
       - MYSQL_USER=tyu
       - MYSQL_DATABASE=dashboard_data
-  
+
+  redis:
+    image: redislabs/redismod
+    container_name: redis
+    ports: 
+      - 6379:6379
+
   so_data:
     build:
       context: .
@@ -23,6 +29,7 @@ services:
       - "4996:4996"
     depends_on:
       - mariadb
+      - redis
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin

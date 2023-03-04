@@ -3,6 +3,7 @@ import mimetypes
 import mariadb
 from app.db_config import db_config
 from flask import Flask
+from redis import Redis
 
 #mimetype fix to allow external html + css
 mimetypes.add_type('application/javascript', '.js')
@@ -16,3 +17,4 @@ from app import routes
 #app database connections
 app.config['DATABASE'] = mariadb.connect(**db_config())
 app.config['CURSOR'] = app.config['DATABASE'].cursor()
+app.config['REDIS'] = Redis(host='redis', port=6379)

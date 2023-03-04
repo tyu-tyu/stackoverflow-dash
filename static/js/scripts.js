@@ -162,20 +162,33 @@ function load_trending_table(page_no) {
 /*                                    Tags                                    */
 /* -------------------------------------------------------------------------- */
 
-function load_tags_table(data) {
-	datatable = new simpleDatatables.DataTable('.tags-main table',{
-		perPage: 25,
-		columns: [{
-			select: 6,
-			sortable: false
-		},{
-			select: [1,2,3,4,5],
-			type: 'number'
-		}]
-	});
-	console.log(data);
-	for (let i = 0; i < data.length; i++) {
-	}
+function load_tags_table(response) {
+		datatable = new simpleDatatables.DataTable('.tags-main table',{
+			perPage: 25,
+			columns: [{
+				select: 7,
+				sortable: false
+			},{
+				select: [1,2,3,4,5],
+				type: 'number'
+			}]
+		});
+		let rows = response.top_tags.data;
+		console.log(rows);
+		for (let i = 0; i < rows.tag_name.length; i++) {
+			let newrow = [{
+				'Tag':rows.tag_name[i],
+				'Question Count':rows.question_count[i],
+				'Answers Count':rows.answer_count[i],
+				'Comments Count':rows.comment_count[i],
+				'Total Score':rows.score[i],
+				'Total Views':rows.view_count[i],
+				'Sentiment Score':rows.sentiment[i],
+				'About':'<a href="'+rows.link[i]+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
+			}];
+			datatable.insert(newrow);
+		}
+
 }
 
 

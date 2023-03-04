@@ -698,6 +698,10 @@ main {
   display: flex;
   justify-content: center;
 }
+.canvas-wrapper canvas {
+  max-width: 100%;
+  max-height: 100%;
+}
 
 .button-wrapper {
   display: flex;
@@ -768,9 +772,9 @@ main {
   }
 }
 
-/* ---------------------------------- tags ---------------------------------- */
-.tags-main #tags-wrapper {
-  height: 80vh;
+/* ---------------------------------- Tags ---------------------------------- */
+.datatable-table tbody tr:nth-child(odd) {
+  background-color: var(--off-white);
 }
 
 /*# sourceMappingURL=style.css.map */

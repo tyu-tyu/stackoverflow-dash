@@ -322,6 +322,10 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 	position: relative;
 	display: flex;
 	justify-content: center;
+	canvas {
+		max-width: 100%;
+		max-height: 100%;
+	}
 }
 
 .button-wrapper {
@@ -395,4 +399,9 @@ $text_aligns: 'left','center','right';
 		}
 	}
 }
-/* ---------------------------------- tags ---------------------------------- */
+/* ---------------------------------- Tags ---------------------------------- */
+
+
+.datatable-table tbody tr:nth-child(odd) {
+	background-color: var(--off-white);
+}
