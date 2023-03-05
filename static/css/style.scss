@@ -432,3 +432,23 @@ $text_aligns: 'left','center','right';
 .datatable-table tbody tr:nth-child(odd) {
 	background-color: var(--off-white);
 }
+
+.included-tags {
+	columns: 3;
+	li {
+		display: flex;
+		justify-content: space-between;
+
+		i:hover {
+			color: var(--hover-primary);
+			cursor: pointer;
+		}
+	}
+	li:nth-child(odd) {
+		background-color: var(--off-white);
+	}
+}
+
+.autoComplete_wrapper {
+	width: 100%;
+}

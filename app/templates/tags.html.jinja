@@ -17,17 +17,21 @@
 	<form id="tags-form" class="grid-panel grid-w-12 bg-light hidden">
 		<div class="grid-w-3 grid-sw-6 form-item">
 			<label for="date_start">Start Date:</label>
-			<input type="date" value="" id="date_start" name="date_start">
+			<input type="date" value="{{ data['question_date_range']['data'][2] }}" id="date_start" name="date_start">
 		</div>
 		<div class="grid-w-3 grid-sw-6 form-item">
 			<label for="date_end">End Date:</label>
-			<input type="date" value="" id="date_end" name="date_end">
+			<input type="date" value="{{ data['question_date_range']['data'][3] }}" id="date_end" name="date_end">
 		</div>
-		<div class="grid-w-6 grid-sw-12 form-item">
+		<div class="grid-w-3 grid-sw-12 form-item">
 			<label for="include">Include:</label>
-			    <div class="autoComplete_wrapper">
-        			<input id="tag_search" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
-    			</div>
+			<div class="autoComplete_wrapper">
+				<input id="tag_search" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
+			</div>
+		</div>
+		<div class="grid-w-12 form-item">
+			<ul class="included-tags">
+			</ul>
 		</div>
 	</form>
 	<article class="grid-panel bg-light grid-w-12">
@@ -55,6 +59,12 @@
 	<script>
 		let datatable;
 		load_tags_table({{data | tojson}});
-		tag_list = make_auto_complete('#tag_search','Search for tags',['test', 'test2', 'test3'])
+		tag_list = make_auto_complete('#tag_search','Search for tags...',{{ data['tag_list']['data'] }})
+
+		document.addEventListener('click', function(e) {
+			if(e.target && e.target.classList.contains('remove-filter')) {
+				e.target.parentElement.remove();
+			}
+		});
 	</script>
 {% endblock %}

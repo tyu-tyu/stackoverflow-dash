@@ -162,3 +162,25 @@ class lookup:
 		else:
 			response['data'] = cache
 		return(response)
+	
+	def get_tag_list(self):
+		response = {}
+		response['data'] = []
+		cache = self.cache.cache_check('get_tag_list')
+		if cache == False:
+			try:
+				self.cursor.callproc('get_tag_list')
+				result = self.cursor.fetchall()
+				for res in result:
+					row = {}
+					row['id'] = res[0]
+					row['tag'] = res[1]
+					response['data'].append(row)
+				self.cache.cache_set('get_tag_list',response['data'])
+				response['success'] = True
+			except mariadb.Error as e:
+				response['error'] = e
+				response['success'] = False
+		else:
+			response['data'] = cache
+		return(response)

@@ -803,4 +803,23 @@ main {
   background-color: var(--off-white);
 }
 
+.included-tags {
+  columns: 3;
+}
+.included-tags li {
+  display: flex;
+  justify-content: space-between;
+}
+.included-tags li i:hover {
+  color: var(--hover-primary);
+  cursor: pointer;
+}
+.included-tags li:nth-child(odd) {
+  background-color: var(--off-white);
+}
+
+.autoComplete_wrapper {
+  width: 100%;
+}
+
 /*# sourceMappingURL=style.css.map */

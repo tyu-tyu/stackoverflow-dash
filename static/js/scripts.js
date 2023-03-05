@@ -73,10 +73,10 @@ function make_auto_complete(selector,placeholder,data) {
 	const autoCompleteJS = new autoComplete({
 		selector: selector,
 		placeHolder: placeholder,
-		wrapper: false,
 		data: {
 			src: data,
 			cache: true,
+			keys: ['tag'] 
 		},
 		resultsList: {
 			element: (list, data) => {
@@ -92,6 +92,7 @@ function make_auto_complete(selector,placeholder,data) {
 				}
 			},
 			noResults: true,
+			maxResults: 50
 		},
 		resultItem: {
 			highlight: true
@@ -99,7 +100,7 @@ function make_auto_complete(selector,placeholder,data) {
 		events: {
 			input: {
 				selection: (event) => {
-					add_to_filters(event.detail.selection.value)
+					add_to_filters(event.detail.selection.value.id,event.detail.selection.value.tag);
 				}
 			}
 		}
@@ -107,7 +108,9 @@ function make_auto_complete(selector,placeholder,data) {
 	return autoCompleteJS;
 };
 
-
+function add_to_filters(key,name) {
+	document.getElementsByClassName('included-tags')[0].innerHTML+='<li data-id="'+key+'"><span>'+name+'</span><i class="fa-solid fa-xmark remove-filter"></li>';
+}
 /* -------------------------------------------------------------------------- */
 /*                                    Index                                   */
 /* -------------------------------------------------------------------------- */
