@@ -16,9 +16,9 @@ class lookup:
 				for res in result:
 					response['data'].append(res[0])
 				self.cache.cache_set('get_index_date_range',response['data'])
-				response['status'] = True
+				response['success'] = True
 			except mariadb.Error as e:
-				response['data'].append(e)
+				response['error'] = e
 				response['success'] = False
 		else:
 			response['data'] = cache
@@ -36,9 +36,9 @@ class lookup:
 					response['data'][res[0]] = res[1]
 				response['data']['posts'] = response['data']['question'] + response['data']['answer']
 				self.cache.cache_set('get_table_row_count',response['data'])
-				response['status'] = True
+				response['success'] = True
 			except mariadb.Error as e:
-				response['data'].append(e)
+				response['error'] = e
 				response['success'] = False
 		else:
 			response['data'] = cache
@@ -58,9 +58,9 @@ class lookup:
 					response['data']['names'].append(res[0])
 					response['data']['count'].append(res[1])
 				self.cache.cache_set('get_top_tags',response['data'])
-				response['status'] = True
+				response['success'] = True
 			except mariadb.Error as e:
-				response['data'].append(e)
+				response['error'] = e
 				response['success'] = False
 		else:
 			response['data'] = cache
@@ -80,9 +80,9 @@ class lookup:
 					response['data']['names'].append(res[0])
 					response['data']['count'].append(res[1])
 				self.cache.cache_set('get_top_badges',response['data'])
-				response['status'] = True
+				response['success'] = True
 			except mariadb.Error as e:
-				response['data'].append(e)
+				response['error'] = e
 				response['success'] = False
 		else:
 			response['data'] = cache
@@ -99,9 +99,9 @@ class lookup:
 				for res in result:
 					response['data'].append(res[0])
 				self.cache.cache_set('get_index_question_details',response['data'])
-				response['status'] = True
+				response['success'] = True
 			except mariadb.Error as e:
-				response['data'].append(e)
+				response['error'] = e
 				response['success'] = False
 		else:
 			response['data'] = cache
@@ -109,18 +109,21 @@ class lookup:
 	
 	def get_user_years(self):
 		response = {}
-		response['data'] = []
+		response['data'] = {}
+		response['data']['years'] = []
+		response['data']['count'] = []
 		cache = self.cache.cache_check('get_user_years')
 		if cache == False:
 			try:
-				self.cursor.callproc('get_users_age_year')
+				self.cursor.callproc('get_user_years')
 				result = self.cursor.fetchall()
 				for res in result:
-					response['data'].append([res[0],res[1]])
+					response['data']['years'].append(res[0])
+					response['data']['count'].append(res[1])
 				self.cache.cache_set('get_user_years',response['data'])
-				response['status'] = True
+				response['success'] = True
 			except mariadb.Error as e:
-				response['data'].append(e)
+				response['error'] = e
 				response['success'] = False
 		else:
 			response['data'] = cache
@@ -152,9 +155,9 @@ class lookup:
 					response['data']['sentiment'].append(res[6])
 					response['data']['link'].append(res[7])
 				self.cache.cache_set('get_top_tags_complete',response['data'])
-				response['status'] = True
+				response['success'] = True
 			except mariadb.Error as e:
-				response['data'].append(e)
+				response['error'] = e
 				response['success'] = False
 		else:
 			response['data'] = cache

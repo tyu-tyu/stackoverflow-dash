@@ -739,12 +739,6 @@ main {
 }
 
 /* ---------------------------------- Index --------------------------------- */
-.index-main #question-wrapper {
-  height: 25vh;
-}
-.index-main #tags-wrapper, .index-main #badge-wrapper {
-  height: 35vh;
-}
 .index-main #stats-box {
   padding: 0;
 }
@@ -758,17 +752,20 @@ main {
   margin: 10px 0;
   height: calc(100% - 20px);
 }
-.index-main #year_list {
-  display: grid;
-  grid-template-columns: repeat(4, 25%);
-  font-size: var(--large-text);
-}
 @media only screen and (min-width: 600px) {
   .index-main #stats-box div:not(:first-child) {
     flex-direction: row;
   }
-  .index-main #year_list {
+}
+@media only screen and (min-width: 992px) {
+  .index-main #question-wrapper, .index-main #user-wrapper {
     height: 25vh;
+  }
+  .index-main .summary-text {
+    height: 25vh;
+  }
+  .index-main #tags-wrapper, .index-main #badges-wrapper {
+    height: 35vh;
   }
 }
 

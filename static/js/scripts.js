@@ -38,7 +38,7 @@ function makeHttpRequest(url, request_type, data_response_type, data, callback) 
 			default:
 				throw new Error('Data response type does not match available response types');
 		}
-	}).then(data => callback(data)).catch(error => console.log(error));
+	}).then(data => callback(data)).catch(error => console.trace(error));
 };
 
 graph_colour_list = ['#5F295F','#0074D9','#FF4136','#2ECC40','#FF851B','#7FDBFF','#B10DC9','#FFDC00','#001f3f','#39CCCC','#01FF70','#85144b','#F012BE','#3D9970','#111111','#AAAAAA'];
@@ -84,7 +84,7 @@ async function index_bar_asyncCall(type,count) {
 	} else {
 		document.getElementById('less-'+type).style.cursor = 'not-allowed';
 	}
-};
+}
 
 function update_index_bar_chart(type, count) {
 	chart = (type == 'tags' ? index_tag_chart : index_badge_chart);
@@ -98,7 +98,7 @@ function update_index_bar_chart(type, count) {
 			resolve(true);
 		} else {
 			makeHttpRequest('/ajax/update_index_bar_chart?count='+count+'&type='+type,'GET','JSON','',function(response) {
-				if (response.status) {
+				if (response.success) {
 					for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
 						chart.data.labels.push(response.data.names[index]);
 						chart.data.datasets[0].data[index] = response.data.count[index];

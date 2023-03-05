@@ -23,11 +23,10 @@
 	<section id="post-box" class="grid-panel bg-light grid-w-6 grid-sw-12">
 		<div class="grid-w-3 grid-mw-12 grid-sw-12">
 			<h1 class="text-center">Welcome</h1>
-			<p>
-				Welcome to our university website, where we provide insights and metrics based on data from Stack Overflow. 
-				Our platform offers a unique opportunity to explore trends in programming languages, technologies, and practices through analysis of the Stack Overflow community. 
-				Here you can gain valuable insights to inform your teaching, research, and industry partnerships.
-				Join us in exploring the latest developments in the world of technology and programming.
+			<p class="summary-text">
+				Welcome this site offers insights and metrics based on data from Stack Overflow. 
+				Our platform offers an opportunity to explore trends in programming languages, technologies, and practices through analysis of the Stack Overflow community. 
+				Here you can gain valuable insights to inform your teaching and research.
 			</p>
 		</div>
 		<div class="grid-w-3 grid-mw-12 grid-sw-12">
@@ -50,29 +49,29 @@
 		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="tags-wrapper">
 			<canvas id="tagChart" aria-label="Tags chart" role="img">
 				<p>
-					Most popular tags:{{ data['top_tags']['data']['names']}},
-					Counts of those tags:{{ data['top_tags']['data']['count']}}
+					Most popular tags:{{ data['top_tags']['data']['names'] }},
+					Counts of those tags:{{ data['top_tags']['data']['count'] }}
 				</p>
 			</canvas>
 		</div>
 		<i class="grid-w-12 text-grey">For more details on a tag and more questions: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
 	</section>
 	<section id="user-box" class="grid-panel grid-w-6 grid-sw-12 bg-light">
-		<div class="grid-w-6 grid-sw-12 text-center">
-			<h1 class="grid-w-12">Users by year created</h1>
-			<p class="grid-w-12" id="year_list">
-				{% for item in data['user_years']['data'] %}
-					<span class="grid-sw-2 text-purple-light">{{ item.0 }}</span>
-					<span class="grid-sw-2">{{ item.1 }}</span>
-				{% endfor %}
-			</p>
+		<h1 class="grid-w-12 grid-sw-12 text-left text-center">Users by year created</h1>
+		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="user-wrapper">
+			<canvas id="userChart" aria-label="User Age Chart" role="img">
+				<p>
+					Year:{{ data['user_years']['data']['years'] }},
+					Amount of users created:{{ data['user_years']['data']['count'] }}
+				</p>
+			</canvas>
 		</div>
 		<h1 class="grid-w-4 grid-sw-8 text-left">User badges</h1>
 		<div class="grid-w-2 grid-sw-4 button-wrapper">
 			<button class="btn-green index-tag" id="more-badges"><i class="fa-solid fa-plus"></i></button>
 			<button class="btn-red index-tag" id="less-badges"><i class="fa-solid fa-minus"></i></button>
 		</div>
-		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="badge-wrapper">
+		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="badges-wrapper">
 			<canvas id="badgeChart" aria-label="Badge chart" role="img">
 				<p>
 					Most popular badges:{{ data['top_badges']['data']['names'] | tojson }},
@@ -95,8 +94,10 @@
 		const tag_ctx = document.getElementById('tagChart');
 		const accept_ctx = document.getElementById('acceptanceChart');
 		const badge_ctx = document.getElementById('badgeChart');
+		const user_ctx = document.getElementById('userChart');
 		const index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',{{ data['top_tags']['data']['names'] | tojson }},{{ data['top_tags']['data']['count'] | tojson }},'');
 		const index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',{{ data['top_badges']['data']['names'] | tojson }},{{ data['top_badges']['data']['count'] | tojson }},'');
 		const accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
+		const user_line_chart = createChart(user_ctx, 'line','Age of users by year',{{ data['user_years']['data']['years'] | tojson }},{{ data['user_years']['data']['count'] | tojson}},'');
 	</script>
 {% endblock %}
