@@ -68,6 +68,45 @@ function createChart(ctx,type,top_label,labels,data,options) {
 	});
 	return chart;
 };
+/* ---------------------------- init autoComplete --------------------------- */
+function make_auto_complete(selector,placeholder,data) {
+	const autoCompleteJS = new autoComplete({
+		selector: selector,
+		placeHolder: placeholder,
+		wrapper: false,
+		data: {
+			src: data,
+			cache: true,
+		},
+		resultsList: {
+			element: (list, data) => {
+				if (!data.results.length) {
+					// Create "No Results" message element
+					const message = document.createElement("div");
+					// Add class to the created element
+					message.setAttribute("class", "no_result");
+					// Add message text content
+					message.innerHTML = `<span>Found No Results for "${data.query}"</span>`;
+					// Append message element to the results list
+					list.prepend(message);
+				}
+			},
+			noResults: true,
+		},
+		resultItem: {
+			highlight: true
+		},
+		events: {
+			input: {
+				selection: (event) => {
+					add_to_filters(event.detail.selection.value)
+				}
+			}
+		}
+	});
+	return autoCompleteJS;
+};
+
 
 /* -------------------------------------------------------------------------- */
 /*                                    Index                                   */
@@ -262,4 +301,9 @@ document.addEventListener("DOMContentLoaded", () => {
 		}
 		index_bar_asyncCall(type, count);
 	}));
+
+	/* ---------------------------------- tags ---------------------------------- */
+	document.getElementById('tags-filter').addEventListener('click', () => {
+		document.getElementById('tags-form').classList.toggle('hidden');
+	});
 });

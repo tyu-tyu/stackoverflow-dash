@@ -4,13 +4,32 @@
 {% block header %}Tags{% endblock %}
 {% block main_name %}tags{% endblock %}
 {% block content %}
-	<aside class="grid-panel info-panel grid-w-12 grid-sw-12">
+	<aside class="grid-panel info-panel grid-w-11 grid-sw-12">
 		<p class="grid-w-12">
 			<i class="fa-solid fa-circle-info"></i>
 			Sentiment score is a numerical score assigned to a piece of text based on its emotional tone, ranging between 100 to -100.
 			A higher score typically means more positive reaction and discussion, a lower score typically means more negative reactions and discussions.
 		</p>
 	</aside>
+	<button class="btn-dark grid-w-1 grid-sw-12" id="tags-filter">
+		<i class="fa-solid fa-filter"></i>
+	</button>
+	<form id="tags-form" class="grid-panel grid-w-12 bg-light hidden">
+		<div class="grid-w-3 grid-sw-6 form-item">
+			<label for="date_start">Start Date:</label>
+			<input type="date" value="" id="date_start" name="date_start">
+		</div>
+		<div class="grid-w-3 grid-sw-6 form-item">
+			<label for="date_end">End Date:</label>
+			<input type="date" value="" id="date_end" name="date_end">
+		</div>
+		<div class="grid-w-6 grid-sw-12 form-item">
+			<label for="include">Include:</label>
+			    <div class="autoComplete_wrapper">
+        			<input id="tag_search" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
+    			</div>
+		</div>
+	</form>
 	<article class="grid-panel bg-light grid-w-12">
 		<h1 class="grid-w-8 grid-sw-12 text-left">Question tags</h1>
 		<i class="grid-w-4 grid-sw-12 text-right text-grey">For more details on a tag and more tags: <a href="https://stackoverflow.com/tags" target="_blank" rel="noopener noreferrer">Click here</a></i>
@@ -36,5 +55,6 @@
 	<script>
 		let datatable;
 		load_tags_table({{data | tojson}});
+		tag_list = make_auto_complete('#tag_search','Search for tags',['test', 'test2', 'test3'])
 	</script>
 {% endblock %}

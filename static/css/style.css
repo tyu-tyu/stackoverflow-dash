@@ -44,6 +44,7 @@ a, p, ol, ul, dl, dd {
 
 body {
   transition: 0.5s;
+  scrollbar-gutter: stable both-edges;
 }
 
 ol, ul, dl {
@@ -246,7 +247,7 @@ a:hover {
 }
 
 .btn-dark:hover {
-  color: black;
+  color: #FCFCFD;
   background-color: #1c1c1c;
 }
 
@@ -353,10 +354,13 @@ header .icon, aside .icon {
   color: var(--hover-primary);
   transition: 0.5s;
 }
+#side-nav-container button {
+  height: 2rem;
+}
 
 button {
   cursor: pointer;
-  height: 2rem;
+  height: 100%;
   font-size: var(--large-text);
   background-color: var(--bg-light);
   border-radius: 5px;
@@ -693,6 +697,10 @@ main {
   }
 }
 /* ------------------------------ Page stylings ----------------------------- */
+.hidden {
+  display: none;
+}
+
 .canvas-wrapper {
   position: relative;
   display: flex;
@@ -736,6 +744,27 @@ main {
 
 .text-right {
   text-align: right;
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 10px;
+}
+.form-item input {
+  height: 40px;
+  width: 100%;
+  border: solid 1px var(--bg-dark);
+  border-radius: 5px;
+  font-size: var(--default-text);
+  font-family: "Signika Negative", sans-serif;
+}
+.form-item input[type=date] {
+  height: 36px;
+}
+
+.form-button {
+  height: calc(var(--large-text) + 6px);
 }
 
 /* ---------------------------------- Index --------------------------------- */

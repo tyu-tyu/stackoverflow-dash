@@ -6,8 +6,6 @@
 	background-color: var(--off-white);
 	font-size: 100%;
 	font-family: 'Signika Negative', sans-serif;
-	// font-family: 'Inter', sans-serif;
-	// font-family: 'Signika Negative', sans-serif;
 	--default-spacing: 1rem;
 	--small-text: 0.8rem;
 	--default-text: 1.1rem;
@@ -49,6 +47,7 @@ a, p, ol, ul, dl, dd {
 
 body {
 	transition: 0.5s;
+	scrollbar-gutter: stable both-edges;
 }
 
 ol, ul, dl {
@@ -116,7 +115,11 @@ $colors: ('purple-light': #f311f3, 'purple-dark': #5f295f, 'green': #32db18, 're
 	}
 
 	.btn-#{$name}:hover {
-		color: darken($hex, 35%);
+		@if $name == 'dark' {
+			color: #FCFCFD;
+		} @else {
+			color: darken($hex, 35%);
+		}
 		background-color: lighten($hex, 5%);
 	}
 }
@@ -182,11 +185,15 @@ header .icon, aside .icon {
 		color: var(--hover-primary);
 		transition: 0.5s;
 	}
+
+	button {
+		height: 2rem;
+	}
 }
 
 button {
 	cursor: pointer;
-	height: 2rem;
+	height: 100%;
 	font-size: var(--large-text);
 	background-color: var(--bg-light);
 	border-radius: 5px;
@@ -317,6 +324,9 @@ $sizes: 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1;
 }
 
 /* ------------------------------ Page stylings ----------------------------- */
+.hidden {
+	display: none;
+}
 
 .canvas-wrapper {
 	position: relative;
@@ -357,6 +367,27 @@ $text_aligns: 'left','center','right';
 	.text-#{$text_align} {
 		text-align: #{$text_align};
 	}
+}
+
+.form-item {
+	display: flex;
+	flex-direction: column;
+	margin: 20px 10px;
+	input {
+		height: 40px;
+		width: 100%;
+		border: solid 1px var(--bg-dark);
+		border-radius: 5px;
+		font-size: var(--default-text);
+		font-family: 'Signika Negative', sans-serif;
+	}
+	input[type=date] {
+		height: 36px;
+	}
+}
+
+.form-button {
+	height: calc(var(--large-text) + 6px);
 }
 
 /* ---------------------------------- Index --------------------------------- */
