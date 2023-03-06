@@ -749,6 +749,7 @@ main {
 .form-item {
   display: flex;
   flex-direction: column;
+  height: 60px;
   margin: 20px 10px;
 }
 .form-item input {
@@ -763,8 +764,9 @@ main {
   height: 36px;
 }
 
-.form-button {
-  height: calc(var(--large-text) + 6px);
+.form-btn {
+  margin-top: 20px;
+  height: 40px;
 }
 
 /* ---------------------------------- Index --------------------------------- */
@@ -803,18 +805,18 @@ main {
   background-color: var(--off-white);
 }
 
-.included-tags {
+.filter-list {
   columns: 3;
 }
-.included-tags li {
+.filter-list li {
   display: flex;
   justify-content: space-between;
 }
-.included-tags li i:hover {
+.filter-list li i:hover {
   color: var(--hover-primary);
   cursor: pointer;
 }
-.included-tags li:nth-child(odd) {
+.filter-list li:nth-child(odd) {
   background-color: var(--off-white);
 }
 

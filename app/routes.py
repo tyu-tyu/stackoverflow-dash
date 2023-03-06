@@ -37,3 +37,10 @@ def tags():
 	result_data['question_date_range'] = lookups.get_index_date_range()
 	result_data['tag_list'] = lookups.get_tag_list()
 	return render_template('tags.html.jinja', data=result_data)
+
+@app.route('/ajax/filtered_tags', methods=['GET', 'POST'])
+def filter_tags():
+	from app.classes.lookup import lookup
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
+	result_data = lookups.get_filtered_tags(request.form)
+	return result_data

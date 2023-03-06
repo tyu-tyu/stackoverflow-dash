@@ -123,6 +123,7 @@ $colors: ('purple-light': #f311f3, 'purple-dark': #5f295f, 'green': #32db18, 're
 		background-color: lighten($hex, 5%);
 	}
 }
+
 /* --------------------------------- Header --------------------------------- */
 
 header {
@@ -372,6 +373,7 @@ $text_aligns: 'left','center','right';
 .form-item {
 	display: flex;
 	flex-direction: column;
+	height: 60px;
 	margin: 20px 10px;
 	input {
 		height: 40px;
@@ -386,8 +388,9 @@ $text_aligns: 'left','center','right';
 	}
 }
 
-.form-button {
-	height: calc(var(--large-text) + 6px);
+.form-btn {
+	margin-top: 20px;
+	height: 40px;
 }
 
 /* ---------------------------------- Index --------------------------------- */
@@ -433,7 +436,7 @@ $text_aligns: 'left','center','right';
 	background-color: var(--off-white);
 }
 
-.included-tags {
+.filter-list {
 	columns: 3;
 	li {
 		display: flex;

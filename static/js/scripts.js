@@ -99,7 +99,7 @@ function make_auto_complete(selector,placeholder,data) {
 		},
 		events: {
 			input: {
-				selection: (event) => {
+				selection(event) {
 					add_to_filters(event.detail.selection.value.id,event.detail.selection.value.tag);
 				}
 			}
@@ -109,7 +109,8 @@ function make_auto_complete(selector,placeholder,data) {
 };
 
 function add_to_filters(key,name) {
-	document.getElementsByClassName('included-tags')[0].innerHTML+='<li data-id="'+key+'"><span>'+name+'</span><i class="fa-solid fa-xmark remove-filter"></li>';
+	document.getElementsByClassName('filter-list')[0].innerHTML+='<li data-id="'+key+'"><span>'+name+'</span><i class="fa-solid fa-xmark remove-filter"></li>';
+	document.getElementById('hidden-form').innerHTML+='<input type="hidden" name="'+name+'" value="'+key+'">';
 }
 /* -------------------------------------------------------------------------- */
 /*                                    Index                                   */
@@ -205,31 +206,31 @@ function load_trending_table(page_no) {
 /* -------------------------------------------------------------------------- */
 
 function load_tags_table(response) {
-		datatable = new simpleDatatables.DataTable('.tags-main table',{
-			perPage: 15,
-			columns: [{
-				select: 7,
-				sortable: false
-			},{
-				select: [1,2,3,4,5],
-				type: 'number'
-			}]
-		});
-		let rows = response.top_tags.data;
-		for (let i = 0; i < rows.tag_name.length; i++) {
-			let newrow = [{
-				'Tag':rows.tag_name[i],
-				'Question Count':rows.question_count[i],
-				'Answers Count':rows.answer_count[i],
-				'Comments Count':rows.comment_count[i],
-				'Total Score':rows.score[i],
-				'Total Views':rows.view_count[i],
-				'Sentiment Score':rows.sentiment[i],
-				'About':'<a href="'+rows.link[i]+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
-			}];
-			datatable.insert(newrow);
-		}
-
+	console.log(response);
+	datatable = new simpleDatatables.DataTable('.tags-main table',{
+		perPage: 15,
+		columns: [{
+			select: 7,
+			sortable: false
+		},{
+			select: [1,2,3,4,5],
+			type: 'number'
+		}]
+	});
+	let rows = response;
+	for (let i = 0; i < rows.tag_name.length; i++) {
+		let newrow = [{
+			'Tag':rows.tag_name[i],
+			'Question Count':rows.question_count[i],
+			'Answers Count':rows.answer_count[i],
+			'Comments Count':rows.comment_count[i],
+			'Total Score':rows.score[i],
+			'Total Views':rows.view_count[i],
+			'Sentiment Score':rows.sentiment[i],
+			'About':'<a href="'+rows.link[i]+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
+		}];
+		datatable.insert(newrow);
+	}
 }
 
 
@@ -245,6 +246,9 @@ function reset_nav_menu() {
 	document.getElementsByClassName('active')[0].style.opacity = 0;
 }
 
+/* -------------------------------------------------------------------------- */
+/*                                   On Load                                  */
+/* -------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
 	// Header animation handling
 	document.getElementById('nav-btn-open').addEventListener('click', () => {
@@ -306,7 +310,19 @@ document.addEventListener("DOMContentLoaded", () => {
 	}));
 
 	/* ---------------------------------- tags ---------------------------------- */
-	document.getElementById('tags-filter').addEventListener('click', () => {
-		document.getElementById('tags-form').classList.toggle('hidden');
-	});
+	let tag_filter_form = document.getElementById('tag-filter-form');
+	if(tag_filter_form) {
+		tag_filter_form.addEventListener('submit', function(e) {
+			datatable.destroy();
+			e.preventDefault();
+			let data = new FormData(tag_filter_form);
+			makeHttpRequest('/ajax/filtered_tags','POST','JSON',data,function(response) {
+				if(response['success']){
+					load_tags_table(response['data']);
+				} else {
+					tag_filter_form.innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+				}
+			});
+		});
+	}
 });
