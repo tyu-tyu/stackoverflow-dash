@@ -57,15 +57,6 @@
 {% endblock %}
 {% block scripts %}
 	<script>
-		let datatable;
-		load_tags_table({{ data['top_tags']['data'] | tojson }});
-		tag_list = make_auto_complete('#tag_search','Search for tags...',{{ data['tag_list']['data'] }})
-
-		document.addEventListener('click', function(e) {
-			if(e.target && e.target.classList.contains('remove-filter')) {
-				document.querySelector('input[value="'+e.target.parentElement.dataset.id+'"]').remove();
-				e.target.parentElement.remove();
-			}
-		});
+		init_tags();
 	</script>
 {% endblock %}

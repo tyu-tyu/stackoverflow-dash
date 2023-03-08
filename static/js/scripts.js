@@ -115,51 +115,104 @@ function add_to_filters(key,name) {
 /* -------------------------------------------------------------------------- */
 /*                                    Index                                   */
 /* -------------------------------------------------------------------------- */
-//asnyc function to reduce spam
-async function index_bar_asyncCall(type,count) {
-	document.getElementById('more-'+type).disabled = true;
-	document.getElementById('less-'+type).disabled = true;
-	result = await update_index_bar_chart(type, count);
-	document.getElementById('more-'+type).disabled = false;
-	if(count > 5) {
-		document.getElementById('less-'+type).disabled = false;
-		document.getElementById('less-'+type).style.cursor = 'pointer';
-	} else {
-		document.getElementById('less-'+type).style.cursor = 'not-allowed';
+function init_index() {
+	let tag_count;
+	let badge_count;
+	let tag_ctx;
+	let accept_ctx;
+	let badge_ctx;
+	let user_ctx;
+	let index_tag_chart;
+	let index_badge_chart;
+	let accept_doughnut_chart;
+	let user_line_chart;
+	makeHttpRequest('/ajax/load_index','GET','JSON','',function(response) {
+		tag_count = response.top_tags.data.count.length;
+		badge_count = response.top_badges.data.count.length;
+		let acceptance = [
+			response.question_details.data[0],
+			response.question_details.data[1],
+			response.table_row_count.data.question - response.question_details.data[0] - response.question_details.data[1]
+		];
+		tag_ctx = document.getElementById('tagChart');
+		accept_ctx = document.getElementById('acceptanceChart');
+		badge_ctx = document.getElementById('badgeChart');
+		user_ctx = document.getElementById('userChart');
+		index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',response.top_tags.data.names,response.top_tags.data.count,'');
+		index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',response.top_badges.data.names,response.top_badges.data.count,'');
+		accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
+		user_line_chart = createChart(user_ctx, 'line','Age of users by year',response.user_years.data.years,response.user_years.data.count,'');
+	});
+	document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
+		if(e.target && ((e.target.id || e.target.parentNode.id) == 'more-tags')) {
+			count = tag_count = tag_count + 5;
+			type = 'tags';
+		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-tags') {
+			count = tag_count = tag_count - 5;
+			type = 'tags';
+		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'more-badges') {
+			count = badge_count = badge_count + 5;
+			type = 'badges';
+		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-badges') {
+			count = badge_count = badge_count - 5;
+			type = 'badges';
+		}
+		index_bar_asyncCall(type, count);
+	}));
+	//asnyc function to reduce spam
+	async function index_bar_asyncCall(type,count) {
+		document.getElementById('more-'+type).disabled = true;
+		document.getElementById('less-'+type).disabled = true;
+		result = await update_index_bar_chart(type, count);
+		document.getElementById('more-'+type).disabled = false;
+		if(count > 5) {
+			document.getElementById('less-'+type).disabled = false;
+			document.getElementById('less-'+type).style.cursor = 'pointer';
+		} else {
+			document.getElementById('less-'+type).style.cursor = 'not-allowed';
+		}
+	}
+
+	function update_index_bar_chart(type, count) {
+		chart = (type == 'tags' ? index_tag_chart : index_badge_chart);
+		return new Promise((resolve, reject) => {
+			if (count < chart.data.labels.length) {
+				chart.data.labels.splice(-5, 5); // remove the label first
+				chart.data.datasets.forEach(dataset => {
+					dataset.data.pop();
+				});
+				chart.update();
+				resolve(true);
+			} else {
+				makeHttpRequest('/ajax/update_index_bar_chart?count='+count+'&type='+type,'GET','JSON','',function(response) {
+					if (response.success) {
+						for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
+							chart.data.labels.push(response.data.names[index]);
+							chart.data.datasets[0].data[index] = response.data.count[index];
+						}
+						chart.update();
+						resolve(true);
+					} else {
+						document.getElementById(type+'-wrapper').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+						reject(false);
+					}		
+				});
+			}
+		});
 	}
 }
-
-function update_index_bar_chart(type, count) {
-	chart = (type == 'tags' ? index_tag_chart : index_badge_chart);
-	return new Promise((resolve, reject) => {
-		if (count < chart.data.labels.length) {
-			chart.data.labels.splice(-5, 5); // remove the label first
-			chart.data.datasets.forEach(dataset => {
-				dataset.data.pop();
-			});
-			chart.update();
-			resolve(true);
-		} else {
-			makeHttpRequest('/ajax/update_index_bar_chart?count='+count+'&type='+type,'GET','JSON','',function(response) {
-				if (response.success) {
-					for (let index = chart.data.labels.length; index < response.data.count.length; ++index) {
-						chart.data.labels.push(response.data.names[index]);
-						chart.data.datasets[0].data[index] = response.data.count[index];
-					}
-					chart.update();
-					resolve(true);
-				} else {
-					document.getElementById(type+'-wrapper').innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
-					reject(false);
-				}		
-			});
-		}
-	});
-}
-
 /* -------------------------------------------------------------------------- */
 /*                                  Trending                                  */
 /* -------------------------------------------------------------------------- */
+function init_trending() {
+	let page_no = 1;
+	load_trending_table(page_no);
+	document.getElementById('load-api-posts').addEventListener('click', function() {
+		page_no++;
+		load_trending_table(page_no);
+	});
+}
+
 function load_trending_table(page_no) {
 	let api_url;
 	if (page_no == 1) {
@@ -200,10 +253,44 @@ function load_trending_table(page_no) {
 		}
 	});
 }
-
 /* -------------------------------------------------------------------------- */
 /*                                    Tags                                    */
 /* -------------------------------------------------------------------------- */
+function init_tags() {
+	//Page Load
+	document.getElementById('submit-form').disabled = true;
+	makeHttpRequest('/ajax/load_tags','GET','JSON','',function(response) {
+		tag_list = make_auto_complete('#tag_search','Search for tags...',response.tag_list.data);
+		load_tags_table(response.top_tags.data);
+
+		document.addEventListener('click', function(e) {
+			if(e.target && e.target.classList.contains('remove-filter')) {
+				document.querySelector('input[value="'+e.target.parentElement.dataset.id+'"]').remove();
+				e.target.parentElement.remove();
+			}
+		});
+	});
+	document.getElementById('submit-form').disabled = false;
+
+	//Form submission
+	let tag_filter_form = document.getElementById('tag-filter-form');
+	tag_filter_form.addEventListener('submit', function(e) {
+		document.getElementById('submit-form').disabled = true;
+		document.querySelector('article .panel-scroll').classList.add('hidden');
+		datatable.destroy();
+		e.preventDefault();
+		let data = new FormData(tag_filter_form);
+		makeHttpRequest('/ajax/filtered_tags','POST','JSON',data,function(response) {
+			if(response['success']){
+				load_tags_table(response['data']);
+				document.querySelector('article .panel-scroll').classList.remove('hidden');
+				document.getElementById('submit-form').disabled = false;
+			} else {
+				tag_filter_form.innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+			}
+		});
+	});
+}
 
 function load_tags_table(response) {
 	datatable = new simpleDatatables.DataTable('.tags-main table',{
@@ -231,12 +318,9 @@ function load_tags_table(response) {
 		datatable.insert(newrow);
 	}
 }
-
-
 /* -------------------------------------------------------------------------- */
-/*                                     NAV                                    */
+/*                                   Layout                                   */
 /* -------------------------------------------------------------------------- */
-// Nav menu Called on resize and closing
 function reset_nav_menu() {
 	document.getElementById('side-nav-container').style.width = 0;
 	document.querySelector('body').style.marginLeft = 0;
@@ -245,9 +329,6 @@ function reset_nav_menu() {
 	document.getElementsByClassName('active')[0].style.opacity = 0;
 }
 
-/* -------------------------------------------------------------------------- */
-/*                                   On Load                                  */
-/* -------------------------------------------------------------------------- */
 document.addEventListener("DOMContentLoaded", () => {
 	// Header animation handling
 	document.getElementById('nav-btn-open').addEventListener('click', () => {
@@ -289,43 +370,4 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.querySelector('main').style.filter = 'none';
 		document.getElementById('info-modal').close();
 	});
-
-	/* ---------------------------------- index --------------------------------- */
-	document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
-		if(e.target && ((e.target.id || e.target.parentNode.id) == 'more-tags')) {
-			count = tag_count = tag_count + 5;
-			type = 'tags';
-		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-tags') {
-			count = tag_count = tag_count - 5;
-			type = 'tags';
-		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'more-badges') {
-			count = badge_count = badge_count + 5;
-			type = 'badges';
-		} else if(e.target && (e.target.id || e.target.parentNode.id) == 'less-badges') {
-			count = badge_count = badge_count - 5;
-			type = 'badges';
-		}
-		index_bar_asyncCall(type, count);
-	}));
-
-	/* ---------------------------------- tags ---------------------------------- */
-	let tag_filter_form = document.getElementById('tag-filter-form');
-	if(tag_filter_form) {
-		tag_filter_form.addEventListener('submit', function(e) {
-			document.getElementById('submit-form').disabled = true;
-			document.querySelector('article .panel-scroll').classList.add('hidden');
-			datatable.destroy();
-			e.preventDefault();
-			let data = new FormData(tag_filter_form);
-			makeHttpRequest('/ajax/filtered_tags','POST','JSON',data,function(response) {
-				if(response['success']){
-					load_tags_table(response['data']);
-					document.querySelector('article .panel-scroll').classList.remove('hidden');
-					document.getElementById('submit-form').disabled = false;
-				} else {
-					tag_filter_form.innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
-				}
-			});
-		});
-	}
 });

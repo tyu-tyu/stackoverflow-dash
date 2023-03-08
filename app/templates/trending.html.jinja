@@ -31,12 +31,6 @@
 {% endblock %}
 {% block scripts %}
 	<script>
-		let page_no = 1;
-		let datatable;
-		load_trending_table(page_no);
-		document.getElementById('load-api-posts').addEventListener('click', function() {
-			page_no++;
-			load_trending_table(page_no);
-		});
+		init_trending();
 	</script>
 {% endblock %}
