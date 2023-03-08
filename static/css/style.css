@@ -801,6 +801,10 @@ main {
 }
 
 /* ---------------------------------- Tags ---------------------------------- */
+#hidden-form {
+  height: unset;
+}
+
 .datatable-table tbody tr:nth-child(odd) {
   background-color: var(--off-white);
 }
@@ -811,6 +815,8 @@ main {
 .filter-list li {
   display: flex;
   justify-content: space-between;
+  height: 1.5rem;
+  font-size: 1.25rem;
 }
 .filter-list li i:hover {
   color: var(--hover-primary);

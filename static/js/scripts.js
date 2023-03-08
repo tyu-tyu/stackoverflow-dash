@@ -206,14 +206,13 @@ function load_trending_table(page_no) {
 /* -------------------------------------------------------------------------- */
 
 function load_tags_table(response) {
-	console.log(response);
 	datatable = new simpleDatatables.DataTable('.tags-main table',{
-		perPage: 15,
+		perPage: 25,
 		columns: [{
 			select: 7,
 			sortable: false
 		},{
-			select: [1,2,3,4,5],
+			select: [1,2,3,4,5,6],
 			type: 'number'
 		}]
 	});
@@ -313,12 +312,16 @@ document.addEventListener("DOMContentLoaded", () => {
 	let tag_filter_form = document.getElementById('tag-filter-form');
 	if(tag_filter_form) {
 		tag_filter_form.addEventListener('submit', function(e) {
+			document.getElementById('submit-form').disabled = true;
+			document.querySelector('article .panel-scroll').classList.add('hidden');
 			datatable.destroy();
 			e.preventDefault();
 			let data = new FormData(tag_filter_form);
 			makeHttpRequest('/ajax/filtered_tags','POST','JSON',data,function(response) {
 				if(response['success']){
 					load_tags_table(response['data']);
+					document.querySelector('article .panel-scroll').classList.remove('hidden');
+					document.getElementById('submit-form').disabled = false;
 				} else {
 					tag_filter_form.innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
 				}

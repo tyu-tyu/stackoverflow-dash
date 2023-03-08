@@ -63,6 +63,7 @@
 
 		document.addEventListener('click', function(e) {
 			if(e.target && e.target.classList.contains('remove-filter')) {
+				document.querySelector('input[value="'+e.target.parentElement.dataset.id+'"]').remove();
 				e.target.parentElement.remove();
 			}
 		});
