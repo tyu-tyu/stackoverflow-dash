@@ -134,6 +134,7 @@ function init_index() {
 			response.question_details.data[1],
 			response.table_row_count.data.question - response.question_details.data[0] - response.question_details.data[1]
 		];
+		//Chart initialisation
 		tag_ctx = document.getElementById('tagChart');
 		accept_ctx = document.getElementById('acceptanceChart');
 		badge_ctx = document.getElementById('badgeChart');
@@ -142,6 +143,11 @@ function init_index() {
 		index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',response.top_badges.data.names,response.top_badges.data.count,'');
 		accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
 		user_line_chart = createChart(user_ctx, 'line','Age of users by year',response.user_years.data.years,response.user_years.data.count,'');
+		//Accessibility
+		document.querySelector('#tagChart p').innerHTML = 'Tag names:'+response.top_tags.data.names+'Count:'+response.top_tags.data.count;
+		document.querySelector('#badgeChart p').innerHTML = 'Badge names:'+response.top_badges.data.names+'Count:'+response.top_badges.data.count;
+		document.querySelector('#acceptanceChart p').innerHTML = 'Unanswered:'+acceptance[0]+'Answered, not accepted:'+acceptance[1]+'Accepted:'+acceptance[2];
+		document.querySelector('#userChart p').innerHTML = 'Years:'+response.user_years.data.years+'Users created that year:'+response.user_years.data.count;
 	});
 	document.querySelectorAll('.index-tag').forEach(el => el.addEventListener('click', e => {
 		if(e.target && ((e.target.id || e.target.parentNode.id) == 'more-tags')) {
