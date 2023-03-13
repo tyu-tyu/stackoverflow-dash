@@ -43,9 +43,7 @@ def tags():
 	from app.classes.lookup import lookup
 	result_data = {}
 	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
-	# result_data['top_tags'] = lookups.get_top_tags_complete()
 	result_data['question_date_range'] = lookups.get_index_date_range()
-	# result_data['tag_list'] = lookups.get_tag_list()
 	return render_template('tags.html.jinja', data=result_data)
 
 @app.route('/ajax/load_tags')
@@ -63,3 +61,8 @@ def filter_tags():
 	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
 	result_data = lookups.get_filtered_tags(request.form)
 	return result_data
+
+@app.route('/posts')
+def posts():
+	result_data =  {}
+	return render_template('posts.html.jinja', data=result_data)
