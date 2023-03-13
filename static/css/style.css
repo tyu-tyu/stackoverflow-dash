@@ -792,9 +792,6 @@ main {
   .index-main #question-wrapper, .index-main #user-wrapper {
     height: 25vh;
   }
-  .index-main .summary-text {
-    height: 25vh;
-  }
   .index-main #tags-wrapper, .index-main #badges-wrapper {
     height: 35vh;
   }

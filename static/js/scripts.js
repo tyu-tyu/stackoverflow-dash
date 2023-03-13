@@ -264,7 +264,6 @@ function load_trending_table(page_no) {
 /* -------------------------------------------------------------------------- */
 function init_tags() {
 	//Page Load
-	document.getElementById('submit-form').disabled = true;
 	makeHttpRequest('/ajax/load_tags','GET','JSON','',function(response) {
 		tag_list = make_auto_complete('#tag_search','Search for tags...',response.tag_list.data);
 		load_tags_table(response.top_tags.data);
@@ -276,8 +275,6 @@ function init_tags() {
 			}
 		});
 	});
-	document.getElementById('submit-form').disabled = false;
-
 	//Form submission
 	let tag_filter_form = document.getElementById('tag-filter-form');
 	tag_filter_form.addEventListener('submit', function(e) {
@@ -375,5 +372,16 @@ document.addEventListener("DOMContentLoaded", () => {
 	document.getElementById('info-modal-close').addEventListener('click', () => {
 		document.querySelector('main').style.filter = 'none';
 		document.getElementById('info-modal').close();
+	});
+
+	// Explore panel handling
+	document.getElementById('icon-explore-open').addEventListener('click', () => {
+		document.querySelector('main').style.filter = 'blur(2px)';
+		document.getElementById('explore-modal').showModal();
+	});
+
+	document.getElementById('icon-explore-close').addEventListener('click', () => {
+		document.querySelector('main').style.filter = 'none';
+		document.getElementById('explore-modal').close();
 	});
 });

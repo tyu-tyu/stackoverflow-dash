@@ -29,6 +29,9 @@
 				<svg class="icon icon-view-list"><use xlink:href="#icon-view-list"></use></svg>
 			</button>
 			<h1>{%block header %}{% endblock %}</h1>
+			<button class="nav-btn nav-btn-light" id="icon-explore-open">
+				<svg class="icon icon-explore"><use xlink:href="#icon-explore"></use></svg>
+			</button>
 		</header>
 		<aside id="side-nav-container">
 			<nav>
@@ -37,10 +40,10 @@
 				</button>
 				{% set navigation_bar = [
 					('/','index','icon-home'),
-					('/posts','posts','icon-bubbles'),
-					('/trending','trending','icon-toolscopy'),
 					('/tags','tags','icon-tag'),
-					('/users','users','icon-user-group')
+					('/posts','posts','icon-bubbles'),
+					('/users','users','icon-user-group'),
+					('/trending','trending','icon-toolscopy')
 				] -%}
 				{% set active_page = active_page|default('index') -%}
 				{% for href, id, icon in navigation_bar %}
@@ -73,6 +76,18 @@
 				<a class="text-right" href="https://archive.org/details/stackexchange" target="_blank" rel="noopener noreferrer">Stack Exchange Data Dump - Archive.org</a><br>
 				Live site data is courtesy of the <a class="text-right" href="https://api.stackexchange.com/" target="_blank" rel="noopener noreferrer">Stack Exchange API</a>
 			</p>
+		</div>
+	</dialog>
+	<dialog id="explore-modal" class="modal">
+		<div class="modal-head">
+			<h3 class="text-center">Recommended Starting Filters</h3>
+			<button class="nav-btn nav-btn-light" id="icon-explore-close">
+				<svg class="icon icon-close"><use xlink:href="#icon-close"></use></svg>
+			</button>
+		</div>
+		<div class="modal-body">
+			<p>Below is a non-definitive list of technologies to explore based on specific fields the university teaches. These are general and can be used for more specific exploration of the data.</p>
+			
 		</div>
 	</dialog>
 	{% include 'icosvg.html.jinja' %}

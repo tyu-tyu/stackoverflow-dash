@@ -66,3 +66,8 @@ def filter_tags():
 def posts():
 	result_data =  {}
 	return render_template('posts.html.jinja', data=result_data)
+
+@app.route('/users')
+def users():
+	result_data = {}
+	return render_template('users.html.jinja', data=result_data)
