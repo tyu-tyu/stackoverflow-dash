@@ -827,4 +827,12 @@ main {
   width: 100%;
 }
 
+/* ---------------------------------- posts --------------------------------- */
+.posts-main #question-wrapper {
+  height: 25vh;
+}
+.posts-main #engagement-wrapper {
+  height: 15vh;
+}
+
 /*# sourceMappingURL=style.css.map */

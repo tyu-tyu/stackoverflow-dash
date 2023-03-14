@@ -112,16 +112,45 @@ function add_to_filters(key,name) {
 	document.getElementsByClassName('filter-list')[0].innerHTML+='<li data-id="'+key+'"><span>'+name+'</span><i class="fa-solid fa-xmark remove-filter"></li>';
 	document.getElementById('hidden-form').innerHTML+='<input type="hidden" name="'+name+'" value="'+key+'">';
 }
+
+function filter_page(url) {
+	document.addEventListener('click', function(e) {
+		if(e.target && e.target.classList.contains('remove-filter')) {
+			document.querySelector('input[value="'+e.target.parentElement.dataset.id+'"]').remove();
+			e.target.parentElement.remove();
+		}
+	});
+	//Form submission
+	let tag_filter_form = document.getElementById('tag-filter-form');
+	tag_filter_form.addEventListener('submit', function(e) {
+		document.getElementById('submit-form').disabled = true;
+		document.querySelector('article .panel-scroll').classList.add('hidden');
+		datatable.destroy();
+		e.preventDefault();
+		let data = new FormData(tag_filter_form);
+		makeHttpRequest(url,'POST','JSON',data,function(response) {
+			if(response['success']){
+				document.querySelector('article .panel-scroll').classList.remove('hidden');
+				document.getElementById('submit-form').disabled = false;
+				switch(url) {
+					case '/ajax/filtered_tags':
+						load_tags_table(response['data']);
+						break;
+					// case '/ajax/filtered_posts':
+					// 	load_tags_table(response['data']);
+				}
+			} else {
+				tag_filter_form.innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
+			}
+		});
+	});
+}
 /* -------------------------------------------------------------------------- */
 /*                                    Index                                   */
 /* -------------------------------------------------------------------------- */
 function init_index() {
 	let tag_count;
 	let badge_count;
-	let tag_ctx;
-	let accept_ctx;
-	let badge_ctx;
-	let user_ctx;
 	let index_tag_chart;
 	let index_badge_chart;
 	let accept_doughnut_chart;
@@ -135,10 +164,10 @@ function init_index() {
 			response.table_row_count.data.question - response.question_details.data[0] - response.question_details.data[1]
 		];
 		//Chart initialisation
-		tag_ctx = document.getElementById('tagChart');
-		accept_ctx = document.getElementById('acceptanceChart');
-		badge_ctx = document.getElementById('badgeChart');
-		user_ctx = document.getElementById('userChart');
+		let tag_ctx = document.getElementById('tagChart');
+		let accept_ctx = document.getElementById('acceptanceChart');
+		let badge_ctx = document.getElementById('badgeChart');
+		let user_ctx = document.getElementById('userChart');
 		index_tag_chart = createChart(tag_ctx,'bar','Questions with this tag',response.top_tags.data.names,response.top_tags.data.count,'');
 		index_badge_chart = createChart(badge_ctx, 'bar', 'Most earned badge',response.top_badges.data.names,response.top_badges.data.count,'');
 		accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
@@ -267,31 +296,7 @@ function init_tags() {
 	makeHttpRequest('/ajax/load_tags','GET','JSON','',function(response) {
 		tag_list = make_auto_complete('#tag_search','Search for tags...',response.tag_list.data);
 		load_tags_table(response.top_tags.data);
-
-		document.addEventListener('click', function(e) {
-			if(e.target && e.target.classList.contains('remove-filter')) {
-				document.querySelector('input[value="'+e.target.parentElement.dataset.id+'"]').remove();
-				e.target.parentElement.remove();
-			}
-		});
-	});
-	//Form submission
-	let tag_filter_form = document.getElementById('tag-filter-form');
-	tag_filter_form.addEventListener('submit', function(e) {
-		document.getElementById('submit-form').disabled = true;
-		document.querySelector('article .panel-scroll').classList.add('hidden');
-		datatable.destroy();
-		e.preventDefault();
-		let data = new FormData(tag_filter_form);
-		makeHttpRequest('/ajax/filtered_tags','POST','JSON',data,function(response) {
-			if(response['success']){
-				load_tags_table(response['data']);
-				document.querySelector('article .panel-scroll').classList.remove('hidden');
-				document.getElementById('submit-form').disabled = false;
-			} else {
-				tag_filter_form.innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';
-			}
-		});
+		filter_page('/ajax/filtered_tags');
 	});
 }
 
@@ -317,6 +322,82 @@ function load_tags_table(response) {
 			'Total Views':rows.view_count[i],
 			'Sentiment Score':rows.sentiment[i],
 			'About':'<a href="'+rows.link[i]+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
+		}];
+		datatable.insert(newrow);
+	}
+}
+/* -------------------------------------------------------------------------- */
+/*                                    Posts                                   */
+/* -------------------------------------------------------------------------- */
+function init_posts() {
+let accept_doughnut_chart;
+let engagement_chart;
+	makeHttpRequest('/ajax/load_posts','GET','JSON','',function(response) {
+		tag_list = make_auto_complete('#tag_search','Search for tags...',response.tag_list.data);
+		let acceptance = [
+			response.question_details.data[0],
+			response.question_details.data[1],
+			response.table_row_count.data.question - response.question_details.data[0] - response.question_details.data[1]
+		];
+		let engagement = [
+			response.table_row_count.data.question / response.question_details.data[0],
+			response.table_row_count.data.question / response.question_details.data[1]
+		];
+		load_posts_keyword_table(response.top_post_keywords.data);
+		load_posts_top_table(response.top_posts.data);
+		let accept_ctx = document.getElementById('acceptanceChart');
+		let engagement_ctx = document.getElementById('engagementChart');
+		accept_doughnut_chart = createChart(accept_ctx, 'doughnut','',['Unanswered','Not Accepted', 'Accepted'],acceptance,'');
+		engagement_chart = createChart(engagement_ctx, 'bar','Engagement level',['Average Answers','Average Comments'], engagement,'')
+		//Accessibility
+		document.querySelector('#acceptanceChart p').innerHTML = 'Unanswered:'+acceptance[0]+'Answered, not accepted:'+acceptance[1]+'Accepted:'+acceptance[2];
+		filter_page('/ajax/filtered_posts');
+	});
+}
+
+function load_posts_keyword_table(response) {
+	datatable = new simpleDatatables.DataTable('.posts-main article table',{
+		perPageSelect: false,
+		perPage: 25,
+		columns: [{
+			select: [1,2,3,4,5,6],
+			type: 'number'
+		}]
+	});
+	let rows = response;
+	for (let i = 0; i < rows.keyword.length; i++) {
+		let newrow = [{
+			'Keyword':rows.keyword[i],
+			'Question Count':rows.question_count[i],
+			'Answers Count':rows.answer_count[i],
+			'Comments Count':rows.comments_count[i],
+			'Total Views':rows.view_count[i],
+			'Total Score':rows.total_score[i],
+			'Sentiment Score':rows.sentiment[i]
+		}];
+		datatable.insert(newrow);
+	}
+}
+
+function load_posts_top_table(response) {
+	datatable = new simpleDatatables.DataTable('.posts-main section table',{
+		perPage: 5,
+		perPageSelect: false,
+		columns: [{
+			select: [1],
+			type: 'number'
+		},{
+			select: [2],
+			sortable: false
+		}
+	]
+	});
+	let rows = response;
+	for (let i = 0; i < rows.title.length; i++) {
+		let newrow = [{
+			'Title':rows.title[i],
+			'Score':rows.score[i],
+			'Link':'<a href="'+rows.link[i]+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
 		}];
 		datatable.insert(newrow);
 	}

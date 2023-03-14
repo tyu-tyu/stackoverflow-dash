@@ -223,3 +223,59 @@ class lookup:
 			response['error'] = e
 			response['success'] = False
 		return(response)
+	
+	def get_top_post_keywords(self):
+		response = {}
+		response['data'] = {}
+		response['data']['keyword'] = []
+		response['data']['question_count'] = []
+		response['data']['answer_count'] = []
+		response['data']['comments_count'] = []
+		response['data']['view_count'] = []
+		response['data']['total_score'] = []
+		response['data']['sentiment'] = []
+		cache = self.cache.cache_check('get_top_post_keywords')
+		if cache == False:
+			try:
+				self.cursor.callproc('get_top_post_keywords')
+				result = self.cursor.fetchall()
+				for res in result:
+					response['data']['keyword'].append(res[0])
+					response['data']['question_count'].append(res[1])
+					response['data']['answer_count'].append(res[2])
+					response['data']['comments_count'].append(res[3])
+					response['data']['view_count'].append(res[4])
+					response['data']['total_score'].append(res[5])
+					response['data']['sentiment'].append(res[6])
+				self.cache.cache_set('get_top_post_keywords',response['data'])
+				response['success'] = True
+			except mariadb.Error as e:
+				response['error'] = e
+				response['success'] = False
+		else:
+			response['data'] = cache
+		return(response)
+	
+	def get_top_posts(self):
+		response = {}
+		response['data'] = {}
+		response['data']['title'] = []
+		response['data']['score'] = []
+		response['data']['link'] = []
+		cache = self.cache.cache_check('get_top_posts')
+		if cache == False:
+			try:
+				self.cursor.callproc('get_top_posts')
+				result = self.cursor.fetchall()
+				for res in result:
+					response['data']['title'].append(res[0])
+					response['data']['score'].append(res[1])
+					response['data']['link'].append(res[2])
+				self.cache.cache_set('get_top_posts',response['data'])
+				response['success'] = True
+			except mariadb.Error as e:
+				response['error'] = e
+				response['success'] = False
+		else:
+			response['data'] = cache
+		return(response)

@@ -4,7 +4,79 @@
 {% block header %}Stack Overflow Data Dashboards{% endblock %}
 {% block main_name %}posts{% endblock %}
 {% block content %}
-
+	<form id="tag-filter-form" class="grid-panel grid-w-12 bg-light">
+		<div class="grid-w-3 grid-sw-6 form-item">
+			<label for="date_start">Start Date:</label>
+			<input type="date" value="{{ data['question_date_range']['data'][2] }}" id="date_start" name="date_start">
+		</div>
+		<div class="grid-w-3 grid-sw-6 form-item">
+			<label for="date_end">End Date:</label>
+			<input type="date" value="{{ data['question_date_range']['data'][3] }}" id="date_end" name="date_end">
+		</div>
+		<div class="grid-w-3 grid-sw-12 form-item">
+			<label for="include">Include:</label>
+			<div class="autoComplete_wrapper">
+				<input id="tag_search" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
+			</div>
+		</div>
+		<div class="grid-w-3 grid-sw-12 form-item">
+			<button type="submit" id="submit-form" class="btn-green form-btn">Filter <i class="fa-solid fa-filter"></i></button>
+		</div>
+		<div class="grid-w-12 form-item" id="hidden-form">
+			<ul class="filter-list">
+			</ul>
+		</div>
+	</form>
+	<article class="grid-panel bg-light grid-w-9 grid-mw-12 grid-sw-12">
+		<h1 class="grid-w-8 grid-sw-12 text-left">Keywords Extracted from Questions, Answers and Comments</h1>
+		<div class="grid-w-12 panel-scroll">
+			<table>
+				<thead>
+					<th>Keyword</th>
+					<th>Question Count</th>
+					<th>Answers Count</th>
+					<th>Comments Count</th>
+					<th>Total Views</th>
+					<th>Total Score</th>
+					<th>Sentiment Score</th>
+				</thead>
+				<tbody class="table-striped">
+				</tbody>
+			</table>
+		</div>
+	</article>
+	<section id="post-box" class="grid-panel bg-light grid-w-3 grid-mw-12 grid-sw-12">
+		<div class="grid-w-3 grid-mw-6 grid-sw-12">
+			<h3 class="grid-w-3 grid-sw-12 text-center">Question responses</h3>
+			<div class="grid-w-3 grid-sw-12 canvas-wrapper" id="question-wrapper">
+				<canvas id="acceptanceChart" aria-label="Question responses" role="img">
+					<p></p>
+				</canvas>
+			</div>
+		</div>
+		<div class="grid-w-3 grid-mw-6 grid-sw-12">
+			<h3 class="grid-w-3 grid-mw-12 grid-sw-12 text-center">Engagement Level</h3>
+			<div class="grid-w-3 grid-mw-12 grid-sw-12 canvas-wrapper" id="engagement-wrapper">
+				<canvas id="engagementChart" aria-label="Engagement Level" role="img">
+					<p></p>
+				</canvas>
+			</div>
+		</div>
+		<div class="grid-w-3 grid-mw-12 grid-sw-12">
+			<h3 class="grid-w-3 grid-sw-12 text-left">Highest rated questions</h3>
+		<div class="grid-w-12 panel-scroll">
+			<table>
+				<thead>
+					<th>Title</th>
+					<th>Score</th>
+					<th>Link</th>
+				</thead>
+				<tbody class="table-striped">
+				</tbody>
+			</table>
+		</div>
+		</div>
+	</section>
 {% endblock %}
 {% block scripts %}
 	<script>

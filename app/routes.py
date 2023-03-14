@@ -64,8 +64,24 @@ def filter_tags():
 
 @app.route('/posts')
 def posts():
+	from app.classes.lookup import lookup
 	result_data =  {}
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
+	result_data['question_date_range'] = lookups.get_index_date_range()
 	return render_template('posts.html.jinja', data=result_data)
+
+@app.route('/ajax/load_posts')
+def load_posts():
+	from app.classes.lookup import lookup
+	result_data = {}
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
+	result_data['tag_list'] = lookups.get_tag_list()
+	result_data['top_post_keywords'] = lookups.get_top_post_keywords()
+	result_data['table_row_count'] = lookups.get_table_row_count()
+	result_data['question_details'] = lookups.get_index_question_details()
+	result_data['top_posts'] = lookups.get_top_posts()
+	return result_data
+
 
 @app.route('/users')
 def users():
