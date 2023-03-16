@@ -136,8 +136,9 @@ function filter_page(url) {
 					case '/ajax/filtered_tags':
 						load_tags_table(response['data']);
 						break;
-					// case '/ajax/filtered_posts':
-					// 	load_tags_table(response['data']);
+					case '/ajax/filtered_posts':
+						console.log(response);
+						break;
 				}
 			} else {
 				tag_filter_form.innerHTML = '<h1 class="grid-w-9 grid-sw12 text-red">An error occured, if the problem persists please contact the administration staff<h1>';

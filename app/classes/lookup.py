@@ -1,9 +1,33 @@
 import mariadb
 from app.classes.cache import cache
+import re
 class lookup:
 	def __init__(self, cursor, redis):
 		self.cursor = cursor
 		self.cache = cache(redis)
+
+	def process_tag_form(self, form):
+		data = form.to_dict()
+		tag_list = []
+		for key, value in data.items():
+			if key == 'date_start':
+				if re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',value):
+					date_start = value
+				else:
+					date_start = None
+			elif key == 'date_end':
+				if re.match('^[\d]{4}-[\d]{2}-[\d]{2}$',value):
+					date_end = value
+				else:
+					date_end = None
+			else:
+				if re.match('^[0-9]+$',value):
+					tag_list.append(value)
+		if not tag_list:
+			tag_list = ''
+		else:
+			tag_list = ','.join(tag_list)
+		return (date_start,date_end,tag_list)
 
 	def get_index_date_range(self):
 		response = {}
@@ -42,6 +66,21 @@ class lookup:
 				response['success'] = False
 		else:
 			response['data'] = cache
+		return(response)
+	
+	def get_filtered_question_count(self, form):
+		response = {}
+		response['data'] = {}
+		args = self.process_tag_form(form)
+		try:
+			self.cursor.callproc('get_filtered_question_count',args)
+			result = self.cursor.fetchall()
+			for res in result:
+				response['data']['question'] = res[0]
+			response['success'] = True
+		except mariadb.Error as e:
+			response['error'] = e
+			response['success'] = False
 		return(response)
 	
 	def get_top_tags(self,limit):
@@ -107,6 +146,21 @@ class lookup:
 			response['data'] = cache
 		return(response)
 	
+	def get_filtered_question_details(self, form):
+		args = self.process_tag_form(form)
+		response = {}
+		response['data'] = []
+		try:
+			self.cursor.callproc('get_filtered_question_details',args)
+			result = self.cursor.fetchall()
+			for res in result:
+				response['data'].append(res[0])
+			response['success'] = True
+		except mariadb.Error as e:
+			response['error'] = e
+			response['success'] = False
+		return(response)
+	
 	def get_user_years(self):
 		response = {}
 		response['data'] = {}
@@ -121,40 +175,6 @@ class lookup:
 					response['data']['years'].append(res[0])
 					response['data']['count'].append(res[1])
 				self.cache.cache_set('get_user_years',response['data'])
-				response['success'] = True
-			except mariadb.Error as e:
-				response['error'] = e
-				response['success'] = False
-		else:
-			response['data'] = cache
-		return(response)
-	
-	def get_top_tags_complete(self):
-		response = {}
-		response['data'] = {}
-		response['data']['tag_name'] = []
-		response['data']['question_count'] = []
-		response['data']['answer_count'] = []
-		response['data']['comment_count'] = []
-		response['data']['score'] = []
-		response['data']['view_count'] = []
-		response['data']['sentiment'] = []
-		response['data']['link'] = []
-		cache = self.cache.cache_check('get_top_tags_complete')
-		if cache == False:
-			try:
-				self.cursor.callproc('get_top_tags_complete')
-				result = self.cursor.fetchall()
-				for res in result:
-					response['data']['tag_name'].append(res[0])
-					response['data']['question_count'].append(res[1])
-					response['data']['answer_count'].append(res[2])
-					response['data']['comment_count'].append(res[3])
-					response['data']['score'].append(res[4])
-					response['data']['view_count'].append(res[5])
-					response['data']['sentiment'].append(res[6])
-					response['data']['link'].append(res[7])
-				self.cache.cache_set('get_top_tags_complete',response['data'])
 				response['success'] = True
 			except mariadb.Error as e:
 				response['error'] = e
@@ -185,7 +205,7 @@ class lookup:
 			response['data'] = cache
 		return(response)
 	
-	def get_filtered_tags(self, form):
+	def get_filtered_tags(self, form = None):
 		response = {}
 		response['data'] = {}
 		response['data']['tag_name'] = []
@@ -196,35 +216,37 @@ class lookup:
 		response['data']['view_count'] = []
 		response['data']['sentiment'] = []
 		response['data']['link'] = []
-		data = form.to_dict()
-		tag_list = []
-		for key, value in data.items():
-			if key == 'date_start':
-				date_start = value
-			elif key == 'date_end':
-				date_end = value
-			else: 
-				tag_list.append(value)
-		args = (date_start,date_end,','.join(tag_list))
-		try:
-			self.cursor.callproc('get_filtered_tags',args)
-			result = self.cursor.fetchall()
-			for res in result:
-				response['data']['tag_name'].append(res[0])
-				response['data']['question_count'].append(res[1])
-				response['data']['answer_count'].append(res[2])
-				response['data']['comment_count'].append(res[3])
-				response['data']['score'].append(res[4])
-				response['data']['view_count'].append(res[5])
-				response['data']['sentiment'].append(res[6])
-				response['data']['link'].append(res[7])
-			response['success'] = True
-		except mariadb.Error as e:
-			response['error'] = e
-			response['success'] = False
+		if form != None:
+			args = self.process_tag_form(form)
+			cache = False
+		else:
+			cache = self.cache.cache_check('get_filtered_tags')
+		if cache == False:
+			try:
+				print(args, flush=True)
+				self.cursor.callproc('get_filtered_tags',args)
+				result = self.cursor.fetchall()
+				for res in result:
+					response['data']['tag_name'].append(res[0])
+					response['data']['question_count'].append(res[1])
+					response['data']['answer_count'].append(res[2])
+					response['data']['comment_count'].append(res[3])
+					response['data']['score'].append(res[4])
+					response['data']['view_count'].append(res[5])
+					response['data']['sentiment'].append(res[6])
+					response['data']['link'].append(res[7])
+				response['success'] = True
+				if form == None:
+					self.cache.cache_set('get_filtered_tags',response['data'])
+			except mariadb.Error as e:
+				response['error'] = e
+				response['success'] = False
+			return(response)
+		else:
+			response['data'] = cache
 		return(response)
 	
-	def get_top_post_keywords(self):
+	def get_top_post_keywords(self, form = None):
 		response = {}
 		response['data'] = {}
 		response['data']['keyword'] = []
@@ -234,10 +256,15 @@ class lookup:
 		response['data']['view_count'] = []
 		response['data']['total_score'] = []
 		response['data']['sentiment'] = []
-		cache = self.cache.cache_check('get_top_post_keywords')
+		if form != None:
+			args = self.process_tag_form(form)
+			cache = False
+		else:
+			# args = ('1900-01-01',datetime.today().strftime('%Y-%m-%d'),'')
+			cache = self.cache.cache_check('get_top_post_keywords')
 		if cache == False:
 			try:
-				self.cursor.callproc('get_top_post_keywords')
+				self.cursor.callproc('get_top_post_keywords',args)
 				result = self.cursor.fetchall()
 				for res in result:
 					response['data']['keyword'].append(res[0])
@@ -247,7 +274,8 @@ class lookup:
 					response['data']['view_count'].append(res[4])
 					response['data']['total_score'].append(res[5])
 					response['data']['sentiment'].append(res[6])
-				self.cache.cache_set('get_top_post_keywords',response['data'])
+				if form == None:
+					self.cache.cache_set('get_top_post_keywords',response['data'])
 				response['success'] = True
 			except mariadb.Error as e:
 				response['error'] = e
@@ -256,22 +284,28 @@ class lookup:
 			response['data'] = cache
 		return(response)
 	
-	def get_top_posts(self):
+	def get_top_posts(self, form = None):
 		response = {}
 		response['data'] = {}
 		response['data']['title'] = []
 		response['data']['score'] = []
 		response['data']['link'] = []
-		cache = self.cache.cache_check('get_top_posts')
+		if form != None:
+			args = self.process_tag_form(form)
+			cache = False
+		else:
+			# args = ('1900-01-01',datetime.today().strftime('%Y-%m-%d'),'')
+			cache = self.cache.cache_check('get_top_posts')
 		if cache == False:
 			try:
-				self.cursor.callproc('get_top_posts')
+				self.cursor.callproc('get_top_posts',args)
 				result = self.cursor.fetchall()
 				for res in result:
 					response['data']['title'].append(res[0])
 					response['data']['score'].append(res[1])
 					response['data']['link'].append(res[2])
-				self.cache.cache_set('get_top_posts',response['data'])
+				if form == None:
+					self.cache.cache_set('get_top_posts',response['data'])
 				response['success'] = True
 			except mariadb.Error as e:
 				response['error'] = e

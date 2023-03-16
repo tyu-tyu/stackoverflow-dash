@@ -4,7 +4,7 @@
 {% block header %}Stack Overflow Data Dashboards{% endblock %}
 {% block main_name %}posts{% endblock %}
 {% block content %}
-	<form id="tag-filter-form" class="grid-panel grid-w-12 bg-light">
+	<form id="tag-filter-form" class="grid-panel grid-w-12 bg-light" autocomplete="off">
 		<div class="grid-w-3 grid-sw-6 form-item">
 			<label for="date_start">Start Date:</label>
 			<input type="date" value="{{ data['question_date_range']['data'][2] }}" id="date_start" name="date_start">
@@ -27,8 +27,8 @@
 			</ul>
 		</div>
 	</form>
-	<article class="grid-panel bg-light grid-w-9 grid-mw-12 grid-sw-12">
-		<h1 class="grid-w-8 grid-sw-12 text-left">Keywords Extracted from Questions, Answers and Comments</h1>
+	<article class="grid-panel bg-light grid-w-8 grid-mw-12 grid-sw-12">
+		<h1 class="grid-w-8 grid-sw-12 text-left">Data from Questions, Answers and Comments with the given keyword</h1>
 		<div class="grid-w-12 panel-scroll">
 			<table>
 				<thead>
@@ -45,26 +45,26 @@
 			</table>
 		</div>
 	</article>
-	<section id="post-box" class="grid-panel bg-light grid-w-3 grid-mw-12 grid-sw-12">
-		<div class="grid-w-3 grid-mw-6 grid-sw-12">
-			<h3 class="grid-w-3 grid-sw-12 text-center">Question responses</h3>
-			<div class="grid-w-3 grid-sw-12 canvas-wrapper" id="question-wrapper">
+	<section id="post-box" class="grid-panel bg-light grid-w-4 grid-mw-12 grid-sw-12">
+		<div class="grid-w-4 grid-mw-6 grid-sw-12">
+			<h3 class="text-left">Question responses</h3>
+			<div class="canvas-wrapper" id="question-wrapper">
 				<canvas id="acceptanceChart" aria-label="Question responses" role="img">
 					<p></p>
 				</canvas>
 			</div>
 		</div>
-		<div class="grid-w-3 grid-mw-6 grid-sw-12">
-			<h3 class="grid-w-3 grid-mw-12 grid-sw-12 text-center">Engagement Level</h3>
-			<div class="grid-w-3 grid-mw-12 grid-sw-12 canvas-wrapper" id="engagement-wrapper">
+		<div class="grid-w-4 grid-mw-6 grid-sw-12">
+			<h3 class="text-left">Question Engagement Level</h3>
+			<div class="canvas-wrapper" id="engagement-wrapper">
 				<canvas id="engagementChart" aria-label="Engagement Level" role="img">
 					<p></p>
 				</canvas>
 			</div>
 		</div>
-		<div class="grid-w-3 grid-mw-12 grid-sw-12">
-			<h3 class="grid-w-3 grid-sw-12 text-left">Highest rated questions</h3>
-		<div class="grid-w-12 panel-scroll">
+		<div class="grid-w-4 grid-mw-12 grid-sw-12">
+			<h3 class="text-left">Highest rated questions</h3>
+		<div class="panel-scroll">
 			<table>
 				<thead>
 					<th>Title</th>
