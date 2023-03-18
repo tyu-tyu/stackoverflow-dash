@@ -76,26 +76,25 @@ def load_posts():
 	result_data = {}
 	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
 	result_data['tag_list'] = lookups.get_tag_list()
-	result_data['top_post_keywords'] = lookups.get_top_post_keywords()
+	result_data['post_keywords'] = lookups.get_post_keywords()
 	result_data['top_posts'] = lookups.get_top_posts()
 	result_data['table_row_count'] = lookups.get_table_row_count()
 	result_data['question_details'] = lookups.get_index_question_details()
 	return result_data
-
-
-@app.route('/users')
-def users():
-	result_data = {}
-	return render_template('users.html.jinja', data=result_data)
 
 @app.route('/ajax/filtered_posts', methods=['GET', 'POST'])
 def filter_posts():
 	from app.classes.lookup import lookup
 	result_data = {}
 	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
-	result_data['top_post_keywords'] = lookups.get_top_post_keywords(request.form)
+	result_data['post_keywords'] = lookups.get_post_keywords(request.form)
 	result_data['top_posts'] = lookups.get_top_posts(request.form)
 	result_data['table_row_count'] = lookups.get_filtered_question_count(request.form)
 	result_data['question_details'] = lookups.get_filtered_question_details(request.form)
 	result_data['success'] = True
 	return result_data
+
+@app.route('/users')
+def users():
+	result_data = {}
+	return render_template('users.html.jinja', data=result_data)

@@ -221,9 +221,9 @@ class lookup:
 			cache = False
 		else:
 			cache = self.cache.cache_check('get_filtered_tags')
+			args = (None,None,'')
 		if cache == False:
 			try:
-				print(args, flush=True)
 				self.cursor.callproc('get_filtered_tags',args)
 				result = self.cursor.fetchall()
 				for res in result:
@@ -246,7 +246,7 @@ class lookup:
 			response['data'] = cache
 		return(response)
 	
-	def get_top_post_keywords(self, form = None):
+	def get_post_keywords(self, form = None):
 		response = {}
 		response['data'] = {}
 		response['data']['keyword'] = []
@@ -260,11 +260,11 @@ class lookup:
 			args = self.process_tag_form(form)
 			cache = False
 		else:
-			# args = ('1900-01-01',datetime.today().strftime('%Y-%m-%d'),'')
-			cache = self.cache.cache_check('get_top_post_keywords')
+			cache = self.cache.cache_check('get_post_keywords')
+			args = (None,None,'')
 		if cache == False:
 			try:
-				self.cursor.callproc('get_top_post_keywords',args)
+				self.cursor.callproc('get_post_keywords',args)
 				result = self.cursor.fetchall()
 				for res in result:
 					response['data']['keyword'].append(res[0])
@@ -275,7 +275,7 @@ class lookup:
 					response['data']['total_score'].append(res[5])
 					response['data']['sentiment'].append(res[6])
 				if form == None:
-					self.cache.cache_set('get_top_post_keywords',response['data'])
+					self.cache.cache_set('get_post_keywords',response['data'])
 				response['success'] = True
 			except mariadb.Error as e:
 				response['error'] = e
@@ -294,7 +294,7 @@ class lookup:
 			args = self.process_tag_form(form)
 			cache = False
 		else:
-			# args = ('1900-01-01',datetime.today().strftime('%Y-%m-%d'),'')
+			args = (None,None,'')
 			cache = self.cache.cache_check('get_top_posts')
 		if cache == False:
 			try:
