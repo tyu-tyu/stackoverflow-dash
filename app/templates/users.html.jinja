@@ -4,7 +4,81 @@
 {% block header %}Stack Overflow Data Dashboards{% endblock %}
 {% block main_name %}users{% endblock %}
 {% block content %}
-
+	<form id="tag-filter-form" class="grid-panel grid-w-12 bg-light" autocomplete="off">
+		<div class="grid-w-3 grid-sw-6 form-item">
+			<label for="date_start">Start Date:</label>
+			<input type="date" value="{{ data['question_date_range']['data'][2] }}" id="date_start" name="date_start">
+		</div>
+		<div class="grid-w-3 grid-sw-6 form-item">
+			<label for="date_end">End Date:</label>
+			<input type="date" value="{{ data['question_date_range']['data'][3] }}" id="date_end" name="date_end">
+		</div>
+		<div class="grid-w-3 grid-sw-12 form-item">
+			<label for="include">Include:</label>
+			<div class="autoComplete_wrapper">
+				<input id="tag_search" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
+			</div>
+		</div>
+		<div class="grid-w-3 grid-sw-12 form-item">
+			<button type="submit" id="submit-form" class="btn-green form-btn">Filter <i class="fa-solid fa-filter"></i></button>
+		</div>
+		<div class="grid-w-12 form-item" id="hidden-form">
+			<ul class="filter-list">
+			</ul>
+		</div>
+	</form>
+	<section class="grid-panel bg-light grid-w-6 grid-mw-12 grid-sw-12">
+		<h1 class="grid-w-6 grid-sw-12 text-left">Keywords from users</h1>
+		<div class="grid-w-12 panel-scroll">
+			<table id="keyword-table">
+				<thead>
+					<th>Keyword</th>
+					<th>Occurance Count</th>
+					<th>Average Reputation</th>
+					<th>Total Reputation</th>
+					<th>Average Creation Date</th>
+				</thead>
+				<tbody class="table-striped">
+				</tbody>
+			</table>
+		</div>
+		<h1 class="grid-w-12 grid-sw-12 text-left text-center">Active users by year created</h1>
+		<div class="grid-w-6 grid-sw-12 canvas-wrapper" id="user-wrapper">
+			<canvas id="userChart" aria-label="User Age Chart" role="img">
+				<p></p>
+			</canvas>
+		</div>
+	</section>
+	<section class="grid-panel bg-light grid-w-6 grid-mw-12 grid-sw-12">
+		<h1 class="grid-w-6 grid-sw-12 text-left">User locations</h1>
+		<div class="grid-w-12 panel-scroll">
+			<table id="location-table">
+				<thead>
+					<th>Location</th>
+					<th>Count</th>
+					<th>Average Reputation</th>
+					<th>Total Reputation</th>
+					<th>Average Creation Date</th>
+					<th>Questions Asked</th>
+					<th>Answered Given</th>
+					<th>Comments Made</th>
+				</thead>
+				<tbody class="table-striped">
+				</tbody>
+			</table>
+		</div>
+		<h1 class="grid-w-6 grid-sw-12 text-left">User badges</h1>
+		<div class="grid-w-12 panel-scroll">
+			<table id="badges-table">
+				<thead>
+					<th>Badge</th>
+					<th>Count</th>
+				</thead>
+				<tbody class="table-striped">
+				</tbody>
+			</table>
+		</div>
+	</section>
 {% endblock %}
 {% block scripts %}
 	<script>

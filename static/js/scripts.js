@@ -302,7 +302,7 @@ function init_tags() {
 	});
 }
 
-function load_tags_table(response) {
+function load_tags_table(rows) {
 	if (typeof datatable !== 'undefined') {
 		datatable.destroy();
 	}
@@ -316,7 +316,6 @@ function load_tags_table(response) {
 			type: 'number'
 		}]
 	});
-	let rows = response;
 	for (let i = 0; i < rows.tag_name.length; i++) {
 		let newrow = [{
 			'Tag':rows.tag_name[i],
@@ -369,7 +368,7 @@ function create_post_charts(response) {
 	document.querySelector('#engagementChart p').innerHTML = 'Average Answers:'+engagement[0]+'Average Comments:'+engagement[1];
 }
 
-function load_posts_keyword_table(response) {
+function load_posts_keyword_table(rows) {
 	if (typeof key_word_datatable !== 'undefined') {
 		key_word_datatable.destroy();
 	}
@@ -381,7 +380,6 @@ function load_posts_keyword_table(response) {
 			type: 'number'
 		}]
 	});
-	let rows = response;
 	for (let i = 0; i < rows.keyword.length; i++) {
 		let newrow = [{
 			'Keyword':rows.keyword[i],
@@ -396,7 +394,7 @@ function load_posts_keyword_table(response) {
 	}
 }
 
-function load_posts_top_table(response) {
+function load_posts_top_table(rows) {
 	if (typeof posts_datatable !== 'undefined') {
 		posts_datatable.destroy();
 	}
@@ -412,7 +410,6 @@ function load_posts_top_table(response) {
 		}
 	]
 	});
-	let rows = response;
 	for (let i = 0; i < rows.title.length; i++) {
 		let newrow = [{
 			'Title':rows.title[i],
@@ -421,6 +418,94 @@ function load_posts_top_table(response) {
 		}];
 		posts_datatable.insert(newrow);
 	}
+}
+/* -------------------------------------------------------------------------- */
+/*                                    Users                                   */
+/* -------------------------------------------------------------------------- */
+function init_users() {
+	makeHttpRequest('/ajax/load_users','GET','JSON','',function(response) {
+		tag_list = make_auto_complete('#tag_search','Search for tags...',response.tag_list.data);
+		load_user_keyword_table(response.user_keywords.data);
+		load_location_table(response.locations.data);
+		load_badges_table(response.top_badges.data);
+		load_user_year_chart(response.user_years);
+		init_tag_form('/ajax/filtered_users');
+	});
+}
+
+function load_user_keyword_table(rows) {
+	if (typeof key_word_datatable !== 'undefined') {
+		key_word_datatable.destroy();
+	}
+	key_word_datatable = new simpleDatatables.DataTable('#keyword-table',{
+		perPage: 25,
+		columns: [{
+			select: [1,2,3],
+			type: 'number'
+		}]
+	});
+	for (let i = 0; i < rows.keyword.length; i++) {
+		let newrow = [{
+			'Keyword':rows.keyword[i],
+			'Occurance Count':rows.occ_count[i],
+			'Average Reputation':rows.avg_rep[i],
+			'Total Reputation':rows.total_rep[i],
+			'Average Creation Date':rows.avg_acc_age[i]
+		}];
+		key_word_datatable.insert(newrow);
+	}
+}
+
+function load_location_table(rows) {
+	if (typeof location_datatable !== 'undefined') {
+		location_datatable.destroy();
+	}
+	location_datatable = new simpleDatatables.DataTable('#location-table',{
+		perPage: 25,
+		columns: [{
+			select: [1,2,4,5,6,7],
+			type: 'number'
+		}]
+	});
+	for (let i = 0; i < rows.location.length; i++) {
+		let newrow = [{
+			'Location':rows.location[i],
+			'Count':rows.count[i],
+			'Average Reputation':rows.avg_rep[i],
+			'Total Reputation':rows.total_rep[i],
+			'Average Creation Date':rows.avg_acc_age[i],
+			'Questions Asked':rows.question_count[i],
+			'Answered Given':rows.answer_count[i],
+			'Comments Made':rows.comment_count[i]
+		}];
+		location_datatable.insert(newrow);
+	}
+}
+
+function load_badges_table(rows) {
+	if (typeof badges_datatable !== 'undefined') {
+		badges_datatable.destroy();
+	}
+	badges_datatable = new simpleDatatables.DataTable('#badges-table',{
+		perPage: 5,
+		columns: [{
+			select: [1],
+			type: 'number'
+		}]
+	});
+	for (let i = 0; i < rows.names.length; i++) {
+		let newrow = [{
+			'Badge':rows.names[i],
+			'Count':rows.count[i]
+		}];
+		badges_datatable.insert(newrow);
+	}
+}
+
+function load_user_year_chart(response) {
+	let user_ctx = document.getElementById('userChart');
+	user_line_chart = createChart(user_ctx, 'line','Age of users by year',response.data.years,response.data.count,'');
+	document.querySelector('#userChart p').innerHTML = 'Years:'+response.data.years+'Users created that year:'+response.data.count;
 }
 /* -------------------------------------------------------------------------- */
 /*                                   Layout                                   */

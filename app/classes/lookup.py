@@ -313,3 +313,77 @@ class lookup:
 		else:
 			response['data'] = cache
 		return(response)
+
+	def get_user_keywords(self, form = None):
+		response = {}
+		response['data'] = {}
+		response['data']['keyword'] = []
+		response['data']['occ_count'] = []
+		response['data']['avg_rep'] = []
+		response['data']['total_rep'] = []
+		response['data']['avg_acc_age'] = []
+		if form != None:
+			args = self.process_tag_form(form)
+			cache = False
+		else:
+			args = (None,None,'')
+			cache = self.cache.cache_check('get_user_keywords')
+		if cache == False:
+			try:
+				self.cursor.callproc('get_user_keywords',args)
+				result = self.cursor.fetchall()
+				for res in result:
+					response['data']['keyword'].append(res[0])
+					response['data']['occ_count'].append(res[1])
+					response['data']['avg_rep'].append(res[2])
+					response['data']['total_rep'].append(res[3])
+					response['data']['avg_acc_age'].append(res[4])
+				if form == None:
+					self.cache.cache_set('get_user_keywords',response['data'])
+				response['success'] = True
+			except mariadb.Error as e:
+				response['error'] = e
+				response['success'] = False
+		else:
+			response['data'] = cache
+		return(response)
+	
+	def get_location_scores(self, form = None):
+		response = {}
+		response['data'] = {}
+		response['data']['location'] = []
+		response['data']['count'] = []
+		response['data']['avg_rep'] = []
+		response['data']['total_rep'] = []
+		response['data']['question_count'] = []
+		response['data']['answer_count'] = []
+		response['data']['comment_count'] = []
+		response['data']['avg_acc_age'] = []
+		if form != None:
+			args = self.process_tag_form(form)
+			cache = False
+		else:
+			args = (None,None,'')
+			cache = self.cache.cache_check('get_location_scores')
+		if cache == False:
+			try:
+				self.cursor.callproc('get_location_scores',args)
+				result = self.cursor.fetchall()
+				for res in result:
+					response['data']['location'].append(res[0])
+					response['data']['count'].append(res[1])
+					response['data']['avg_rep'].append(res[2])
+					response['data']['total_rep'].append(res[3])
+					response['data']['question_count'].append(res[4])
+					response['data']['answer_count'].append(res[5])
+					response['data']['comment_count'].append(res[6])
+					response['data']['avg_acc_age'].append(res[7])
+				if form == None:
+					self.cache.cache_set('get_location_scores',response['data'])
+				response['success'] = True
+			except mariadb.Error as e:
+				response['error'] = e
+				response['success'] = False
+		else:
+			response['data'] = cache
+		return(response)
