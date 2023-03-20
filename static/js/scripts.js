@@ -579,15 +579,4 @@ document.addEventListener("DOMContentLoaded", () => {
 		document.querySelector('main').style.filter = 'none';
 		document.getElementById('info-modal').close();
 	});
-
-	// Explore panel handling
-	document.getElementById('icon-explore-open').addEventListener('click', () => {
-		document.querySelector('main').style.filter = 'blur(2px)';
-		document.getElementById('explore-modal').showModal();
-	});
-
-	document.getElementById('icon-explore-close').addEventListener('click', () => {
-		document.querySelector('main').style.filter = 'none';
-		document.getElementById('explore-modal').close();
-	});
 });

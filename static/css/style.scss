@@ -78,9 +78,21 @@ a:hover {
 
 .modal-head {
 	display: flex;
-	justify-content: space-between;
-	align-items: center;
+	justify-content: right;
 	width: 100%;
+}
+
+#recommended-list {
+	columns: 2;
+	column-rule: solid 1px black;
+	margin-top: 20px;
+	.list-head {
+		font-weight: bold;
+		text-align: center;
+		ul {
+			font-weight: normal;
+		}
+	}
 }
 
 .icon {

@@ -29,9 +29,6 @@
 				<svg class="icon icon-view-list"><use xlink:href="#icon-view-list"></use></svg>
 			</button>
 			<h1>{%block header %}{% endblock %}</h1>
-			<button class="nav-btn nav-btn-light" id="icon-explore-open">
-				<svg class="icon icon-explore"><use xlink:href="#icon-explore"></use></svg>
-			</button>
 		</header>
 		<aside id="side-nav-container">
 			<nav>
@@ -66,29 +63,71 @@
 	</body>
 	<dialog id="info-modal" class="modal">
 		<div class="modal-head">
-			<h3 class="text-center">The boring legal bit</h3>
 			<button class="nav-btn nav-btn-light" id="info-modal-close">
 				<svg class="icon icon-close"><use xlink:href="#icon-close"></use></svg>
 			</button>
 		</div>
 		<div class="modal-body">
+			<h2 class="text-center">Recommended starting tags</h2>
 			<p>
-				This dataset has been made publicly available at<br>
-				<a class="text-right" href="https://archive.org/details/stackexchange" target="_blank" rel="noopener noreferrer">Stack Exchange Data Dump - Archive.org</a><br>
+				Looking for a few tags to get started? use one or more of the following on the tags page to find more in your respective field.
+				More tags can be found using the filtering options on the Tags page
+			</p>
+			<ul id="recommended-list">
+				<li class="list-head">
+					Web Design and Development
+					<ul>
+						<li><a href="https://stackoverflow.com/questions/tagged/html" target="_blank" rel="nofollow norefferer">html</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/javascript" target="_blank" rel="nofollow norefferer">javascript</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/css" target="_blank" rel="nofollow norefferer">css</a></li>
+					</ul>
+				</li>
+				<li class="list-head">
+					Machine learning
+					<ul>
+						<li><a href="https://stackoverflow.com/questions/tagged/python" target="_blank" rel="nofollow norefferer">python</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/tensorflow" target="_blank" rel="nofollow norefferer">tensorflow</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/pytorch" target="_blank" rel="nofollow norefferer">pytorch</a></li>
+					</ul>
+				</li>
+				<li class="list-head">
+					Software Development
+					<ul>
+						<li><a href="https://stackoverflow.com/questions/tagged/oop" target="_blank" rel="nofollow norefferer">oop</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/java" target="_blank" rel="nofollow norefferer">java</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/c++" target="_blank" rel="nofollow norefferer">c++</a></li>
+					</ul>
+				</li>
+				<li class="list-head">
+					Data Analysis
+					<ul>
+						<li><a href="https://stackoverflow.com/questions/tagged/python" target="_blank" rel="nofollow norefferer">python</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/nltk" target="_blank" rel="nofollow norefferer">nltk</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/sentiment-analysis" target="_blank" rel="nofollow norefferer">sentiment-analysis</a></li>
+					</ul>
+				</li>
+				<li class="list-head">
+					Database Design and Development
+					<ul>
+						<li><a href="https://stackoverflow.com/questions/tagged/sql" target="_blank" rel="nofollow norefferer">sql</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/json" target="_blank" rel="nofollow norefferer">json</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/xml" target="_blank" rel="nofollow norefferer">xml</a></li>
+					</ul>
+				</li>
+				<li class="list-head">
+					Security
+					<ul>
+						<li><a href="https://stackoverflow.com/questions/tagged/hash" target="_blank" rel="nofollow norefferer">hash</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/encryption" target="_blank" rel="nofollow norefferer">encryption</a></li>
+						<li><a href="https://stackoverflow.com/questions/tagged/validation" target="_blank" rel="nofollow norefferer">validation</a></li>
+					</ul>
+				</li>
+			</ul>
+			<h3 class="text-center">The boring legal bit</h3>
+			<p class="text-center">
+				This dataset has been made publicly available at: <a class="text-right" href="https://archive.org/details/stackexchange" target="_blank" rel="noopener noreferrer">Stack Exchange Data Dump - Archive.org</a>
 				Live site data is courtesy of the <a class="text-right" href="https://api.stackexchange.com/" target="_blank" rel="noopener noreferrer">Stack Exchange API</a>
 			</p>
-		</div>
-	</dialog>
-	<dialog id="explore-modal" class="modal">
-		<div class="modal-head">
-			<h3 class="text-center">Recommended Starting Filters</h3>
-			<button class="nav-btn nav-btn-light" id="icon-explore-close">
-				<svg class="icon icon-close"><use xlink:href="#icon-close"></use></svg>
-			</button>
-		</div>
-		<div class="modal-body">
-			<p>Below is a non-definitive list of technologies to explore based on specific fields the university teaches. These are general and can be used for more specific exploration of the data.</p>
-			
 		</div>
 	</dialog>
 	{% include 'icosvg.html.jinja' %}
