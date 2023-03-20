@@ -140,9 +140,11 @@ function init_tag_form(url) {
 						break;
 					case '/ajax/filtered_users':
 						load_user_keyword_table(response.user_keywords.data);
-						load_location_table(response.locations.data);
 						load_badges_table(response.filtered_top_badges.data);
 						load_user_year_chart(response.user_years);
+						break;
+					case '/ajax/filtered_locations':
+						load_location_table(response.locations.data);
 						break;
 				}
 			} else {
@@ -430,7 +432,6 @@ function init_users() {
 	makeHttpRequest('/ajax/load_users','GET','JSON','',function(response) {
 		tag_list = make_auto_complete('#tag_search','Search for tags...',response.tag_list.data);
 		load_user_keyword_table(response.user_keywords.data);
-		load_location_table(response.locations.data);
 		load_badges_table(response.top_badges.data);
 		load_user_year_chart(response.user_years);
 		init_tag_form('/ajax/filtered_users');
@@ -457,32 +458,6 @@ function load_user_keyword_table(rows) {
 			'Average Creation Date':rows.avg_acc_age[i]
 		}];
 		key_word_datatable.insert(newrow);
-	}
-}
-
-function load_location_table(rows) {
-	if (typeof location_datatable !== 'undefined') {
-		location_datatable.destroy();
-	}
-	location_datatable = new simpleDatatables.DataTable('#location-table',{
-		perPage: 25,
-		columns: [{
-			select: [1,2,4,5,6,7],
-			type: 'number'
-		}]
-	});
-	for (let i = 0; i < rows.location.length; i++) {
-		let newrow = [{
-			'Location':rows.location[i],
-			'Count':rows.count[i],
-			'Average Reputation':rows.avg_rep[i],
-			'Total Reputation':rows.total_rep[i],
-			'Average Creation Date':rows.avg_acc_age[i],
-			'Questions Asked':rows.question_count[i],
-			'Answered Given':rows.answer_count[i],
-			'Comments Made':rows.comment_count[i]
-		}];
-		location_datatable.insert(newrow);
 	}
 }
 
@@ -514,6 +489,44 @@ function load_user_year_chart(response) {
 	user_line_chart = createChart(user_ctx, 'line','Age of users by year',response.data.years,response.data.count,'');
 	document.querySelector('#userChart p').innerHTML = 'Years:'+response.data.years+'Users created that year:'+response.data.count;
 }
+
+/* -------------------------------------------------------------------------- */
+/*                                  Locations                                 */
+/* -------------------------------------------------------------------------- */
+function init_locations() {
+	makeHttpRequest('/ajax/load_locations','GET','JSON','',function(response) {
+		tag_list = make_auto_complete('#tag_search','Search for tags...',response.tag_list.data);
+		load_location_table(response.locations.data);
+		init_tag_form('/ajax/filtered_locations');
+	});
+}
+
+function load_location_table(rows) {
+	if (typeof location_datatable !== 'undefined') {
+		location_datatable.destroy();
+	}
+	location_datatable = new simpleDatatables.DataTable('#location-table',{
+		perPage: 25,
+		columns: [{
+			select: [1,2,4,5,6,7],
+			type: 'number'
+		}]
+	});
+	for (let i = 0; i < rows.location.length; i++) {
+		let newrow = [{
+			'Location':rows.location[i],
+			'Count':rows.count[i],
+			'Average Reputation':rows.avg_rep[i],
+			'Total Reputation':rows.total_rep[i],
+			'Average Creation Date':rows.avg_acc_age[i],
+			'Questions Asked':rows.question_count[i],
+			'Answered Given':rows.answer_count[i],
+			'Comments Made':rows.comment_count[i]
+		}];
+		location_datatable.insert(newrow);
+	}
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                   Layout                                   */
 /* -------------------------------------------------------------------------- */

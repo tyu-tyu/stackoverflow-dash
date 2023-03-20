@@ -109,7 +109,6 @@ def load_users():
 	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
 	result_data['tag_list'] = lookups.get_tag_list()
 	result_data['user_keywords'] = lookups.get_user_keywords()
-	result_data['locations'] = lookups.get_location_scores()
 	result_data['user_years'] = lookups.get_user_years()
 	result_data['top_badges'] = lookups.get_top_badges(50)
 	return result_data
@@ -120,9 +119,34 @@ def filter_users():
 	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
 	result_data = {}
 	result_data['user_keywords'] = lookups.get_user_keywords(request.form)
-	result_data['locations'] = lookups.get_location_scores(request.form)
 	result_data['user_years'] = lookups.get_user_years(request.form)
 	result_data['filtered_top_badges'] = lookups.get_filtered_top_badges(request.form)
 	result_data['success'] = True
 	return result_data
 
+@app.route('/locations')
+def locations():
+	from app.classes.lookup import lookup
+	result_data = {}
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
+	result_data['question_date_range'] = lookups.get_index_date_range()
+	return render_template('locations.html.jinja', data=result_data)
+
+
+@app.route('/ajax/load_locations')
+def load_locations():
+	from app.classes.lookup import lookup
+	result_data = {}
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
+	result_data['tag_list'] = lookups.get_tag_list()
+	result_data['locations'] = lookups.get_location_scores()
+	return result_data
+
+@app.route('/ajax/filtered_locations', methods=['GET', 'POST'])
+def filter_locations():
+	from app.classes.lookup import lookup
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
+	result_data = {}
+	result_data['locations'] = lookups.get_location_scores(request.form)
+	result_data['success'] = True
+	return result_data

@@ -1,8 +1,8 @@
 {% extends "layout.html.jinja" %}
-{% set active_page = "users" %}
-{% block title %}User Details{% endblock %}
+{% set active_page = "locations" %}
+{% block title %}Location Details{% endblock %}
 {% block header %}Stack Overflow Data Dashboards{% endblock %}
-{% block main_name %}users{% endblock %}
+{% block main_name %}location{% endblock %}
 {% block content %}
 	<form id="tag-filter-form" class="grid-panel grid-w-12 bg-light" autocomplete="off">
 		<div class="grid-w-3 grid-sw-6 form-item">
@@ -27,48 +27,28 @@
 			</ul>
 		</div>
 	</form>
-	<article class="grid-panel bg-light grid-w-8 grid-mw-12 grid-sw-12">
-		<h1 class="grid-w-6 grid-sw-12 text-left">Keywords from users</h1>
+	<article class="grid-panel bg-light grid-w-12 grid-mw-12 grid-sw-12">
+		<h1 class="grid-w-12 grid-sw-12 text-left">User locations</h1>
 		<div class="grid-w-12 panel-scroll">
-			<table id="keyword-table">
+			<table id="location-table">
 				<thead>
-					<th>Keyword</th>
-					<th>Occurance Count</th>
+					<th>Location</th>
+					<th>Count</th>
 					<th>Average Reputation</th>
 					<th>Total Reputation</th>
 					<th>Average Creation Date</th>
+					<th>Questions Asked</th>
+					<th>Answered Given</th>
+					<th>Comments Made</th>
 				</thead>
 				<tbody class="table-striped">
 				</tbody>
 			</table>
 		</div>
 	</article>
-	<section class="grid-panel bg-light grid-w-4 grid-mw-12 grid-sw-12">
-		<div class="grid-w-6 grid-sw-12">
-			<h1 class="text-left text-center">Active users by year created</h1>
-			<div class="canvas-wrapper" id="user-wrapper">
-				<canvas id="userChart" aria-label="User Age Chart" role="img">
-					<p></p>
-				</canvas>
-			</div>
-		</div>
-		<div class="grid-w-6 grid-sw-12">
-			<h1 class="grid-w-6 grid-sw-12 text-left">User badges</h1>
-			<div class="grid-w-12 panel-scroll">
-				<table id="badges-table">
-					<thead>
-						<th>Badge</th>
-						<th>Count</th>
-					</thead>
-					<tbody class="table-striped">
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</section>
 {% endblock %}
 {% block scripts %}
 	<script>
-		init_users();
+		init_locations();
 	</script>
 {% endblock %}
