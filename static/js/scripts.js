@@ -153,6 +153,35 @@ function init_tag_form(url) {
 		});
 	});
 }
+
+// Handles Exporting Datatable logic
+function export_datatable(table) {
+	document.querySelector("button.csv").addEventListener("click", () => {
+		simpleDatatables.exportCSV(table, {
+			download: true,
+			lineDelimiter: "\n",
+			columnDelimiter: ","
+		})
+	});
+	document.querySelector("button.sql").addEventListener("click", () => {
+		simpleDatatables.exportSQL(table, {
+			download: true,
+			tableName: "export_table"
+		});
+	});
+	document.querySelector("button.txt").addEventListener("click", () => {
+		simpleDatatables.exportTXT(table, {
+			download: true
+		});
+	});
+	document.querySelector("button.json").addEventListener("click", () => {
+		simpleDatatables.exportJSON(table, {
+			download: true,
+			space: 3
+		});
+	});
+}
+
 /* -------------------------------------------------------------------------- */
 /*                                    Index                                   */
 /* -------------------------------------------------------------------------- */
@@ -335,6 +364,7 @@ function load_tags_table(rows) {
 		}];
 		datatable.insert(newrow);
 	}
+	export_datatable(datatable);
 }
 /* -------------------------------------------------------------------------- */
 /*                                    Posts                                   */
@@ -398,6 +428,7 @@ function load_posts_keyword_table(rows) {
 		}];
 		key_word_datatable.insert(newrow);
 	}
+	export_datatable(key_word_datatable);
 }
 
 function load_posts_top_table(rows) {
@@ -459,6 +490,7 @@ function load_user_keyword_table(rows) {
 		}];
 		key_word_datatable.insert(newrow);
 	}
+	export_datatable(key_word_datatable);
 }
 
 function load_badges_table(rows) {

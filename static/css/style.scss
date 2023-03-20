@@ -219,6 +219,12 @@ button:disabled { //Saves a lot of JS so using important
 	cursor: wait;
 }
 
+.export-panel {
+	display: flex;
+	justify-content: space-around;
+	align-items: center;
+}
+
 .nav-btn {
 	transition: 0.2s;
 	border: none;
