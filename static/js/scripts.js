@@ -124,12 +124,10 @@ function init_tag_form(url) {
 	let tag_filter_form = document.getElementById('tag-filter-form');
 	tag_filter_form.addEventListener('submit', function(e) {
 		document.getElementById('submit-form').disabled = true;
-		document.querySelector('article .panel-scroll').classList.add('hidden');
 		e.preventDefault();
 		let data = new FormData(tag_filter_form);
 		makeHttpRequest(url,'POST','JSON',data,function(response) {
-			if(response['success']){
-				document.querySelector('article .panel-scroll').classList.remove('hidden');
+			if(response['success']) {
 				document.getElementById('submit-form').disabled = false;
 				switch(url) {
 					case '/ajax/filtered_tags':
@@ -139,6 +137,12 @@ function init_tag_form(url) {
 						load_posts_keyword_table(response.post_keywords.data);
 						load_posts_top_table(response.top_posts.data);
 						create_post_charts(response);
+						break;
+					case '/ajax/filtered_users':
+						load_user_keyword_table(response.user_keywords.data);
+						load_location_table(response.locations.data);
+						load_badges_table(response.filtered_top_badges.data);
+						load_user_year_chart(response.user_years);
 						break;
 				}
 			} else {
@@ -503,6 +507,9 @@ function load_badges_table(rows) {
 }
 
 function load_user_year_chart(response) {
+	if (typeof user_line_chart !== 'undefined') {
+		user_line_chart.destroy();
+	}
 	let user_ctx = document.getElementById('userChart');
 	user_line_chart = createChart(user_ctx, 'line','Age of users by year',response.data.years,response.data.count,'');
 	document.querySelector('#userChart p').innerHTML = 'Years:'+response.data.years+'Users created that year:'+response.data.count;

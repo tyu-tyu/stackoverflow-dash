@@ -161,21 +161,27 @@ class lookup:
 			response['success'] = False
 		return(response)
 	
-	def get_user_years(self):
+	def get_user_years(self, form = None):
 		response = {}
 		response['data'] = {}
 		response['data']['years'] = []
 		response['data']['count'] = []
-		cache = self.cache.cache_check('get_user_years')
+		if form != None:
+			args = self.process_tag_form(form)
+			cache = False
+		else:
+			cache = self.cache.cache_check('get_user_years')
+			args = (None,None,'')
 		if cache == False:
 			try:
-				self.cursor.callproc('get_user_years')
+				self.cursor.callproc('get_user_years',args)
 				result = self.cursor.fetchall()
 				for res in result:
 					response['data']['years'].append(res[0])
 					response['data']['count'].append(res[1])
-				self.cache.cache_set('get_user_years',response['data'])
 				response['success'] = True
+				if form == None:
+					self.cache.cache_set('get_user_years',response['data'])
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
@@ -386,4 +392,22 @@ class lookup:
 				response['success'] = False
 		else:
 			response['data'] = cache
+		return(response)
+
+	def get_filtered_top_badges(self, form):
+		response = {}
+		response['data'] = {}
+		response['data']['names'] = []
+		response['data']['count'] = []
+		args = self.process_tag_form(form)
+		try:
+			self.cursor.callproc('get_filtered_top_badges',args)
+			result = self.cursor.fetchall()
+			for res in result:
+				response['data']['names'].append(res[0])
+				response['data']['count'].append(res[1])
+			response['success'] = True
+		except mariadb.Error as e:
+			response['error'] = e
+			response['success'] = False
 		return(response)

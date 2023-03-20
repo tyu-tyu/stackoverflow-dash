@@ -123,5 +123,6 @@ def filter_users():
 	result_data['locations'] = lookups.get_location_scores(request.form)
 	result_data['user_years'] = lookups.get_user_years(request.form)
 	result_data['filtered_top_badges'] = lookups.get_filtered_top_badges(request.form)
+	result_data['success'] = True
 	return result_data
 
