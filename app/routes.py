@@ -1,5 +1,6 @@
 from app import app
-from flask import render_template, request
+from flask import render_template, request, json
+from werkzeug.exceptions import HTTPException
 #routing for the application
 @app.route('/')
 def index():
@@ -150,3 +151,15 @@ def filter_locations():
 	result_data['locations'] = lookups.get_location_scores(request.form)
 	result_data['success'] = True
 	return result_data
+
+@app.errorhandler(HTTPException)
+def handle_exception(e):
+	from app.classes.lookup import lookup
+	lookups = lookup(app.config['CURSOR'],app.config['REDIS'])
+	response = e.get_response()
+	response.data = json.dumps({
+        "code": e.code,
+        "name": e.name,
+        "description": e.description,
+    })
+	lookups.error_log(response.data)

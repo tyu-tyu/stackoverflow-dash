@@ -3,7 +3,7 @@ from app import app
 
 #running the app
 app.run(
-	debug=True,
+	debug=False,
 	port=4996,
 	host=('0.0.0.0')
 )

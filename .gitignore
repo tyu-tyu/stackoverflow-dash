@@ -3,3 +3,4 @@ __pycache__/
 parser/data/
 parser/output/
 schema.sql
+error_log.txt

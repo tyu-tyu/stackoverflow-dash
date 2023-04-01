@@ -1,10 +1,17 @@
 import mariadb
 from app.classes.cache import cache
 import re
+import os
+from datetime import datetime
 class lookup:
 	def __init__(self, cursor, redis):
 		self.cursor = cursor
 		self.cache = cache(redis)
+
+	def error_log(self, error):
+		file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', 'error_log.txt'))
+		with open(file_path, 'a') as error_log_file:
+			error_log_file.write(str(datetime.now().strftime("%H:%M:%S"))+str(error)+'\n')
 
 	def process_tag_form(self, form):
 		data = form.to_dict()
@@ -44,6 +51,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -64,6 +72,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -81,6 +90,7 @@ class lookup:
 		except mariadb.Error as e:
 			response['error'] = e
 			response['success'] = False
+			self.error_log(e)
 		return(response)
 	
 	def get_top_tags(self,limit):
@@ -101,6 +111,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -123,6 +134,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -142,6 +154,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -159,6 +172,7 @@ class lookup:
 		except mariadb.Error as e:
 			response['error'] = e
 			response['success'] = False
+			self.error_log(e)
 		return(response)
 	
 	def get_user_years(self, form = None):
@@ -185,6 +199,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -207,6 +222,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -247,6 +263,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 			return(response)
 		else:
 			response['data'] = cache
@@ -286,6 +303,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -316,6 +334,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -350,6 +369,7 @@ class lookup:
 			except mariadb.Error as e:
 				response['error'] = e
 				response['success'] = False
+				self.error_log(e)
 		else:
 			response['data'] = cache
 		return(response)
@@ -410,4 +430,5 @@ class lookup:
 		except mariadb.Error as e:
 			response['error'] = e
 			response['success'] = False
+			self.error_log(e)
 		return(response)
