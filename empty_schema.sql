@@ -94,7 +94,8 @@ CREATE TABLE IF NOT EXISTS `keyword_link` (
   PRIMARY KEY (`id`),
   KEY `FK_keyword_link_keywords` (`keyword_id`) USING BTREE,
   KEY `keyword_link_post_id` (`post_id`),
-  KEY `keyword_link_comment_id` (`comment_id`)
+  KEY `keyword_link_comment_id` (`comment_id`),
+  KEY `keyword_link_user_id` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3604426 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
