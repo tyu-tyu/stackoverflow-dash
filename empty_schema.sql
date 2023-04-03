@@ -26,9 +26,7 @@ CREATE TABLE IF NOT EXISTS `answer` (
   `sentiment` decimal(7,3) DEFAULT NULL,
   `user_id` bigint(20) DEFAULT 0,
   PRIMARY KEY (`id`),
-  KEY `sentiment` (`sentiment`),
   KEY `answer_question_id` (`question_id`),
-  KEY `answer_score` (`score`),
   KEY `FK_answer_user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=72469192 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -66,8 +64,6 @@ CREATE TABLE IF NOT EXISTS `comments` (
   `creation_date` date DEFAULT NULL,
   `user_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `sentiment` (`sentiment`),
-  KEY `comments` (`score`),
   KEY `comments_post` (`post_id`),
   KEY `FK_comments_user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=128020272 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -112,11 +108,9 @@ CREATE TABLE IF NOT EXISTS `question` (
   `accepted_answer_id` bigint(20) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `creation_date` (`creation_date`),
-  KEY `question_accepted_answer` (`accepted_answer_id`),
-  KEY `sentiment` (`sentiment`) USING BTREE,
   KEY `question_score` (`score`),
-  KEY `FK_question_user` (`user_id`),
-  KEY `question_view_count` (`view_count`)
+  KEY `question_accepted_answer` (`accepted_answer_id`),
+  KEY `FK_question_user` (`user_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=72469195 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Data exporting was unselected.
