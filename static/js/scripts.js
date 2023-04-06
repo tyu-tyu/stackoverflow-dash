@@ -360,7 +360,7 @@ function load_tags_table(rows) {
 			'Total Score':rows.score[i],
 			'Total Views':rows.view_count[i],
 			'Sentiment Score':rows.sentiment[i],
-			'About':'<a href="'+rows.link[i]+'" target="_blank" rel="noopener noreferrer"><i class="text-blue fa-solid fa-link"></i></a>'
+			'About':rows.link[i]
 		}];
 		datatable.insert(newrow);
 	}

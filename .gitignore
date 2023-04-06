@@ -4,3 +4,4 @@ parser/data/
 parser/output/
 schema.sql
 error_log.txt
+app/db_config.py

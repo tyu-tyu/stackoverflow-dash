@@ -99,6 +99,10 @@ class lookup:
 		response['data']['names'] = []
 		response['data']['count'] = []
 		cache = self.cache.cache_check('get_top_tags')
+		if re.match('^[0-9]+$',str(limit)):
+			limit = limit
+		else:
+			limit = 10
 		if cache == False or len(cache['names']) != limit:
 			try:
 				self.cursor.callproc('get_top_tags',[limit,])
@@ -122,6 +126,10 @@ class lookup:
 		response['data']['names'] = []
 		response['data']['count'] = []
 		cache = self.cache.cache_check('get_top_badges')
+		if re.match('^[0-9]+$',str(limit)):
+			limit = limit
+		else:
+			limit = 10
 		if cache == False or len(cache['names']) != limit:
 			try:
 				self.cursor.callproc('get_top_badges',[limit,])
