@@ -3,5 +3,6 @@ __pycache__/
 parser/data/
 parser/output/
 schema.sql
+test_script.xlsx
 error_log.txt
 app/db_config.py

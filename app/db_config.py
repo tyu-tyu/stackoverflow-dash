@@ -2,7 +2,7 @@ def db_config():
 	db_config_info = {
 		'user':'edgehill',
 		'password':'Edgehill2023',
-		'host':'127.0.0.1', #127.0.0.1 Local | mariadb docker
+		'host':'mariadb', #127.0.0.1 Local | mariadb docker
 		'port':5505,
 		'database': 'dashboard_data'
 	}
@@ -10,7 +10,7 @@ def db_config():
 
 def redis_config():
 	redis_config_info = {
-		'host':'127.0.0.1', #127.0.0.1 Local | redis docker
+		'host':'redis', #127.0.0.1 Local | redis docker
 		'port':6379, 
 		'charset':'utf-8',
 		'decode_responses':True
