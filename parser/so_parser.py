@@ -318,7 +318,7 @@ if __name__ == "__main__":
 		# ---------------------------------------------------------------------------- #
 		#                                     Users                                    #
 		# ---------------------------------------------------------------------------- #
-		cur.execute("SELECT id FROM user")
+		cur.execute("SELECT id FROM user ORDER BY id ASC")
 		user_list = []
 		result = cur.fetchall()
 		for res in result:

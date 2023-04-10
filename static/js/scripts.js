@@ -124,11 +124,19 @@ function init_tag_form(url) {
 	let tag_filter_form = document.getElementById('tag-filter-form');
 	tag_filter_form.addEventListener('submit', function(e) {
 		document.getElementById('submit-form').disabled = true;
+		document.querySelector('article').style.filter = 'blur(2px)';
+		if(document.querySelector('section')) {
+			document.querySelector('section').style.filter = 'blur(2px)';
+		}
 		e.preventDefault();
 		let data = new FormData(tag_filter_form);
 		makeHttpRequest(url,'POST','JSON',data,function(response) {
 			if(response['success']) {
 				document.getElementById('submit-form').disabled = false;
+				document.querySelector('article').style.filter = 'none';
+				if(document.querySelector('section')) {
+					document.querySelector('section').style.filter = 'none';
+				}
 				switch(url) {
 					case '/ajax/filtered_tags':
 						load_tags_table(response['data']);
