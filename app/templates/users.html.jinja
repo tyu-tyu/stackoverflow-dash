@@ -4,29 +4,7 @@
 {% block header %}Stack Overflow Data Dashboards{% endblock %}
 {% block main_name %}users{% endblock %}
 {% block content %}
-	<form id="tag-filter-form" class="grid-panel grid-w-12 bg-light" autocomplete="off">
-		<div class="grid-w-3 grid-sw-6 form-item">
-			<label for="date_start">Start Date:</label>
-			<input type="date" value="{{ data['question_date_range']['data'][2] }}" id="date_start" name="date_start">
-		</div>
-		<div class="grid-w-3 grid-sw-6 form-item">
-			<label for="date_end">End Date:</label>
-			<input type="date" value="{{ data['question_date_range']['data'][3] }}" id="date_end" name="date_end">
-		</div>
-		<div class="grid-w-3 grid-sw-12 form-item">
-			<label for="include">Include:</label>
-			<div class="autoComplete_wrapper">
-				<input id="tag_search" type="search" dir="ltr" spellcheck=false autocorrect="off" autocomplete="off" autocapitalize="off">
-			</div>
-		</div>
-		<div class="grid-w-3 grid-sw-12 form-item">
-			<button type="submit" id="submit-form" class="btn-green form-btn">Filter <i class="fa-solid fa-filter"></i></button>
-		</div>
-		<div class="grid-w-12 form-item" id="hidden-form">
-			<ul class="filter-list">
-			</ul>
-		</div>
-	</form>
+	{% include '/components/tagform.html.jinja' %}
 	<article class="grid-panel bg-light grid-w-8 grid-mw-12 grid-sw-12">
 		<h1 class="grid-w-6 grid-sw-12 text-left">Keywords from users</h1>
 		<div class="grid-w-12 panel-scroll">
