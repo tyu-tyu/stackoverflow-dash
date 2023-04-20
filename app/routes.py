@@ -163,3 +163,7 @@ def handle_exception(e):
         "description": e.description,
     })
 	lookups.error_log(response.data)
+
+@app.errorhandler(404)
+def not_found(e):
+	return render_template('404.html.jinja')

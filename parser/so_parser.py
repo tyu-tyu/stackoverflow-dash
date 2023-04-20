@@ -138,7 +138,7 @@ if __name__ == "__main__":
 	try:
 		conn = mariadb.connect(
 			user="root",
-			password="Edgehill2023",
+			password="edgehill2023",
 			host="localhost",
 			port=5505,
 			database="dashboard_data",

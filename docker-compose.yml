@@ -6,13 +6,13 @@ services:
     platform: linux/amd64
     restart: on-failure
     ports:
-      - 5505:5505
+      - 5505:3306
     volumes:
       - mariadb_data:/var/lib/mysql
       - ./schema.sql:/docker-entrypoint-initdb.d/schema.sql
     environment:
-      - MYSQL_ROOT_PASSWORD=Edgehill2023
-      - MYSQL_PASSWORD=Edgehill2023
+      - MYSQL_ROOT_PASSWORD=edgehill2023
+      - MYSQL_PASSWORD=edgehill2023
       - MYSQL_USER=edgehill
       - MYSQL_DATABASE=dashboard_data
 
@@ -40,7 +40,7 @@ services:
       - mariadb
     environment:
       PMA_HOST: mariadb
-      PMA_PORT: 5505
+      PMA_PORT: 3306
       UPLOAD_LIMIT: 300M
     ports:
       - '800:80'
