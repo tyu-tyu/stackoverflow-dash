@@ -38,7 +38,6 @@ Your project will now be running, to view the database login using one of the fo
 	 - 110,00 Answers 
 	 - 350,000 Comments
 	 - 181792 Users	
-The data dump is updated roughly every 3 months so I'd recommend that as a starting point for a lower end server.
 5. Go to sleep or something this will take a while
 ### Viewing the app
 - head over to http://localhost:4996/ by default
@@ -53,3 +52,5 @@ To reset the redis cache if a new dataset is to be imported or any errors occur 
  - type in `redis-cli` 
  - type in `flushdb`
  - this should return a one once flushed, if not try again you can check with the `keys *` command
+
+This app has logging found in the error_log.txt for any SQL or connection errors
