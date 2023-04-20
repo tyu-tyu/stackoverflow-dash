@@ -15,6 +15,12 @@ services:
       - MYSQL_PASSWORD=edgehill2023
       - MYSQL_USER=edgehill
       - MYSQL_DATABASE=dashboard_data
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u $$MYSQL_USER --password=$$MYSQL_PASSWORD
+      start_period: 5s
+      interval: 5s
+      timeout: 5s
+      retries: 55
 
   redis:
     image: redislabs/redismod
@@ -30,8 +36,10 @@ services:
     ports:
       - "4996:4996"
     depends_on:
-      - mariadb
-      - redis
+      mariadb:
+        condition: service_healthy
+      redis:
+        condition: service_started
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
