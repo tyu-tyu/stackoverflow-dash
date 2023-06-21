@@ -138,10 +138,10 @@ if __name__ == "__main__":
 	try:
 		conn = mariadb.connect(
 			user="root",
-			password="edgehill2023",
+			password="username",
 			host="localhost",
 			port=5505,
-			database="dashboard_data",
+			database="password",
 			local_infile = 1
 		)
 	except mariadb.Error as e:

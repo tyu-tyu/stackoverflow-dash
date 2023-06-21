@@ -1,7 +1,7 @@
 def db_config():
 	db_config_info = {
-		'user':'edgehill',
-		'password':'edgehill2023',
+		'user':'username',
+		'password':'password',
 		'host':'mariadb', #127.0.0.1 Local | mariadb docker
 		'port':3306, #5505 Local | 3306 docker
 		'database': 'dashboard_data'
