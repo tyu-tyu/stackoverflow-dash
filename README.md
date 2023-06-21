@@ -10,17 +10,17 @@ run the following commands:
 Your project will now be running, to view the database login using one of the following methods:
   - mariadb client locally (HeidiSQL)
     - Hostname: 127.0.0.1
-    - user: edgehill
-    - password: Edgehill2023
+    - user: username
+    - password: password
     - port: 5505
   - PHPMyAdmin
     - url: http://localhost:800/ by default
-    - user: edgehill
-    - password: Edgehill2023
+    - user: username
+    - password: password
 	
 	(these can be edited in the docker-compose file)
-### Parsing your own - if you have a prepoplulated schema skip this section
-*full disclaimer python xml parsing is line by line and very slow, avoid if possible*
+### Parsing your data
+*full disclaimer python xml parsing is line by line and very slow, forking for speed welcome*
 1. Download the following files from the Stack Exchange dump: https://archive.org/details/stackexchange
 	- stackoverflow.com-Badges.7z
 	- stackoverflow.com-Comments.7z
@@ -37,11 +37,10 @@ Your project will now be running, to view the database login using one of the fo
 	 - 150,000 Questioins 
 	 - 110,00 Answers 
 	 - 350,000 Comments
-	 - 181792 Users	
+	 - 180,000 Users	
 5. Go to sleep or something this will take a while
 ### Viewing the app
 - head over to http://localhost:4996/ by default
-- Visit every page and wait for the data to fully load (this may take a while) this initializes the cache speeding up future initial loads
 - Filter results on any of the pages if you wish
 - Export the data for any future usage
 
